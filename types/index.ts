@@ -62,6 +62,8 @@ interface Event {
   bannerUrl?: string;
   eventCategory: string;
   registrationEndTime: string;
+  studentOrganizerId: string;
+  facultyOrganizerId: string;
   eventType: 'technical' | 'non-technical';
 }
 

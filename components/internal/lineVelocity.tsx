@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import { VelocityScroll } from "@/components/ui/scroll-based-velocity";
+import { VelocityScroll } from "@/components/magicui/scroll-based-velocity";
 
 export default function LineVelocity() {
   return (
