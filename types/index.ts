@@ -7,6 +7,7 @@ interface User {
   phoneNo: string;
   college: string;
   department: string;
+  gender: 'male' | 'female';
   year: number;
   createdTime: string;
 }

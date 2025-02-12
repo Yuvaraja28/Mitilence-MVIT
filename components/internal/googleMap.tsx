@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function GoogleMap() {
   return (
-    <div className="flex flex-col items-center gap-6 p-4 text-white">
+    <div className="flex flex-col items-center gap-8 p-4 text-white">
       <span
         style={{ textShadow: 'rgba(255, 255, 255, 0.3) 10px 12px 0' }}
         className="text-3xl text-center lg:text-5xl font-semibold uppercase font-clashDisplay after:bg-purpleAccent"

@@ -13,6 +13,10 @@ import { GoogleMap } from "@/components/internal/googleMap";
 import { AboutSection } from "@/components/internal/aboutSection";
 import Footer from "@/components/internal/footer";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
+import { Departments } from "@/components/internal/departments";
+import FAQAccordian from "@/components/internal/faq";
+import Partners from "@/components/internal/Partners";
+import ProfileCard from "@/components/internal/profileCard";
 
 export default function Home() {
 
@@ -62,7 +66,7 @@ export default function Home() {
             shimmerSize="0.10em"
             className="absolute bottom-[38vh] lg:bottom-[35vh] px-6 py-1.5 font-medium text-[1.2em] lg:text-[1.35em]"
           >
-            27 March 2025
+            14 March 2025
           </ShimmerButton>
         </div>
       </div>
@@ -77,7 +81,7 @@ export default function Home() {
         <div
           className="flex flex-col items-center justify-between w-full gap-4"
         >
-          <TimeLeft timeStamp={1743044000} />
+          <TimeLeft timeStamp={1741924800} />
           <div
             className="flex flex-col items-center gap-3 w-full mt-1"
           >
@@ -97,6 +101,16 @@ export default function Home() {
       </div>
       <LineVelocity />
       <AboutSection />
+      <Departments />
+      <FAQAccordian />
+      <Partners
+        type="Knowledge"
+        data={["/partners/ict_academy.png"]}
+      />
+      <Partners
+        type="Industry"
+        data={["/partners/tcs.png"]}
+      />
       <CrossVelocity />
       <GoogleMap />
       <Footer />

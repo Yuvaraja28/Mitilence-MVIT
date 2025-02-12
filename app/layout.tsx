@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { HeroUIProvider } from "@heroui/system";
 
 export const metadata: Metadata = {
   title: "Mitilence",
@@ -16,7 +17,9 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
-        {children}
+        <HeroUIProvider>
+          {children}
+        </HeroUIProvider>
       </body>
     </html>
   );
