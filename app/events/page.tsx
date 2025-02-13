@@ -10,11 +10,7 @@ import { getDepartments } from "@/Firestore/departments";
 import { getEventCategories } from "@/Firestore/eventCategories";
 import { getEvents } from "@/Firestore/events";
 
-type EventsProps ={
-  eventName: string;
-}
-
-export default function Events({ eventName = 'Events' }: EventsProps) {
+export default function Events() {
   const [events, setEvents] = React.useState<Events[]>([])
   const [currentSearch, setCurrentSearch] = React.useState('')
   const [departments, setDepartments] = React.useState<Department[]>([]);
@@ -37,7 +33,10 @@ export default function Events({ eventName = 'Events' }: EventsProps) {
     getDepartments()
       .then(data => setDepartments(() => data))
     getEventCategories()
-      .then(data => setEventCategories((prev) => [...prev, ...data]))
+      .then(data => setEventCategories(prev => {
+        const newCategories = data.filter(newCat => !prev.find(prevCat => prevCat.id === newCat.id));
+        return [...prev, ...newCategories];
+      }))
     getEvents()
       .then(data => setEvents(data))
   }, []);
@@ -47,7 +46,7 @@ export default function Events({ eventName = 'Events' }: EventsProps) {
       className="flex flex-col items-center text-white"
     >
       <HeaderSection
-        bannerName={currentEventCategory?.name || eventName}
+        bannerName={currentEventCategory?.name || "Events"}
         bannerImg={TechnicalEventsImg.src}
        />
       <div
