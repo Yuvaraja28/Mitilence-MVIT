@@ -15,10 +15,10 @@ export default function ResponsiveSidebar() {
 
   const headerList = [
     { name: 'home', url: '/' },
-    { name: 'events', url: '/events' },
-    { name: 'about', url: '/about' },
-    { name: 'faq', url: '/faq' },
-    { name: 'teams', url: '/teams' }
+    { name: 'events', url: 'events' },
+    { name: 'about', url: 'about' },
+    { name: 'faq', url: 'faq' },
+    { name: 'teams', url: 'teams' }
   ];
 
   return (
@@ -37,8 +37,8 @@ export default function ResponsiveSidebar() {
           {headerList.map((head) => (
             <Link
               key={head.name}
-              href={head.url}
-              className={`flex items-center justify-center uppercase text-md font-semibold rounded-full px-7 pt-0.5 transition-background h-full ${pathname === head.url ? 'text-white bg-purpleAccent border-purpleAccent' : 'text-boxBlack border-white'}`}
+              href={`/${head.url}`}
+              className={`flex items-center justify-center uppercase text-md font-semibold rounded-full px-7 pt-0.5 transition-background h-full ${(pathname == head.url || pathname.split('/').slice(1)[0] === (head.url)) ? 'text-white bg-purpleAccent border-purpleAccent' : 'text-boxBlack border-white'}`}
             >
               {head.name}
             </Link>

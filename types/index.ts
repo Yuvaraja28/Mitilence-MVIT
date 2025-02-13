@@ -64,9 +64,11 @@ interface Events {
   entryFee: number;
   bannerUrl?: string;
   eventCategory: string;
+  eventDescription: string;
   registrationEndTime: string;
   studentOrganizerId: string;
   facultyOrganizerId: string;
+  linkRegistration?: string;
   eventType: 'technical' | 'non_technical';
 }
 
