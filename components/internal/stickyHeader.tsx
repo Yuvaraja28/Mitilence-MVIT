@@ -1,9 +1,11 @@
+'use client';
 import { useState } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import MVITImg from '@/assets/images/mvit.png';
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { Button } from '@heroui/button';
 
 export default function ResponsiveSidebar() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -13,7 +15,7 @@ export default function ResponsiveSidebar() {
 
   const headerList = [
     { name: 'home', url: '/' },
-    { name: 'event', url: '/event' },
+    { name: 'events', url: '/events' },
     { name: 'about', url: '/about' },
     { name: 'faq', url: '/faq' },
     { name: 'teams', url: '/teams' }
@@ -21,7 +23,7 @@ export default function ResponsiveSidebar() {
 
   return (
     <div
-      className='sticky top-5 flex flex-row gap-2 w-full lg:px-10 px-4 z-20'
+      className='sticky top-5 flex flex-row gap-2 w-full lg:px-10 px-4 z-20 select-none'
     >
       {/* Header for PC View */}
       <div className="w-full flex justify-between items-center bg-white border border-gray-300/50 px-3.5 py-2.5 rounded-full shadow-2xl">
@@ -44,9 +46,13 @@ export default function ResponsiveSidebar() {
         </div>
         <Link
           href={'/login'}
-          className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-8 pt-0.5 transition-background h-full"
+          className='h-full'
         >
-          Login
+          <Button
+            className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-8 pt-0.5 transition-background h-full bg-white"
+          >
+            Login
+          </Button>
         </Link>
         <button
           onClick={toggleSidebar}

@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { HeroUIProvider } from "@heroui/system";
+import StickyHeader from "@/components/internal/stickyHeader";
 
 export const metadata: Metadata = {
   title: "Mitilence",
@@ -18,6 +19,7 @@ export default function RootLayout({
         className={`antialiased`}
       >
         <HeroUIProvider>
+          <StickyHeader />
           {children}
         </HeroUIProvider>
       </body>

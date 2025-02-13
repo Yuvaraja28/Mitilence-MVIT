@@ -1,10 +1,10 @@
-import Image from "next/image";
 import MVITShowcaseImg from '@/assets/images/mvit_showcase.jpg';
+import { Image } from '@heroui/image';
 
 export function AboutSection() {
   return (
     <div
-      className="text-white lg:p-10 px-6 py-8 flex flex-col items-center lg:flex-row gap-12"
+      className="text-white lg:p-10 px-6 py-8 flex flex-col items-center lg:flex-row gap-10"
     >
       <div
         className="flex flex-col gap-5"
@@ -23,10 +23,11 @@ export function AboutSection() {
       </div>
       <Image
         alt="MVIT"
-        width={450}
-        height={50}
-        src={MVITShowcaseImg}
-        className="rounded-2xl ring-2 ring-purpleAccent"
+        isBlurred
+        width={2800}
+        height={260}
+        src={'/images/mvit_showcase.jpg'}
+        className='object-cover rounded-2xl'
       />
     </div>
   )

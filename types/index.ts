@@ -44,12 +44,14 @@ interface TechnicalMember {
 interface Department {
   readonly id: string;
   name: string;
+  fullName: string;
+  order: number;
   logoUrl?: string;
   bannerUrl?: string;
 }
 
 // Realtime DB
-interface Event {
+interface Events {
   readonly id: string;
   name: string;
   departmentId: string;
@@ -57,30 +59,32 @@ interface Event {
   endTime: string;
   teamSize: number;
   place: string;
+  totalSeats: number;
   seatsLeft: number;
   entryFee: number;
-  logoUrl?: string;
   bannerUrl?: string;
   eventCategory: string;
   registrationEndTime: string;
   studentOrganizerId: string;
   facultyOrganizerId: string;
-  eventType: 'technical' | 'non-technical';
+  eventType: 'technical' | 'non_technical';
 }
 
 // Realtime DB
-interface RegisteredEvent extends Event {
+interface RegisteredEvent extends Events {
   teamMembers: string[];
   registeredTime: string;
   paymentUpdatedBy: string[];
   paymentStatus: 'success' | 'pending' | 'failed' | 'notdone'
 }
 
-// Sub Types
-type EventCategory = {
+interface EventCategory {
+  readonly id: string;
   readonly name: string;
+  readonly order: number;
 }
 
+// Sub Types
 type SocialHandle = {
   [key: string]: {
     readonly github: string;

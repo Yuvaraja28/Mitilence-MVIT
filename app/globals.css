@@ -120,3 +120,8 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
+
+input::placeholder,
+textarea::placeholder {
+  color: gray !important;
+}
