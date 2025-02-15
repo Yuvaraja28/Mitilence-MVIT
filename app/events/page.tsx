@@ -52,12 +52,12 @@ export default function Events() {
         :
         <>
           <div
-            className="bg-white rounded-full w-[90%] lg:mt-[-5vh] lg:w-[60%] overflow-auto flex flex-row items-center gap-2 p-1 lg:p-2 mb-6"
+            className="bg-white rounded-full w-[90%] lg:mt-[-5vh] lg:w-[60%] overflow-auto flex flex-row items-center gap-2 px-1 lg:px-2 mb-6"
           >
             <input
               placeholder="Search for events"
               onChange={(e) => setCurrentSearch(e.target.value)}
-              className="w-full outline-none border-none px-4 font-medium text-md text-black"
+              className="w-full outline-none border-none px-4 font-medium text-md text-black py-4"
             />
             <Button
               className="bg-purpleAccent text-white w-2 rounded-full"
@@ -127,7 +127,7 @@ export default function Events() {
                   >
                     <BlurFade
                       inView
-                      delay={0.25 + (idx+1) * 0.1}
+                      delay={0 + (idx+1) * 0.05}
                     >
                       {(registeredEventsSet?.has(event.id)) &&
                         <button

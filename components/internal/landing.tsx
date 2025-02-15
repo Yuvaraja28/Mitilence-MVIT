@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { ChevronRight } from 'lucide-react';
 import StarImg from '@/assets/images/star.png'
-import DeveloperImg from '@/assets/images/developer.png';
+import DeveloperImg from '@/assets/images/developer.png'
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { AnimatedGradientText } from '../magicui/animated-gradient-text';
@@ -10,22 +10,25 @@ import { Image } from '@heroui/image';
 export default function Landing() {
   return (
     <div
-      className="lg:h-[92vh] h-[30em] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
       style={{
         backgroundImage: `url(${DeveloperImg.src})`,
       }}
-      role="img"
       aria-label="Landing Developer"
+      className="mt-[-8.5vh] h-[100vh] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
     >
-      <span
-        className="bg-gradientLandingHeader w-full h-[10vh]"
+      <video
+        loop
+        muted
+        autoPlay
+        src="/videos/mitilence.mp4"
+        className="object-cover h-[100vh] absolute w-full"
       />
-      <div className="lg:h-[100vh] h-[34em] absolute inset-0 bg-black/25"></div>
+      <div className="h-[99vh] lg:h-[100vh] absolute inset-0 bg-black/25"></div>
       <div
-        className="flex flex-col items-center lg:justify-normal h-full w-full"
+        className="flex flex-col items-center lg:justify-normal h-full w-full mt-[32vh] lg:mt-[25vh]"
       >
         <AnimatedGradientText
-          className='z-10 bg-white text-sm md:text-lg rounded-full -translate-y-6 md:-translate-y-2'
+          className='z-10 bg-white text-sm md:text-lg rounded-full -translate-y-8 md:-translate-y-4'
         >
           🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
           <span
@@ -66,6 +69,5 @@ export default function Landing() {
         />
       </div>
     </div>
-    
   )
 }

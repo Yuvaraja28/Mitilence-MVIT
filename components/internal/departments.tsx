@@ -33,7 +33,7 @@ export function Departments() {
             <BlurFade
               inView
               className="group"
-              delay={0.25 + (idx+1) * 0.1}
+              delay={0.1 + (idx+1) * 0.05}
             >
               <span
                 className="absolute z-30 top-5 left-[-20px] -skew-x-6 bg-white text-black text-xl font-semibold rounded-[5px] px-4 py-0.5 uppercase"
