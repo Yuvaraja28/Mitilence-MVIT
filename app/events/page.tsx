@@ -12,6 +12,7 @@ import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import TechnicalEventsImg from '@/assets/images/technical_events.png';
 import { useFirebase } from "@/contexts/firebase";
+import { useSearchParams } from 'next/navigation';
 
 export default function Events() {
   const firebaseContext = useFirebase();
@@ -19,6 +20,27 @@ export default function Events() {
   const departments = firebaseContext?.departments || []
   const eventCategories = firebaseContext?.eventCategories || []
   const registeredEventsSet = firebaseContext?.registeredEventsSet;
+
+  const searchParams = useSearchParams();
+  const departmentParam = searchParams.get('department');
+  const categoryParam = searchParams.get('category');
+
+  React.useEffect(() => {
+    if (departmentParam) {
+      const department = departments.find(dept => dept.id === departmentParam);
+      setCurrentDepartment(() => department);
+    } else {
+      setCurrentDepartment(() => departments[0]);
+    }
+    if (categoryParam) {
+      const category = eventCategories.find(cat => cat.id === categoryParam);
+      if (category) {
+        setCurrentEventCategory(() => category);
+      }
+    } else {
+      setCurrentEventCategory(() => eventCategories[0]);
+    }
+  }, [searchParams, categoryParam, departments, eventCategories]);
 
   const [currentSearch, setCurrentSearch] = React.useState('')
   const [currentDepartment, setCurrentDepartment] = React.useState<Department>();
@@ -70,7 +92,17 @@ export default function Events() {
             aria-label="Options"
             color="primary"
             variant="bordered"
-            onSelectionChange={(index) => setCurrentDepartment(departments[+index])}
+            selectedKey={currentDepartment?.id}
+            defaultSelectedKey={currentDepartment?.id}
+            shouldSelectOnPressUp={false}
+            onSelectionChange={(index) => {
+              if (currentDepartment == null) return;
+              const selectedDepartment = departments.find(dep => dep.id === index);
+              const params = new URLSearchParams(window.location.search);
+              if (selectedDepartment) { params.set('department', selectedDepartment.id) }
+              else { params.delete('department') }
+              window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);
+            }}
             classNames={{
               tabList: "empty:hidden grid md:flex grid-cols-3 gap-1 p-2 border-1.5 border-purpleAccent rounded-2xl",
               cursor: "w-full bg-purpleAccent text-white font-medium text-lg outline-none border-none",
@@ -78,9 +110,9 @@ export default function Events() {
               tabContent: "group-data-[selected=true]:text-white text-white border-none",
             }}
           >
-            {departments.map((dept, i) => (
+            {departments.map((dept) => (
               <Tab
-                key={i}
+                key={dept.id}
                 title={dept.name.toUpperCase()}
               />
             ))}
@@ -94,7 +126,14 @@ export default function Events() {
               color="primary"
               variant="bordered"
               isVertical={true}
-              onSelectionChange={(index) => setCurrentEventCategory(eventCategories[+index])}
+              selectedKey={currentEventCategory?.id}
+              onSelectionChange={(index) => {
+                const selectedCategory = eventCategories.find(cat => cat.id === index);
+                const params = new URLSearchParams(searchParams);
+                if (selectedCategory) { params.set('category', selectedCategory.id) }
+                else { params.delete('category') }
+                window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);
+              }}
               classNames={{
                 tabList: "flex-col gap-2 p-2 border-1.5 border-purpleAccent rounded-2xl bg-[#9648ff0f] w-[18em]",
                 cursor: "w-full bg-purpleAccent text-white font-medium text-lg outline-none border-none",
@@ -102,9 +141,9 @@ export default function Events() {
                 tabContent: "group-data-[selected=true]:text-white text-white border-none",
               }}
             >
-              {eventCategories.map((categ, i) => (
+              {eventCategories.map((categ) => (
                 <Tab
-                  key={i}
+                  key={categ.id}
                   title={categ?.name?.toUpperCase()}
                 />
               ))}

@@ -19,6 +19,7 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import TechnicalEventsImg from '@/assets/images/technical_events.png';
 import { BadgeCheck, Building2, CalendarDays, ContactRound, Navigation, UsersRound } from "lucide-react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
+import { Input } from '@heroui/input';
 
 const GeneralInstruction = [
   'A valid college ID card is required for participation.',
@@ -38,6 +39,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
   
   const event = React.use(params).event
   const {isOpen, onOpen, onClose} = useDisclosure();
+  const [generalInstructionsRead, setGeneralInstructionsRead] = React.useState(false);
 
   if ((Object.keys(eventsObject).length != 0) && (eventsObject[event] == null)) {
     return <NotFound />
@@ -45,7 +47,11 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
 
   const eventData = eventsObject[event]
 
-  async function registerNow() {
+  async function registerNow(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const teamMembers = Array.from({ length: (eventData?.teamSize || 1) }).map((_, membIndex) => formData.get(`Participant ${membIndex + 1} Name`));
+    teamMembers[0] = fireUserData?.displayName || ''
     onClose()
     if (fireUserData == null) {
       return LoginGoogle();
@@ -53,7 +59,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
     const updateRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData.uid}/${eventData.id}`);
     update(updateRef, {
       eventId: eventData.id,
-      teamMembers: [],
+      teamMembers: teamMembers,
       registeredTime: new Date().toISOString()
     });
   }
@@ -293,72 +299,108 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
               </Markdown>
             </div>
           </div>
-          <Modal isOpen={isOpen} size={'lg'} onClose={onClose}>
+          <Modal isOpen={isOpen} size={'lg'} onClose={() => {onClose(); setGeneralInstructionsRead(() => false)}}>
             <ModalContent>
               <ModalHeader className="flex flex-col gap-1 text-2xl">
-                General Instruction
-              </ModalHeader>
-              <ModalBody>
-                <ul
-                  className=''
-                >
-                  {GeneralInstruction.map((instr, idx) =>
-                    <li
-                      key={idx}
-                      className='text-black'
-                    >
-                      {instr}
-                    </li>
-                  )}
-                </ul>
-                <div
-                  className='flex flex-col px-2'
-                >
-                  <span
-                    className='text-xl font-semibold text-purpleAccent uppercase mb-2'
-                  >
-                    Registration Fee
-                  </span>
-                  {[200, 100].map(price =>
-                    <span
-                      key={price}
-                      className='mb-2'
-                    >
-                      <span className='bg-purpleAccent text-white w-[20px] px-2 py-1 rounded-[6px] font-medium'>₹ {price}</span> for {(price == 100) ? 'in' : 'ex'}ternal participants
-                    </span>
-                  )}
-                </div>
-                <div
-                  className='flex flex-col gap-0.5 px-2'
-                >
-                  <span
-                    className='text-xl font-semibold text-purpleAccent uppercase'
-                  >
-                    Note
-                  </span>
-                  <span>
-                    The registration fee covers the entire Mitilence event, permitting participation in multiple events, provided there are no scheduling conflicts. The fee must be paid at the designated payment desk within the college premises.
-                  </span>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                {(eventData?.linkRegistration != null) ?
-                  <Link
-                    target='_blank'
-                    href={eventData.linkRegistration}
-                    className='bg-purpleAccent text-white font-medium text-lg mb-4 px-4 py-1.5 rounded-xl'
-                  >
-                    Register Now
-                  </Link>
+                {(generalInstructionsRead) ?
+                  "Registration"
                 :
-                  <Button
-                    onPress={registerNow}
-                    className='bg-purpleAccent text-white font-medium text-lg mb-4'
-                  >
-                    Register Now
-                  </Button>
+                  "General Instruction"
                 }
-              </ModalFooter>
+              </ModalHeader>
+              <form
+                onSubmit={registerNow}
+              >
+                <ModalBody>
+                  {(generalInstructionsRead) ?
+                    <div
+                      className='flex flex-col gap-2'
+                    >
+                      {Array.from({ length: (eventData?.teamSize || 1) }).map((_, membIndex) =>
+                        <Input
+                          type="text"
+                          size="lg"
+                          required
+                          key={membIndex}
+                          variant={"bordered"}
+                          name={`Participant ${membIndex+1} Name`}
+                          errorMessage={`Enter Participant ${membIndex+1} Name`}
+                          label={`Participant ${membIndex+1} Name`}
+                          placeholder={`Enter Participant ${membIndex+1} Name`}
+                          {...(membIndex == 0 && {
+                            disabled: true,
+                            value: fireUserData?.displayName || ''
+                          })}
+                        />
+                      )}
+                      <span className="text-red-500 text-md text-center mt-1 px-2">
+                        Participant's names once entered cannot be modified. Please double check before clicking register.
+                      </span>
+                    </div>
+                  :
+                    <>
+                      <ul>
+                        {GeneralInstruction.map((instr, idx) =>
+                          <li
+                            key={idx}
+                            className='text-black'
+                          >
+                            {instr}
+                          </li>
+                        )}
+                      </ul>
+                      <div
+                        className='flex flex-col px-2'
+                      >
+                        <span
+                          className='text-xl font-semibold text-purpleAccent uppercase mb-2'
+                        >
+                          Registration Fee
+                        </span>
+                        {[200, 100].map(price =>
+                          <span
+                            key={price}
+                            className='mb-2'
+                          >
+                            <span className='bg-purpleAccent text-white w-[20px] px-2 py-1 rounded-[6px] font-medium'>₹ {price}</span> for {(price == 100) ? 'in' : 'ex'}ternal participants
+                          </span>
+                        )}
+                      </div>
+                      <div
+                        className='flex flex-col gap-0.5 px-2'
+                      >
+                        <span
+                          className='text-xl font-semibold text-purpleAccent uppercase'
+                        >
+                          Note
+                        </span>
+                        <span>
+                          The registration fee covers the entire Mitilence event, permitting participation in multiple events, provided there are no scheduling conflicts. The fee must be paid at the designated payment desk within the college premises.
+                        </span>
+                      </div>
+                    </>
+                  }
+                </ModalBody>
+                <ModalFooter>
+                  {(eventData?.linkRegistration != null) ?
+                    <Link
+                      target='_blank'
+                      href={eventData.linkRegistration}
+                      className='bg-purpleAccent text-white font-medium text-lg mb-4 px-4 py-1.5 rounded-xl'
+                    >
+                      Register Now
+                    </Link>
+                  :
+                    <Button
+                      type='submit'
+                      onPress={generalInstructionsRead ? () => {} : () => setGeneralInstructionsRead(() => true)}
+                      className='bg-purpleAccent text-white font-medium text-lg mb-4'
+                    >
+                      Register Now
+                    </Button>
+                  }
+                </ModalFooter>
+              </form>
             </ModalContent>
           </Modal>
         </div>

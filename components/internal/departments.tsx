@@ -24,11 +24,11 @@ export function Departments() {
       >
         Departments
       </span>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full px-6 lg:px-16">
+      <div className="flex flex-row flex-wrap items-center justify-center gap-10 w-full px-6 lg:px-16">
         {departments.map((dep, idx) => (
           <Link
             key={dep.id}
-            href={`/departments/${dep.id}`}
+            href={`/events?department=${dep.id}`}
           >
             <BlurFade
               inView
@@ -41,10 +41,9 @@ export function Departments() {
                 {dep.name}
               </span>
               <Image
-                isBlurred
                 alt={dep.id}
-                src="/images/events_fallback.png"
-                className="w-full h-72 object-cover border-3 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
+                src={dep?.logoUrl || "/images/events_fallback.png"}
+                className="h-80 w-80 object-cover border-3 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
               />
               <div className="absolute z-30 bottom-3 right-3 bg-white text-black p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-125">
                 <ArrowUpRight size={24} />

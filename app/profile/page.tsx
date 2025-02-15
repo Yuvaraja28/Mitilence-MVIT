@@ -5,7 +5,8 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useFirebase } from "@/contexts/firebase";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
-import { BadgeCheck, BadgeIndianRupee, ChevronDown, FileText } from "lucide-react";
+import { BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, Navigation } from "lucide-react";
+import { Tooltip } from "@heroui/tooltip";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
@@ -51,15 +52,21 @@ export default function Profile() {
               >
                 {fireUserDoc?.emailId}
               </span>
-              <Button
-                size="sm"
-                color={(fireUserDoc?.paymentStatus == "verified") ? "success" : "warning"}
-                startContent={<BadgeIndianRupee />}
-                className="text-md font-medium w-fit !px-4 !py-2 capitalize mt-1"
+              <Tooltip
+                showArrow
+                placement="bottom"
+                className="text-md font-medium px-4 py-2"
+                content={(fireUserDoc?.paymentStatus != "verified") ? 'You have not paid the one time Event fee in college permis' : 'You have paid the Event Fee'}
               >
-                Payment {fireUserDoc?.paymentStatus || 'pending'}
-              </Button>
-
+                <Button
+                  size="sm"
+                  color={(fireUserDoc?.paymentStatus == "verified") ? "success" : "warning"}
+                  startContent={<BadgeIndianRupee />}
+                  className="text-md font-medium w-fit !px-4 !py-2 capitalize mt-1"
+                >
+                  Payment {fireUserDoc?.paymentStatus || 'pending'}
+                </Button>
+              </Tooltip>
             </div>
             <Image
               width={100}
@@ -122,15 +129,20 @@ export default function Profile() {
                     >
                       {eventsObject[registerEve[0]].departmentId}
                     </span>
-                    <Button
-                      size="sm"
-                      color="success"
-                      startContent={<BadgeCheck />}
-                      className="text-md font-medium w-fit !px-4 !py-2 capitalize"
+                    <Tooltip
+                      showArrow
+                      className="text-md font-medium px-4 py-2"
+                      content={`You have ${(registerEve[1]?.checkedInStatus == 'checkedin') ? 'checked' : 'not checked'} in for the Event`}
                     >
-                      Registered
-                      {/* Payment {registerEve[1].paymentStatus || 'pending'} */}
-                    </Button>
+                      <Button
+                        size="sm"
+                        color={(registerEve[1]?.checkedInStatus == 'checkedin') ? "success" : "warning"}
+                        startContent={(registerEve[1]?.checkedInStatus == 'checkedin') ? <BadgeCheck /> : <CircleDashed />}
+                        className="text-md font-medium w-fit !px-4 !py-2 capitalize"
+                        >
+                        {(registerEve[1]?.checkedInStatus == 'checkedin') ? 'Checked In' : 'Not Checked In'}
+                      </Button>
+                    </Tooltip>
                   </div>
                   <Button
                     isIconOnly
@@ -150,7 +162,7 @@ export default function Profile() {
       </div>
       {(currentEvent != null) &&
         <Modal
-          size={'3xl'}
+          size={'lg'}
           placement="center"
           scrollBehavior="inside"
           isOpen={currentEvent != null}
@@ -159,20 +171,83 @@ export default function Profile() {
           <ModalContent>
             <ModalHeader className="flex flex-col gap-1 text-2xl pt-6">
               {eventsObject[currentEvent].name}
+              <Tooltip
+                showArrow
+                className="text-md font-medium px-4 py-2"
+                content={`You have ${(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? 'checked' : 'not checked'} in for the Event`}
+              >
+                <Button
+                  size="sm"
+                  color={(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? "success" : "warning"}
+                  startContent={(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? <BadgeCheck /> : <CircleDashed />}
+                  className="text-sm font-medium w-fit !px-4 !py-2 capitalize"
+                >
+                  {(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? 'Checked In' : 'Not Checked In'}
+                </Button>
+              </Tooltip>
             </ModalHeader>
             <ModalBody>
               <div
-                className="flex flex-col md:flex-row items-center md:items-start gap-2 pb-8 px-2"
+                className="flex flex-col gap-4 pb-8 px-2"
               >
                 <Image
-                  className="w-[20em]"
+                  className="w-[17em]"
                   src={eventsObject[currentEvent].logoUrl}
                 />
                 <div
-                  className="flex flex-col gap-2"
+                  className="flex flex-col gap-2.5 w-full"
                 >
-                  {eventsObject[currentEvent].departmentId}
-                  {eventsObject[currentEvent].departmentId}
+                  <span
+                    className="flex flex-row gap-1.5 items-center text-xl font-semibold"
+                  >
+                    Participants <span
+                      className="bg-boxBlack px-2 rounded-[8px] text-md font-medium text-white"
+                    >
+                      {eventsObject[currentEvent].teamSize}
+                    </span>
+                  </span>
+                  {(registeredEvents[currentEvent]?.teamMembers != null) &&
+                    <div
+                      className="flex flex-col gap-1.5"
+                    >
+                      {registeredEvents[currentEvent].teamMembers.map((members, membIndex) =>
+                        <span
+                          key={membIndex}
+                          className="bg-gray-100 border border-gray-300 text-black text-lg font-medium px-4 py-1.5 rounded-xl"
+                        >
+                          {members}
+                        </span>
+                      )}
+                    </div>
+                  }
+                </div>
+                <div
+                  className="flex flex-row flex-wrap gap-1.5"
+                >
+                  <span
+                    className="flex flex-row gap-2 bg-boxBlack text-white font-medium px-4 py-1.5 rounded-full uppercase"
+                  >
+                    <Building2 />
+                    {eventsObject[currentEvent].departmentId} Dept
+                  </span>
+                  <span
+                    className="flex flex-row gap-2 bg-boxBlack text-white font-medium px-4 py-1.5 rounded-full uppercase"
+                  >
+                    <Navigation />
+                    {eventsObject[currentEvent].place}
+                  </span>
+                  <span
+                    className="flex flex-row gap-2 bg-boxBlack text-white font-medium px-4 py-1.5 rounded-full uppercase"
+                  >
+                    <CalendarDays />
+                    {new Date(eventsObject[currentEvent]?.startTime).toLocaleDateString('en-us', { day: "2-digit", month: 'short', year: 'numeric' })}
+                  </span>
+                  <span
+                    className="flex flex-row gap-2 bg-boxBlack text-white font-medium px-4 py-1.5 rounded-full uppercase"
+                  >
+                    <Clock8 />
+                    {new Date(eventsObject[currentEvent]?.startTime).toLocaleTimeString('en-us', { hour: '2-digit', minute: '2-digit', hour12: true })} - {new Date(eventsObject[currentEvent]?.endTime).toLocaleTimeString('en-us', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                  </span>
                 </div>
               </div>
             </ModalBody>

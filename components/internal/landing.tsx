@@ -20,7 +20,7 @@ export default function Landing() {
         loop
         muted
         autoPlay
-        src="/videos/mitilence.mp4"
+        src="https://ucarecdn.com/65640dde-41f4-4657-89d1-8c27e03c8abc/"
         className="object-cover lg:h-[100vh] h-[37em] absolute w-full"
       />
       <div className="lg:h-[100vh] h-[36.5em] absolute inset-0 bg-black/25"></div>
@@ -61,13 +61,12 @@ export default function Landing() {
         >
           14 March 2025
         </ShimmerButton>
-        <Image
-          width={100}
-          height={100}
-          src={StarImg.src}
-          className='absolute bottom-0 left-0 z-10'
-        />
       </div>
+      <img
+        loading='lazy'
+        src={StarImg.src}
+        className='absolute bottom-[26vh] ml-[-10px] lg:ml-0 lg:bottom-0 left-0 z-10 h-[8.5em] lg:h-[15em]'
+      />
     </div>
   )
 }

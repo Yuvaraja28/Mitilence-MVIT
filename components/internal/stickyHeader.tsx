@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import MVITImg from '@/assets/images/mvit.png';
 import { Menu, UserRound, X } from "lucide-react";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Button } from '@heroui/button';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { useFirebase } from '@/contexts/firebase';
@@ -24,8 +24,7 @@ export default function ResponsiveSidebar() {
   const headerList = [
     { name: 'home', url: '/' },
     { name: 'events', url: 'events' },
-    { name: 'about', url: 'about' },
-    { name: 'faq', url: 'faq' },
+    { name: 'about', url: 'abou' },
     { name: 'teams', url: 'teams' }
   ];
 
@@ -58,12 +57,16 @@ export default function ResponsiveSidebar() {
       }
       {/* Header for PC View */}
       <div className="w-full flex justify-between items-center bg-white border border-gray-300/50 px-3.5 py-2.5 rounded-full shadow-2xl">
-        <Image
-          alt="MVIT"
-          src={MVITImg}
-          loading="lazy"
-          className="lg:pl-2.5 pl-1.5 h-[2.8em] w-[14em]"
-        />
+        <Link
+          href={'/'}
+        >
+          <Image
+            alt="MVIT"
+            src={MVITImg}
+            loading="lazy"
+            className="lg:pl-2.5 pl-1.5 h-[2.8em] w-[14em]"
+          />
+        </Link>
         <div className="hidden lg:flex flex-row h-full">
           {headerList.map((head) => (
             <Link

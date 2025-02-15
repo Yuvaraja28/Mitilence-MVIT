@@ -92,7 +92,7 @@ interface RegisteredEvent {
   teamMembers: string[];
   registeredTime: string;
   paymentUpdatedBy?: string;
-  paymentStatus?: 'verified' | 'pending' | 'failed';
+  checkedInStatus?: 'checkedin' | 'not_checkedin';
 }
 
 // Sub Types

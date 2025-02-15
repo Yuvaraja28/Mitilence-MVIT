@@ -2,14 +2,14 @@
 import { fireApp } from '@/lib/firebase';
 import { FirebaseApp } from 'firebase/app';
 import { getUser } from '@/Firestore/users';
-import { getEvents } from '@/Firestore/events';
 import { getDepartments } from '@/Firestore/departments';
 import React, { createContext, useContext } from 'react';
-import { doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
+import { collection, doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
 import { getEventCategories } from '@/Firestore/eventCategories';
 import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { Database, getDatabase, ref, onValue, off } from 'firebase/database';
 import parseEventUser from '@/parsers/user';
+import parseEvents from '@/parsers/event';
 
 type EventsObjectType = {
   [key: string]: Events;
@@ -76,8 +76,6 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
         const newCategories = data.filter(newCat => !prev.find(prevCat => prevCat.id === newCat.id));
         return [...prev, ...newCategories];
       }))
-    getEvents()
-      .then(data => setEvents(data))
 
     if (fireUserData) {
       const dbRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData.uid}`);
@@ -91,7 +89,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
       });
 
       const userDocRef = doc(getFirestore(fireApp), `users/${fireUserData.uid}`);
-      const unsubscribe = onSnapshot(userDocRef, (doc) => {
+      const unsubscribeUser = onSnapshot(userDocRef, (doc) => {
         if (doc.exists()) {
           setFireUserDoc(parseEventUser(doc.id, doc.data()));
         } else {
@@ -99,9 +97,16 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
         }
       });
 
+      const eventsCollectionRef = collection(getFirestore(fireApp), 'events');
+      const unsubscribeEvents = onSnapshot(eventsCollectionRef, (snapshot) => {
+        const eventsData = snapshot.docs.map(doc => parseEvents(doc.id, doc.data()));
+        setEvents(eventsData);
+      });
+
       return () => {
         off(dbRef)
-        unsubscribe();
+        unsubscribeUser();
+        unsubscribeEvents();
       };
     }
   }, [fireUserData]);
