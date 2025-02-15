@@ -14,18 +14,18 @@ export default function Landing() {
         backgroundImage: `url(${DeveloperImg.src})`,
       }}
       aria-label="Landing Developer"
-      className="mt-[-8.5vh] h-[100vh] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
+      className="mt-[-8.5vh] lg:h-[100vh] h-[37em] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
     >
       <video
         loop
         muted
         autoPlay
         src="/videos/mitilence.mp4"
-        className="object-cover h-[100vh] absolute w-full"
+        className="object-cover lg:h-[100vh] h-[37em] absolute w-full"
       />
-      <div className="h-[99vh] lg:h-[100vh] absolute inset-0 bg-black/25"></div>
+      <div className="lg:h-[100vh] h-[36.5em] absolute inset-0 bg-black/25"></div>
       <div
-        className="flex flex-col items-center lg:justify-normal h-full w-full mt-[32vh] lg:mt-[25vh]"
+        className="flex flex-col items-center lg:justify-normal h-full w-full mt-[26.5vh] lg:mt-[30vh]"
       >
         <AnimatedGradientText
           className='z-10 bg-white text-sm md:text-lg rounded-full -translate-y-8 md:-translate-y-4'
