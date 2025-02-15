@@ -11,7 +11,7 @@ interface EventUser {
   gender: 'male' | 'female';
   year: number;
   createdTime: string;
-  paymentStatus?: 'success' | 'pending' | 'failed';
+  paymentStatus?: 'verified' | 'pending' | 'failed';
 }
 
 // Firestore DB
@@ -62,18 +62,18 @@ interface Events {
   endTime: string;
   teamSize: number;
   place: string;
-  totalSeats: number;
-  seatsLeft: number;
-  entryFee: number;
-  logoUrl?: string;
-  bannerUrl?: string;
   eventCategory: string;
   eventDescription: string;
   registrationEndTime: string;
   facultyOrganizerId: string;
   studentOrganizerId: string[];
-  linkRegistration?: string;
   eventType: 'technical' | 'non_technical';
+  logoUrl?: string;
+  bannerUrl?: string;
+  totalSeats?: number;
+  seatsLeft?: number;
+  entryFee?: number;
+  linkRegistration?: string;
 }
 
 interface EventCategory {
@@ -92,7 +92,7 @@ interface RegisteredEvent {
   teamMembers: string[];
   registeredTime: string;
   paymentUpdatedBy?: string;
-  paymentStatus?: 'success' | 'pending' | 'failed';
+  paymentStatus?: 'verified' | 'pending' | 'failed';
 }
 
 // Sub Types

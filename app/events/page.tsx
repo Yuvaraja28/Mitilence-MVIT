@@ -18,7 +18,6 @@ export default function Events() {
   const events = firebaseContext?.events
   const departments = firebaseContext?.departments || []
   const eventCategories = firebaseContext?.eventCategories || []
-  const registeredEvents = firebaseContext?.registeredEvents || {};
   const registeredEventsSet = firebaseContext?.registeredEventsSet;
 
   const [currentSearch, setCurrentSearch] = React.useState('')

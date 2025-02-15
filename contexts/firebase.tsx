@@ -5,10 +5,15 @@ import { getUser } from '@/Firestore/users';
 import { getEvents } from '@/Firestore/events';
 import { getDepartments } from '@/Firestore/departments';
 import React, { createContext, useContext } from 'react';
-import { Firestore, getFirestore } from 'firebase/firestore';
+import { doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
 import { getEventCategories } from '@/Firestore/eventCategories';
 import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { Database, getDatabase, ref, onValue, off } from 'firebase/database';
+import parseEventUser from '@/parsers/user';
+
+type EventsObjectType = {
+  [key: string]: Events;
+};
 
 interface FirebaseProviderProps {
   children: React.ReactNode;
@@ -22,6 +27,7 @@ interface FirebaseContextProps {
   fireUserData: User | null;
   fireUserDoc: EventUser | null;
   events: Events[] | null;
+  eventsObject: EventsObjectType;
   departments: Department[];
   eventCategories: EventCategory[];
   registeredEvents: AllRegisteredEvent | null;
@@ -44,6 +50,10 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   const [registeredEvents, setRegisteredEvents] = React.useState<AllRegisteredEvent | null>(null)
   const [eventCategories, setEventCategories] = React.useState<EventCategory[]>([{ id: 'all_events', name: 'All Events', order: 0 }])
   const registeredEventsSet = React.useMemo(() => new Set(Object.keys(registeredEvents || {})), [registeredEvents])
+  const eventsObject = React.useMemo(() => events ? events.reduce<EventsObjectType>((acc, event) => {
+    acc[event.id as string] = event;
+    return acc;
+  }, {} as EventsObjectType) : {}, [events])
 
   React.useLayoutEffect(() => {
     const auth = getAuth(fireApp);
@@ -79,14 +89,27 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
           return acc;
         }, {} as AllRegisteredEvent) : {});
       });
-      return () => off(dbRef);
+
+      const userDocRef = doc(getFirestore(fireApp), `users/${fireUserData.uid}`);
+      const unsubscribe = onSnapshot(userDocRef, (doc) => {
+        if (doc.exists()) {
+          setFireUserDoc(parseEventUser(doc.id, doc.data()));
+        } else {
+          setFireUserDoc(null)
+        }
+      });
+
+      return () => {
+        off(dbRef)
+        unsubscribe();
+      };
     }
   }, [fireUserData]);
 
   return (
     <FirebaseContext.Provider value={{ 
       fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB,
-      events, departments, eventCategories, registeredEvents, registeredEventsSet
+      events, eventsObject, departments, eventCategories, registeredEvents, registeredEventsSet
      }}>
       {children}
     </FirebaseContext.Provider>

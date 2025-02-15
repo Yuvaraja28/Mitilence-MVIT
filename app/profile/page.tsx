@@ -4,18 +4,14 @@ import { Image } from "@heroui/image";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useFirebase } from "@/contexts/firebase";
-import { BadgeCheck, ChevronDown, FileText } from "lucide-react";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
-
-type EventsObjectType = {
-  [key: string]: Events;
-};
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
+import { BadgeCheck, BadgeIndianRupee, ChevronDown, FileText } from "lucide-react";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
-  const fireUserDoc = firebaseContext?.fireUserDoc
-  const fireUserData = firebaseContext?.fireUserData
-  const events = firebaseContext?.events || [];
+  const fireUserDoc = firebaseContext?.fireUserDoc;
+  const fireUserData = firebaseContext?.fireUserData;
+  const eventsObject = firebaseContext?.eventsObject || {};
   const registeredEvents = firebaseContext?.registeredEvents || {};
 
   const [currentEvent, setCurrentEvent] = React.useState<string | null>(null)
@@ -28,11 +24,6 @@ export default function Profile() {
     { name: "Year", param: "year", type: "number" },
     { name: "Gender", param: "gender", type: "select" },
   ];
-
-  const EventsObject = React.useMemo(() => events ? events.reduce<EventsObjectType>((acc, event) => {
-    acc[event.id as string] = event;
-    return acc;
-  }, {} as EventsObjectType) : {}, [events])
 
   return (
     <div
@@ -53,13 +44,22 @@ export default function Profile() {
               <span
                 className="text-3xl font-medium"
               >
-                {fireUserDoc?.name}
+                {fireUserDoc?.name}{fireUserDoc?.paymentStatus}
               </span>
               <span
                 className="text-[18px]"
               >
                 {fireUserDoc?.emailId}
               </span>
+              <Button
+                size="sm"
+                color={(fireUserDoc?.paymentStatus == "verified") ? "success" : "warning"}
+                startContent={<BadgeIndianRupee />}
+                className="text-md font-medium w-fit !px-4 !py-2 capitalize mt-1"
+              >
+                Payment {fireUserDoc?.paymentStatus || 'pending'}
+              </Button>
+
             </div>
             <Image
               width={100}
@@ -99,7 +99,7 @@ export default function Profile() {
         </span>
         {(Object.keys(registeredEvents).length > 0) &&
           <div
-            className="flex flex-col md:grid grid-cols-2 gap-4 bg-white text-white rounded-2xl px-6 py-8"
+            className="flex flex-col sm:grid grid-cols-2 gap-4 bg-white text-white rounded-2xl px-6 py-8"
           >
             {(Object.entries(registeredEvents)).map(registerEve => 
               <div
@@ -115,12 +115,12 @@ export default function Profile() {
                     <span
                       className="text-xl font-medium"
                     >
-                      {EventsObject[registerEve[0]].name}
+                      {eventsObject[registerEve[0]].name}
                     </span>
                     <span
                       className="text-md font-normal uppercase"
                     >
-                      {EventsObject[registerEve[0]].departmentId}
+                      {eventsObject[registerEve[0]].departmentId}
                     </span>
                     <Button
                       size="sm"
@@ -141,58 +141,44 @@ export default function Profile() {
                   </Button>
                 </div>
                 <Image
-                  src={EventsObject[registerEve[0]].logoUrl}
+                  src={eventsObject[registerEve[0]].logoUrl}
                 />
               </div>
             )}
           </div>
         }
       </div>
-      <Modal isOpen={currentEvent != null} size={'3xl'} onClose={() => setCurrentEvent(null)}>
-        <ModalContent>
-          <ModalHeader className="flex flex-col gap-1 text-2xl">
-            General Instruction
-          </ModalHeader>
-          <ModalBody>
-            <div
-              className='flex flex-col px-2'
-            >
-              <span
-                className='text-xl font-semibold text-purpleAccent uppercase mb-2'
+      {(currentEvent != null) &&
+        <Modal
+          size={'3xl'}
+          placement="center"
+          scrollBehavior="inside"
+          isOpen={currentEvent != null}
+          onClose={() => setCurrentEvent(null)}
+        >
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1 text-2xl pt-6">
+              {eventsObject[currentEvent].name}
+            </ModalHeader>
+            <ModalBody>
+              <div
+                className="flex flex-col md:flex-row items-center md:items-start gap-2 pb-8 px-2"
               >
-                Registration Fee
-              </span>
-              {[200, 100].map(price =>
-                <span
-                  key={price}
-                  className='mb-2'
+                <Image
+                  className="w-[20em]"
+                  src={eventsObject[currentEvent].logoUrl}
+                />
+                <div
+                  className="flex flex-col gap-2"
                 >
-                  <span className='bg-purpleAccent text-white w-[20px] px-2 py-1 rounded-[6px] font-medium'>₹ {price}</span> for {(price == 100) ? 'in' : 'ex'}ternal participants
-                </span>
-              )}
-            </div>
-            <div
-              className='flex flex-col gap-0.5 px-2'
-            >
-              <span
-                className='text-xl font-semibold text-purpleAccent uppercase'
-              >
-                Note
-              </span>
-              <span>
-                The registration fee covers the entire Mitilence event, permitting participation in multiple events, provided there are no scheduling conflicts. The fee must be paid at the designated payment desk within the college premises.
-              </span>
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              className='bg-purpleAccent text-white font-medium text-lg mb-4'
-            >
-              Register Now
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+                  {eventsObject[currentEvent].departmentId}
+                  {eventsObject[currentEvent].departmentId}
+                </div>
+              </div>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      }
     </div>
   )
 }
