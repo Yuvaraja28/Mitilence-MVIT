@@ -1,6 +1,11 @@
+import { cn } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react';
+import StarImg from '@/assets/images/star.png'
 import DeveloperImg from '@/assets/images/developer.png';
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import { AnimatedGradientText } from '../magicui/animated-gradient-text';
+import { Image } from '@heroui/image';
 
 export default function Landing() {
   return (
@@ -19,9 +24,22 @@ export default function Landing() {
       <div
         className="flex flex-col items-center lg:justify-normal h-full w-full"
       >
+        <AnimatedGradientText
+          className='z-10 bg-white text-sm md:text-lg rounded-full -translate-y-6 md:-translate-y-2'
+        >
+          🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
+          <span
+            className={cn(
+              `inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`,
+            )}
+          >
+            A National Level Technical Symposium
+          </span>
+          <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+        </AnimatedGradientText>
         <LineShadowText
           shadowColor="white"
-          className="absolute text-[16vw] md:text-[9.5em] text-white font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
+          className="absolute text-[16vw] md:text-[9.5em] mt-1 text-white font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
         >
           Mitilence
         </LineShadowText>
@@ -40,6 +58,12 @@ export default function Landing() {
         >
           14 March 2025
         </ShimmerButton>
+        <Image
+          width={100}
+          height={100}
+          src={StarImg.src}
+          className='absolute bottom-0 left-0 z-10'
+        />
       </div>
     </div>
     

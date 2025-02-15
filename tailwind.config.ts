@@ -73,7 +73,8 @@ export default {
   		animation: {
   			'line-shadow': 'line-shadow 75s linear infinite',
   			'shimmer-slide': 'shimmer-slide var(--speed) ease-in-out infinite alternate',
-  			'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear'
+  			'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear',
+  			gradient: 'gradient 8s linear infinite'
   		},
   		keyframes: {
   			'line-shadow': {
@@ -101,6 +102,11 @@ export default {
   				},
   				'100%': {
   					transform: 'translateZ(0) rotate(360deg)'
+  				}
+  			},
+  			gradient: {
+  				to: {
+  					backgroundPosition: 'var(--bg-size) 0'
   				}
   			}
   		}

@@ -3,13 +3,21 @@ import { useState } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import MVITImg from '@/assets/images/mvit.png';
-import { Menu, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Menu, UserRound, X } from "lucide-react";
+import { redirect, usePathname } from "next/navigation";
 import { Button } from '@heroui/button';
-
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { useFirebase } from '@/contexts/firebase';
+import { getUser } from '@/Firestore/users';
+import UserRegistration from './userRegistration';
+  
 export default function ResponsiveSidebar() {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const firebaseContext = useFirebase();
+  const fireAuth = firebaseContext?.fireAuth;
+  const fireUserData = firebaseContext?.fireUserData;
+  const fireUserDoc = firebaseContext?.fireUserDoc;
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
@@ -21,10 +29,29 @@ export default function ResponsiveSidebar() {
     { name: 'teams', url: 'teams' }
   ];
 
+  async function LoginGoogle() {
+    if (fireAuth == null) return;
+    const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
+    getUser(data?.user.uid)
+      .then(() => {
+        window.location.href = '/profile';
+      })
+      .catch(() => {});
+  }
+
+  async function LogoutGoogle() {
+    if (fireAuth == null) return;
+    await signOut(fireAuth);
+    window.location.href = '/'
+  }
+  
   return (
     <div
       className='sticky top-5 flex flex-row gap-2 w-full lg:px-10 px-4 z-20 select-none'
     >
+      {(fireUserDoc == null && fireUserData != null) &&
+        <UserRegistration />
+      }
       {/* Header for PC View */}
       <div className="w-full flex justify-between items-center bg-white border border-gray-300/50 px-3.5 py-2.5 rounded-full shadow-2xl">
         <Image
@@ -44,16 +71,31 @@ export default function ResponsiveSidebar() {
             </Link>
           ))}
         </div>
-        <Link
-          href={'/login'}
-          className='h-full'
-        >
+        {(fireUserDoc == null && fireUserData == null) ?
           <Button
+            onPress={LoginGoogle}
             className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-8 pt-0.5 transition-background h-full bg-white"
           >
             Login
           </Button>
-        </Link>
+        :
+          <div
+            className='flex flex-row gap-2.5 h-full'
+          >
+            <Link
+              href={'/profile'}
+              className="hidden lg:flex items-center justify-center uppercase text-md font-semibold bg-purpleAccent text-white rounded-full px-3.5 pt-0.5 transition-background h-full"
+            >
+              <UserRound />
+            </Link>
+            <Button
+              onPress={LogoutGoogle}
+              className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-6 pt-0.5 transition-background h-full bg-white"
+            >
+              Logout
+            </Button>
+          </div>
+        }
         <button
           onClick={toggleSidebar}
           className="lg:hidden h-full flex items-center justify-center border-3 text-md font-semibold text-white bg-purpleAccent border-purpleAccent hover:text-purpleAccent hover:bg-white rounded-full px-2 transition-all"
@@ -64,32 +106,49 @@ export default function ResponsiveSidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-30 transform transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 h-full rounded-r-3xl w-64 backdrop-blur-lg shadow-lg z-50 transform transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="flex flex-col p-4 space-y-4">
           <button
             onClick={toggleSidebar}
-            className="self-end text-gray-600 focus:outline-none"
+            className="self-end text-white focus:outline-none"
           >
             <X />
           </button>
           {headerList.map((head) => (
             <Link
               key={head.name}
-              href={head.url}
-              className="block text-lg ml-2 font-semibold text-gray-700 hover:text-purpleAccent capitalize"
+              href={`/${head.url}`}
+              className="block text-lg ml-2 font-semibold text-white hover:text-purpleAccent capitalize"
               onClick={toggleSidebar}
             >
               {head.name}
             </Link>
           ))}
-          <Link
-            href={'/login'}
-            className="block mt-4 text-lg font-semibold text-white bg-purpleAccent hover:bg-purple-700 py-2 px-4 rounded-full text-center"
-            onClick={toggleSidebar}
-          >
-            Login
-          </Link>
+          {(fireUserDoc == null && fireUserData == null) ?
+            <Button
+              onPress={LoginGoogle}
+              className="block mt-4 text-lg font-semibold text-white bg-purpleAccent hover:bg-purple-700 py-2 px-4 rounded-full text-center"
+            >
+              Login
+            </Button>        
+          :
+            <>
+              <Link
+                href={'/profile'}
+                className="block mt-4 text-lg font-semibold text-white bg-purpleAccent hover:bg-purple-700 py-1.5 px-4 rounded-full text-center"
+                onClick={toggleSidebar}
+              >
+                Profile
+              </Link>
+              <Button
+                onPress={LogoutGoogle}
+                className="block mt-4 text-lg font-semibold text-purpleAccent border-2 border-purpleAccent bg-white hover:bg-purple-700 py-1 px-4 pb-1.5 rounded-full text-center"
+              >
+                Logout
+              </Button>
+            </>
+          }
         </div>
       </div>
 

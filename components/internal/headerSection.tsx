@@ -14,7 +14,7 @@ export default function HeaderSection({ bannerName, bannerImg }: HeaderSectionPr
       aria-label="Landing Developer"
     >
       <div
-        className="absolute text-white self-center mt-[8vh] lg:mt-[10vh] font-medium text-[2.8em] lg:text-[3.5em]"
+        className="absolute text-white text-center self-center mt-[9vh] lg:mt-[12vh] font-medium text-4xl lg:text-[3.5em]"
       >
         {bannerName}
       </div>

@@ -13,7 +13,6 @@ export default async function Event({ params }: { params: Promise<{ event: strin
 
   try {
     var eventData = await getEvent(event)
-    console.log(eventData)
   } catch {
     return notFound()
   }

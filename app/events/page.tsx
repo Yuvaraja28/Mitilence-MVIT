@@ -1,25 +1,24 @@
 'use client';
 import React from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
 import { Button } from "@heroui/button";
-import { getEvents } from "@/Firestore/events";
 import { Tabs, Tab, Image } from "@heroui/react";
 import Footer from "@/components/internal/footer";
-import { getDepartments } from "@/Firestore/departments";
+import { ArrowUpRight, Search } from "lucide-react";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { GoogleMap } from "@/components/internal/googleMap";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
-import { getEventCategories } from "@/Firestore/eventCategories";
 import TechnicalEventsImg from '@/assets/images/technical_events.png';
+import { useFirebase } from "@/contexts/firebase";
 
 export default function Events() {
-  const [events, setEvents] = React.useState<Events[] | null>(null)
+  const firebaseContext = useFirebase();
+  const events = firebaseContext?.events
+  const departments = firebaseContext?.departments || []
+  const eventCategories = firebaseContext?.eventCategories || []
   const [currentSearch, setCurrentSearch] = React.useState('')
-  const [departments, setDepartments] = React.useState<Department[]>([]);
-  const [eventCategories, setEventCategories] = React.useState<EventCategory[]>([{ id: 'all_events', name: 'All Events', order: 0 }])
   const [currentDepartment, setCurrentDepartment] = React.useState<Department>();
   const [currentEventCategory, setCurrentEventCategory] = React.useState<EventCategory>(eventCategories[0]);
 
@@ -34,18 +33,6 @@ export default function Events() {
     )
   ), [events, currentDepartment, currentEventCategory, currentSearch]);
 
-  React.useLayoutEffect(() => {
-    getDepartments()
-      .then(data => setDepartments(() => data))
-    getEventCategories()
-      .then(data => setEventCategories(prev => {
-        const newCategories = data.filter(newCat => !prev.find(prevCat => prevCat.id === newCat.id));
-        return [...prev, ...newCategories];
-      }))
-    getEvents()
-      .then(data => setEvents(data))
-  }, []);
-
   return (
     <div
       className="flex flex-col items-center text-white"
@@ -54,7 +41,7 @@ export default function Events() {
         bannerName={currentEventCategory?.name || "Events"}
         bannerImg={TechnicalEventsImg.src}
        />
-      {(filteredEvents == null) ?
+      {((events == null) || (filteredEvents == null)) ?
           <div
             className="h-[60vh]"
           >
@@ -120,9 +107,9 @@ export default function Events() {
                 />
               ))}
             </Tabs>
-            {(filteredEvents?.length == 0) ?
+            {(events?.length == 0) || (filteredEvents?.length == 0) ?
               <span
-                className="text-xl w-full font-normal mt-2"
+                className="text-xl w-full font-normal mt-2 text-center md:text-start"
               >
                 Currently, there are no events available under this filter.
               </span>
@@ -134,6 +121,7 @@ export default function Events() {
                   <Link
                     key={event.id}
                     href={`/events/${event.id}`}
+                    className="group"
                   >
                     <BlurFade
                       inView
@@ -141,12 +129,14 @@ export default function Events() {
                     >
                       <Image
                         isBlurred
-                        isZoomed
                         key={idx}
                         alt={event.name}
-                        src={event.bannerUrl}
+                        src={event.logoUrl}
                         className="object-cover w-[20em] h-[20em] cursor-pointer"
-                      /> 
+                      />
+                      <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
+                        <ArrowUpRight size={24} />
+                      </div>
                     </BlurFade>
                   </Link>
                 )}

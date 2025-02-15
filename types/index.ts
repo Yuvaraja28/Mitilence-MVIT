@@ -1,5 +1,5 @@
 // Firestore DB
-interface User {
+interface EventUser {
   readonly id: string;
   name: string;
   enrollNo: string;
@@ -7,6 +7,7 @@ interface User {
   phoneNo: string;
   college: string;
   department: string;
+  imageUrl?: string;
   gender: 'male' | 'female';
   year: number;
   createdTime: string;
@@ -19,7 +20,7 @@ interface EventOrganizer {
   role: string;
   emailId: string;
   phoneNo: string;
-  department: string;
+  departmentId: string;
   imageUrl?: string;
 }
 
@@ -28,6 +29,7 @@ interface ManagementMember {
   readonly id: string;
   name: string;
   role: string;
+  phone?: string;
   imageUrl?: string;
 }
 
@@ -62,28 +64,34 @@ interface Events {
   totalSeats: number;
   seatsLeft: number;
   entryFee: number;
+  logoUrl?: string;
   bannerUrl?: string;
   eventCategory: string;
   eventDescription: string;
   registrationEndTime: string;
-  studentOrganizerId: string;
   facultyOrganizerId: string;
+  studentOrganizerId: string[];
   linkRegistration?: string;
   eventType: 'technical' | 'non_technical';
-}
-
-// Realtime DB
-interface RegisteredEvent extends Events {
-  teamMembers: string[];
-  registeredTime: string;
-  paymentUpdatedBy: string[];
-  paymentStatus: 'success' | 'pending' | 'failed' | 'notdone'
 }
 
 interface EventCategory {
   readonly id: string;
   readonly name: string;
   readonly order: number;
+}
+
+// Realtime DB
+interface AllRegisteredEvent {
+  [key: string]: RegisteredEvent;
+}
+
+interface RegisteredEvent {
+  eventId: string;
+  teamMembers: string[];
+  registeredTime: string;
+  paymentUpdatedBy: string[];
+  paymentStatus: 'success' | 'pending' | 'failed' | 'notdone'
 }
 
 // Sub Types
