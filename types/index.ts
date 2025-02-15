@@ -11,6 +11,7 @@ interface EventUser {
   gender: 'male' | 'female';
   year: number;
   createdTime: string;
+  paymentStatus?: 'success' | 'pending' | 'failed';
 }
 
 // Firestore DB
@@ -90,8 +91,8 @@ interface RegisteredEvent {
   eventId: string;
   teamMembers: string[];
   registeredTime: string;
-  paymentUpdatedBy: string[];
-  paymentStatus: 'success' | 'pending' | 'failed' | 'notdone'
+  paymentUpdatedBy?: string;
+  paymentStatus?: 'success' | 'pending' | 'failed';
 }
 
 // Sub Types

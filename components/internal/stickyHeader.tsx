@@ -31,12 +31,16 @@ export default function ResponsiveSidebar() {
 
   async function LoginGoogle() {
     if (fireAuth == null) return;
-    const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
-    getUser(data?.user.uid)
-      .then(() => {
-        window.location.href = '/profile';
-      })
-      .catch(() => {});
+    try {
+      const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
+      getUser(data?.user.uid)
+        .then(() => {
+          window.location.href = '/profile';
+        })
+        .catch(() => {});
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   async function LogoutGoogle() {
@@ -76,7 +80,7 @@ export default function ResponsiveSidebar() {
             onPress={LoginGoogle}
             className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-8 pt-0.5 transition-background h-full bg-white"
           >
-            Login
+            Login / Register
           </Button>
         :
           <div
@@ -130,8 +134,8 @@ export default function ResponsiveSidebar() {
               onPress={LoginGoogle}
               className="block mt-4 text-lg font-semibold text-white bg-purpleAccent hover:bg-purple-700 py-2 px-4 rounded-full text-center"
             >
-              Login
-            </Button>        
+              Login / Register
+            </Button>
           :
             <>
               <Link

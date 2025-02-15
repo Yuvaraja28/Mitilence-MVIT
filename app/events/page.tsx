@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@heroui/button";
 import { Tabs, Tab, Image } from "@heroui/react";
 import Footer from "@/components/internal/footer";
-import { ArrowUpRight, Search } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Search } from "lucide-react";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { GoogleMap } from "@/components/internal/googleMap";
 import CrossVelocity from "@/components/internal/crossVelocity";
@@ -18,6 +18,9 @@ export default function Events() {
   const events = firebaseContext?.events
   const departments = firebaseContext?.departments || []
   const eventCategories = firebaseContext?.eventCategories || []
+  const registeredEvents = firebaseContext?.registeredEvents || {};
+  const registeredEventsSet = firebaseContext?.registeredEventsSet;
+
   const [currentSearch, setCurrentSearch] = React.useState('')
   const [currentDepartment, setCurrentDepartment] = React.useState<Department>();
   const [currentEventCategory, setCurrentEventCategory] = React.useState<EventCategory>(eventCategories[0]);
@@ -127,6 +130,14 @@ export default function Events() {
                       inView
                       delay={0.25 + (idx+1) * 0.1}
                     >
+                      {(registeredEventsSet?.has(event.id)) &&
+                        <button
+                          className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-md font-medium w-fit !px-4 !py-1.5 capitalize"
+                        >
+                          <BadgeCheck /> Registered
+                          {/* Payment {registerEve[1].paymentStatus || 'pending'} */}
+                        </button>
+                      }
                       <Image
                         isBlurred
                         key={idx}

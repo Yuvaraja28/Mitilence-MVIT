@@ -1,5 +1,6 @@
 'use client';
 import { fireApp } from '@/lib/firebase';
+import { FirebaseApp } from 'firebase/app';
 import { getUser } from '@/Firestore/users';
 import { getEvents } from '@/Firestore/events';
 import { getDepartments } from '@/Firestore/departments';
@@ -7,13 +8,14 @@ import React, { createContext, useContext } from 'react';
 import { Firestore, getFirestore } from 'firebase/firestore';
 import { getEventCategories } from '@/Firestore/eventCategories';
 import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { Database, getDatabase, ref, onValue, off, set, update } from 'firebase/database';
+import { Database, getDatabase, ref, onValue, off } from 'firebase/database';
 
 interface FirebaseProviderProps {
   children: React.ReactNode;
 }
 
 interface FirebaseContextProps {
+  fireApp: FirebaseApp;
   realtimeDB: Database;
   fireAuth: Auth | null;
   firestoreDB: Firestore;
@@ -23,6 +25,7 @@ interface FirebaseContextProps {
   departments: Department[];
   eventCategories: EventCategory[];
   registeredEvents: AllRegisteredEvent | null;
+  registeredEventsSet: Set<string>;
 }
 
 const FirebaseContext = createContext<FirebaseContextProps | null>(null);
@@ -40,6 +43,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   const [departments, setDepartments] = React.useState<Department[]>([]);
   const [registeredEvents, setRegisteredEvents] = React.useState<AllRegisteredEvent | null>(null)
   const [eventCategories, setEventCategories] = React.useState<EventCategory[]>([{ id: 'all_events', name: 'All Events', order: 0 }])
+  const registeredEventsSet = React.useMemo(() => new Set(Object.keys(registeredEvents || {})), [registeredEvents])
 
   React.useLayoutEffect(() => {
     const auth = getAuth(fireApp);
@@ -69,7 +73,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
       const dbRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData.uid}`);
       onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-        if (data == null) return;
+        if (data == null) return setRegisteredEvents({});
         setRegisteredEvents(data ? Object.keys(data).reduce<AllRegisteredEvent>((acc, eventId) => {
           acc[eventId] = data[eventId];
           return acc;
@@ -81,8 +85,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
 
   return (
     <FirebaseContext.Provider value={{ 
-      fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB,
-      events, departments, eventCategories, registeredEvents
+      fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB,
+      events, departments, eventCategories, registeredEvents, registeredEventsSet
      }}>
       {children}
     </FirebaseContext.Provider>

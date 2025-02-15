@@ -5,15 +5,54 @@ import remarkGfm from 'remark-gfm';
 import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
 import Markdown from 'react-markdown';
+import { getUser } from '@/Firestore/users';
 import { useFirebase } from '@/contexts/firebase';
 import { CircularLoader } from "@/components/internal/Loaders";
+import { getDatabase, ref, update } from 'firebase/database';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { BadgeCheck, Building2, CalendarDays, ContactRound, Navigation, UsersRound } from "lucide-react";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
+
+const GeneralInstruction = [
+  'A valid college ID card is required for participation.',
+  'Participants are expected to adhere to the formal dress code.',
+  'Only engineering students are eligible to participate in the symposium.',
+  'Spot registration is available for all events except paper presentations.',
+  'Lunch and participation certificates will be provided to registered participants.',
+];
 
 export default function EventClientRender({ eventData }: { eventData: Events }) {
   const firebaseContext = useFirebase();
-  const registeredEvents = firebaseContext?.registeredEvents || {};
+  const fireApp = firebaseContext?.fireApp;
+  const fireAuth = firebaseContext?.fireAuth;
+  const fireUserData = firebaseContext?.fireUserData;
+  const registeredEventsSet = firebaseContext?.registeredEventsSet || new Set();
 
-  const registeredEventsSet = React.useMemo(() => new Set(Object.keys(registeredEvents)), [registeredEvents])
+  const {isOpen, onOpen, onClose} = useDisclosure();
+
+  async function registerNow() {
+    onClose()
+    if (fireUserData == null) {
+      return LoginGoogle();
+    };
+    const updateRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData.uid}/${eventData.id}`);
+    update(updateRef, {
+      eventId: eventData.id,
+      teamMembers: [],
+      registeredTime: new Date().toISOString()
+    });
+  }
+
+  async function LoginGoogle() {
+    if (fireAuth == null) return;
+    try {
+      const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
+      getUser(data?.user.uid)
+        .catch(() => {});
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   return (
     (eventData == null) ?
@@ -203,6 +242,7 @@ export default function EventClientRender({ eventData }: { eventData: Events }) 
                 </span>
               :
                 <Button
+                  onPress={onOpen}
                   disabled={registeredEventsSet.has(eventData.id)}
                   className="bg-purpleAccent text-white text-xl font-medium rounded-full uppercase h-[3.2rem]"
                 >
@@ -227,6 +267,64 @@ export default function EventClientRender({ eventData }: { eventData: Events }) 
             </Markdown>
           </div>
         </div>
+        <Modal isOpen={isOpen} size={'lg'} onClose={onClose}>
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1 text-2xl">
+              General Instruction
+            </ModalHeader>
+            <ModalBody>
+              <ul
+                className=''
+              >
+                {GeneralInstruction.map((instr, idx) =>
+                  <li
+                    key={idx}
+                    className='text-black'
+                  >
+                    {instr}
+                  </li>
+                )}
+              </ul>
+              <div
+                className='flex flex-col px-2'
+              >
+                <span
+                  className='text-xl font-semibold text-purpleAccent uppercase mb-2'
+                >
+                  Registration Fee
+                </span>
+                {[200, 100].map(price =>
+                  <span
+                    key={price}
+                    className='mb-2'
+                  >
+                    <span className='bg-purpleAccent text-white w-[20px] px-2 py-1 rounded-[6px] font-medium'>₹ {price}</span> for {(price == 100) ? 'in' : 'ex'}ternal participants
+                  </span>
+                )}
+              </div>
+              <div
+                className='flex flex-col gap-0.5 px-2'
+              >
+                <span
+                  className='text-xl font-semibold text-purpleAccent uppercase'
+                >
+                  Note
+                </span>
+                <span>
+                  The registration fee covers the entire Mitilence event, permitting participation in multiple events, provided there are no scheduling conflicts. The fee must be paid at the designated payment desk within the college premises.
+                </span>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                onPress={registerNow}
+                className='bg-purpleAccent text-white font-medium text-lg mb-4'
+              >
+                Register Now
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
   )
 }
