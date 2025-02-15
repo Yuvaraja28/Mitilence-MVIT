@@ -76,10 +76,16 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
         const newCategories = data.filter(newCat => !prev.find(prevCat => prevCat.id === newCat.id));
         return [...prev, ...newCategories];
       }))
+      
+    const eventsCollectionRef = collection(getFirestore(fireApp), 'events');
+    const unsubscribeEvents = onSnapshot(eventsCollectionRef, (snapshot) => {
+      const eventsData = snapshot.docs.map(doc => parseEvents(doc.id, doc.data()));
+      setEvents(eventsData);
+    });
 
     if (fireUserData) {
-      const dbRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData.uid}`);
-      onValue(dbRef, (snapshot) => {
+      var regsiteredEventsRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData.uid}`);
+      onValue(regsiteredEventsRef, (snapshot) => {
         const data = snapshot.val();
         if (data == null) return setRegisteredEvents({});
         setRegisteredEvents(data ? Object.keys(data).reduce<AllRegisteredEvent>((acc, eventId) => {
@@ -89,26 +95,22 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
       });
 
       const userDocRef = doc(getFirestore(fireApp), `users/${fireUserData.uid}`);
-      const unsubscribeUser = onSnapshot(userDocRef, (doc) => {
+      var unsubscribeUser = onSnapshot(userDocRef, (doc) => {
         if (doc.exists()) {
           setFireUserDoc(parseEventUser(doc.id, doc.data()));
         } else {
           setFireUserDoc(null)
         }
       });
-
-      const eventsCollectionRef = collection(getFirestore(fireApp), 'events');
-      const unsubscribeEvents = onSnapshot(eventsCollectionRef, (snapshot) => {
-        const eventsData = snapshot.docs.map(doc => parseEvents(doc.id, doc.data()));
-        setEvents(eventsData);
-      });
-
-      return () => {
-        off(dbRef)
-        unsubscribeUser();
-        unsubscribeEvents();
-      };
     }
+    
+    return () => {
+      unsubscribeEvents();
+      if (fireUserData) {
+        off(regsiteredEventsRef)
+        unsubscribeUser();        
+      }
+    };
   }, [fireUserData]);
 
   return (

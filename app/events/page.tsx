@@ -4,15 +4,14 @@ import Link from "next/link";
 import { Button } from "@heroui/button";
 import { Tabs, Tab, Image } from "@heroui/react";
 import Footer from "@/components/internal/footer";
-import { ArrowUpRight, BadgeCheck, Search } from "lucide-react";
+import { useFirebase } from "@/contexts/firebase";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { GoogleMap } from "@/components/internal/googleMap";
-import CrossVelocity from "@/components/internal/crossVelocity";
 import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
+import { ArrowUpRight, BadgeCheck, Search } from "lucide-react";
+import CrossVelocity from "@/components/internal/crossVelocity";
 import TechnicalEventsImg from '@/assets/images/technical_events.png';
-import { useFirebase } from "@/contexts/firebase";
-import { useSearchParams } from 'next/navigation';
 
 export default function Events() {
   const firebaseContext = useFirebase();
@@ -21,12 +20,11 @@ export default function Events() {
   const eventCategories = firebaseContext?.eventCategories || []
   const registeredEventsSet = firebaseContext?.registeredEventsSet;
 
-  const searchParams = useSearchParams();
-  const departmentParam = searchParams.get('department');
-  const categoryParam = searchParams.get('category');
-
   React.useEffect(() => {
-    if (departmentParam) {
+    const searchParams = new URL(location.href).searchParams;
+    const departmentParam = searchParams.get('department');
+    const categoryParam = searchParams.get('category');
+      if (departmentParam) {
       const department = departments.find(dept => dept.id === departmentParam);
       setCurrentDepartment(() => department);
     } else {
@@ -40,7 +38,7 @@ export default function Events() {
     } else {
       setCurrentEventCategory(() => eventCategories[0]);
     }
-  }, [searchParams, categoryParam, departments, eventCategories]);
+  }, [departments, eventCategories]);
 
   const [currentSearch, setCurrentSearch] = React.useState('')
   const [currentDepartment, setCurrentDepartment] = React.useState<Department>();
@@ -98,6 +96,7 @@ export default function Events() {
             onSelectionChange={(index) => {
               if (currentDepartment == null) return;
               const selectedDepartment = departments.find(dep => dep.id === index);
+              setCurrentDepartment(() => selectedDepartment);
               const params = new URLSearchParams(window.location.search);
               if (selectedDepartment) { params.set('department', selectedDepartment.id) }
               else { params.delete('department') }
@@ -129,7 +128,10 @@ export default function Events() {
               selectedKey={currentEventCategory?.id}
               onSelectionChange={(index) => {
                 const selectedCategory = eventCategories.find(cat => cat.id === index);
-                const params = new URLSearchParams(searchParams);
+                if (selectedCategory) {
+                  setCurrentEventCategory(() => selectedCategory);
+                }
+                const params = new URL(location.href).searchParams;
                 if (selectedCategory) { params.set('category', selectedCategory.id) }
                 else { params.delete('category') }
                 window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);

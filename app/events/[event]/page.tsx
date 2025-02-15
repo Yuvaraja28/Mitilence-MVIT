@@ -1,12 +1,13 @@
 'use client';
 import './styles.css';
 import React from "react";
-import NotFound from "@/app/not-found";
 import Link from 'next/link';
 import remarkGfm from 'remark-gfm';
+import { Input } from '@heroui/input';
 import { Image } from "@heroui/image";
-import { Button } from "@heroui/button";
 import Markdown from 'react-markdown';
+import NotFound from "@/app/not-found";
+import { Button } from "@heroui/button";
 import { getUser } from '@/Firestore/users';
 import { useFirebase } from '@/contexts/firebase';
 import Footer from "@/components/internal/footer";
@@ -19,7 +20,6 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import TechnicalEventsImg from '@/assets/images/technical_events.png';
 import { BadgeCheck, Building2, CalendarDays, ContactRound, Navigation, UsersRound } from "lucide-react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
-import { Input } from '@heroui/input';
 
 const GeneralInstruction = [
   'A valid college ID card is required for participation.',
