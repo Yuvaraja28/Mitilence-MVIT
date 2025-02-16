@@ -5,8 +5,9 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useFirebase } from "@/contexts/firebase";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
-import { BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, Navigation } from "lucide-react";
+import { BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, Navigation, UserRoundPen } from "lucide-react";
 import { Tooltip } from "@heroui/tooltip";
+import UserRegistration from "@/components/internal/userRegistration";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
@@ -15,6 +16,7 @@ export default function Profile() {
   const eventsObject = firebaseContext?.eventsObject || {};
   const registeredEvents = firebaseContext?.registeredEvents || {};
 
+  const [userUpdate, setUserUpdate] = React.useState(false)
   const [currentEvent, setCurrentEvent] = React.useState<string | null>(null)
 
   const Fields = [
@@ -34,8 +36,16 @@ export default function Profile() {
         className="flex flex-col gap-4 w-[90%] lg:w-[42em]"
       >
         <div
-          className="flex flex-col gap-5 bg-white rounded-2xl px-8 py-10"
+          className="flex flex-col gap-6 bg-white rounded-2xl p-8"
         >
+          <Button
+            color="primary"
+            onPress={() => setUserUpdate(true)}
+            startContent={<UserRoundPen size={20} />}
+            className="flex flex-row gap-2 text-md self-end font-medium bg-blue-500 text-white px-4 py-1.5 rounded-[10px]"
+          >
+            Update
+          </Button>
           <div
             className="flex md:flex-row gap-2.5 items-center justify-between flex-col-reverse"
           >
@@ -45,7 +55,7 @@ export default function Profile() {
               <span
                 className="text-3xl font-medium"
               >
-                {fireUserDoc?.name}{fireUserDoc?.paymentStatus}
+                {fireUserDoc?.name}
               </span>
               <span
                 className="text-[18px]"
@@ -253,6 +263,11 @@ export default function Profile() {
             </ModalBody>
           </ModalContent>
         </Modal>
+      }
+      {userUpdate &&
+        <UserRegistration
+          update={true}
+        />
       }
     </div>
   )

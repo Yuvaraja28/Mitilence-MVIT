@@ -11,6 +11,7 @@ interface EventUser {
   gender: 'male' | 'female';
   year: number;
   createdTime: string;
+  updatedTime?: string;
   paymentStatus?: 'verified' | 'pending' | 'failed';
 }
 

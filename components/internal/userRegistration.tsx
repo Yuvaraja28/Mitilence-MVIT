@@ -6,20 +6,21 @@ import { doc, setDoc } from "firebase/firestore";
 import { useFirebase } from "@/contexts/firebase";
 import { Drawer, DrawerContent, Select, SelectItem } from "@heroui/react";
 
-export default function UserRegistration() {
+export default function UserRegistration({ update = false }) {
   const firebaseContext = useFirebase();
   const firestoreDB = firebaseContext?.firestoreDB
   const fireUserData = firebaseContext?.fireUserData
+  const fireUserDoc = firebaseContext?.fireUserDoc;
 
   const registrationFields = [
-    { name: "Name", param: "name", type: "text", value: fireUserData?.displayName },
-    { name: "Email Id", param: "emailId", type: "email", value: fireUserData?.email },
-    { name: "Phone No", param: "phoneNo", type: "tel", value: fireUserData?.phoneNumber },
-    { name: "Enroll No", param: "enrollNo", type: "text" },
-    { name: "College", param: "college", type: "text" },
-    { name: "Department", param: "department", type: "text" },
-    { name: "Year", param: "year", type: "number" },
-    { name: "Gender", param: "gender", type: "select" },
+    { name: "Name", param: "name", type: "text", value: fireUserData?.displayName, default: true },
+    { name: "Email Id", param: "emailId", type: "email", value: fireUserData?.email, default: true },
+    { name: "Phone No", param: "phoneNo", type: "tel", value: fireUserData?.phoneNumber || fireUserDoc?.phoneNo },
+    { name: "Enroll No", param: "enrollNo", type: "text", value: fireUserDoc?.enrollNo },
+    { name: "College", param: "college", type: "text", value: fireUserDoc?.college },
+    { name: "Department", param: "department", type: "text", value: fireUserDoc?.department },
+    { name: "Year", param: "year", type: "number", value: fireUserDoc?.year },
+    { name: "Gender", param: "gender", type: "select", value: fireUserDoc?.gender },
   ];
 
   const registerUser = (event: React.FormEvent<HTMLFormElement>) => {
@@ -40,8 +41,11 @@ export default function UserRegistration() {
           imageUrl: fireUserData?.photoURL,
           year: +data.year,
           gender: data.gender,
-          createdTime: new Date()
-        })
+          createdTime: new Date(fireUserDoc?.createdTime || new Date()),
+          ...(update && {
+            updatedTime: new Date()
+          })
+        }, { merge: true })
           .then(() => {
             console.log("User registered successfully");
             return window.location.href = '/profile'
@@ -61,6 +65,7 @@ export default function UserRegistration() {
     <Drawer
       isOpen={true}
       backdrop="blur"
+      scrollBehavior="inside"
       closeButton={<span />}
       classNames={{
         base: "data-[placement=right]:sm:m-4 data-[placement=left]:sm:m-2 rounded-medium p-6",
@@ -70,7 +75,7 @@ export default function UserRegistration() {
         <span
           className="text-2xl font-medium mb-3"
         >
-          User Registration
+          User {update ? 'Updation' : 'Registration'}
         </span>
         <form
           onSubmit={registerUser}
@@ -82,13 +87,13 @@ export default function UserRegistration() {
                 size="md"
                 radius="lg"
                 label="Gender"
-                value={"Male"}
                 key={field.param}
                 name={field.param}
                 required={true}
-                className="w-full mt-1 text-black"
                 placeholder="Select your Gender"
+                className="w-full mt-1 text-black"
                 errorMessage="You must select your gender"
+                defaultSelectedKeys={[field.value || "Male"]}
                 validate={(value) =>
                   value != "" || "You must select your gender"
                 }
@@ -109,7 +114,7 @@ export default function UserRegistration() {
                 name={field.param}
                 label={field.name}
                 type={field.type}
-                disabled={field?.value != null}
+                disabled={field?.default}
                 labelPlacement={"outside"}
                 placeholder={field.name}
                 required={true}
@@ -117,9 +122,7 @@ export default function UserRegistration() {
                 style={{
                   color: "black",
                 }}
-                {...((field?.value || '') && {
-                  value: field?.value || ''                          
-                })}
+                defaultValue={field?.value ? String(field?.value) : ''}
                 {...(field.type === "tel" && {
                   pattern: "\\d{10}",
                   errorMessage: "Please enter a 10 digit phone number",
@@ -132,7 +135,11 @@ export default function UserRegistration() {
             type="submit"
             className="bg-purpleAccent text-white font-semibold text-lg w-full"
           >
-            Register
+            {update ? 
+              'Update'
+            :
+              'Register'
+            }
           </Button>
         </form>
       </DrawerContent>

@@ -34,6 +34,7 @@
     "@heroui/tabs": "^2.2.8",
     "@heroui/theme": "^2.4.6",
     "@heroui/tooltip": "^2.2.8",
+    "@uploadcare/react-uploader": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^11.2.0",

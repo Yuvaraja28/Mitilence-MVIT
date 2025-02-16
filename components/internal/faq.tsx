@@ -12,10 +12,6 @@ const faqs = [
     "answer": "Participants can register online through the official Mitilence website or register on-spot for select events during the fest." 
   },
   { 
-    "question": "Is there an entry fee for the fest?", 
-    "answer": "Some events require a registration fee, while others are free to participate. Detailed fee structures are available on the event website." 
-  },
-  { 
     "question": "Will there be prizes for the competitions?", 
     "answer": "Yes! Winners will receive cash prizes, certificates, and exclusive goodies for various competitions." 
   },
