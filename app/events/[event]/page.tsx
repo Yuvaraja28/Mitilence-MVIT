@@ -15,11 +15,12 @@ import { getDatabase, ref, update } from 'firebase/database';
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { CircularLoader } from "@/components/internal/Loaders";
-import TechnicalEventsImg from '@/assets/images/technical_events.png';
 import { BadgeCheck, Building2, CalendarDays, ContactRound, Link2, Navigation, Share2, UsersRound } from "lucide-react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
 import { BlurFade } from '@/components/magicui/blur-fade';
 import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
+import confettiPopUp from '@/animations/confetti';
+import { EventsFallbackImg, TechnicalEventsImg } from '@/variables';
 
 const GeneralInstruction = [
   'A valid college ID card is required for participation.',
@@ -59,6 +60,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
       teamMembers: teamMembers,
       registeredTime: new Date().toISOString()
     });
+    confettiPopUp()
   }
 
   return (
@@ -67,7 +69,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
     >
       <HeaderSection
         bannerName={eventData?.name || ''}
-        bannerImg={TechnicalEventsImg.src}
+        bannerImg={TechnicalEventsImg}
       />
       {(eventData == null) ?
         <div
@@ -88,7 +90,8 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
             >              
               <Image
                 isBlurred
-                src={eventData.bannerUrl}
+                fallbackSrc={EventsFallbackImg}
+                src={eventData?.bannerUrl || EventsFallbackImg}
                 className="h-full w-full object-cover rounded-[20px] border border-gray-800"
               />
               <Popover placement="left">
@@ -428,7 +431,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                     </Link>
                   :
                     <Button
-                      type='submit'
+                      type={generalInstructionsRead ? 'submit' : 'button'}
                       onPress={generalInstructionsRead ? () => {} : () => {
                         if ((fireUserData == null) && (LoginGoogle != null)) {
                           return LoginGoogle(false);
@@ -447,7 +450,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
         </div>
       }
       <CrossVelocity>
-        Explore
+        REGISTER NOW
       </CrossVelocity>
       <GoogleMap />
       <Footer />

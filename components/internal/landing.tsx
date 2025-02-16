@@ -1,17 +1,15 @@
 import { cn } from '@/lib/utils';
 import { ChevronRight } from 'lucide-react';
-import StarImg from '@/assets/images/star.png'
-import DeveloperImg from '@/assets/images/developer.png'
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { AnimatedGradientText } from '../magicui/animated-gradient-text';
-import { Image } from '@heroui/image';
+import { DeveloperImg, StarImg } from '@/variables';
 
 export default function Landing() {
   return (
     <div
       style={{
-        backgroundImage: `url(${DeveloperImg.src})`,
+        backgroundImage: `url(${DeveloperImg})`,
       }}
       aria-label="Landing Developer"
       className="lg:h-[100vh] h-[37em] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
@@ -64,7 +62,7 @@ export default function Landing() {
       </div>      
       <img
         loading='lazy'
-        src={StarImg.src}
+        src={StarImg}
         className='absolute lg:top-[70vh] top-[28em] ml-[-10px] lg:ml-0 lg:bottom-0 left-0 z-10 h-[8.5em] lg:h-[15em]'
       />
     </div>

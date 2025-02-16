@@ -1,13 +1,15 @@
 'use client';
 import React from "react";
+import Link from "next/link";
 import { Image } from "@heroui/image";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { useFirebase } from "@/contexts/firebase";
-import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
-import { BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, Navigation, UserRoundPen } from "lucide-react";
 import { Tooltip } from "@heroui/tooltip";
+import { DefaultMemberImg } from "@/variables";
+import { useFirebase } from "@/contexts/firebase";
 import UserRegistration from "@/components/internal/userRegistration";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
+import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, Navigation, UserRoundPen } from "lucide-react";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
@@ -53,12 +55,12 @@ export default function Profile() {
               className="flex flex-col items-center md:items-start h-full"
             >
               <span
-                className="text-3xl font-medium"
+                className="text-3xl font-medium text-center md:text-start"
               >
-                {fireUserDoc?.name}
+                {fireUserDoc?.name} Murali
               </span>
               <span
-                className="text-[18px]"
+                className="text-[18px] text-center md:text-start"
               >
                 {fireUserDoc?.emailId}
               </span>
@@ -81,11 +83,11 @@ export default function Profile() {
             <Image
               width={100}
               height={100}
-              src={fireUserDoc?.imageUrl || '/images/default_user.png'}
+              src={fireUserDoc?.imageUrl || DefaultMemberImg}
               classNames={{
                 wrapper: 'bg-contain bg-no-repeat'
               }}
-              fallbackSrc={'/images/default_user.png'}
+              fallbackSrc={DefaultMemberImg}
               className="object-cover bg-contain"
             />
           </div>
@@ -110,8 +112,16 @@ export default function Profile() {
           className="flex flex-row justify-between items-center gap-4 bg-white rounded-2xl px-8 py-4 text-xl font-medium"
         >
           Registered Events ( {Object.keys(registeredEvents).length} )
-          {(Object.keys(registeredEvents).length > 0) &&
+          {(Object.keys(registeredEvents).length > 0) ?
             <ChevronDown size={30} />
+          :
+            <Link
+              href={'/events'}
+              className="flex flex-row gap-1 items-center justify-center px-5 py-1.5 bg-purpleAccent rounded-xl text-white shadow-sm shadow-purple-400 drop-shadow-sm hover:-translate-y-0.5 transition-transform"
+            >
+              Register Now
+              <ArrowUpRight />
+            </Link>
           }
         </span>
         {(Object.keys(registeredEvents).length > 0) &&

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import MVITLogo from '@/assets/images/mvit_logo.png';
+import { MVITLogoImg } from '@/variables';
 
 export default function Footer() {
   return (
@@ -15,7 +15,7 @@ export default function Footer() {
           <Image
             width={55}
             height={55}
-            src={MVITLogo}
+            src={MVITLogoImg}
             alt='MVIT Logo'
           />
           <span

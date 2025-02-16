@@ -1,13 +1,13 @@
 'use client';
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from 'react';
-import MVITImg from '@/assets/images/mvit.png';
-import { Menu, UserRound, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { MVITImg } from "@/variables";
 import { Button } from '@heroui/button';
+import { usePathname } from "next/navigation";
+import { Menu, UserRound, X } from "lucide-react";
 import { useFirebase } from '@/contexts/firebase';
 import UserRegistration from './userRegistration';
+import { Image } from "@heroui/image";
   
 export default function ResponsiveSidebar() {
   const pathname = usePathname();
@@ -43,6 +43,9 @@ export default function ResponsiveSidebar() {
             alt="MVIT"
             src={MVITImg}
             loading="lazy"
+            style={{
+              borderRadius: 0
+            }}
             className="lg:pl-2.5 pl-1.5 h-[2.8em] w-[14em]"
           />
         </Link>

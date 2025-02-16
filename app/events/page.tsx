@@ -11,7 +11,8 @@ import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import { ArrowUpRight, BadgeCheck, Search } from "lucide-react";
 import CrossVelocity from "@/components/internal/crossVelocity";
-import TechnicalEventsImg from '@/assets/images/technical_events.png';
+import { getUser, getUsers } from "@/Firestore/users";
+import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
 
 export default function Events() {
   const firebaseContext = useFirebase();
@@ -21,6 +22,7 @@ export default function Events() {
   const registeredEventsSet = firebaseContext?.registeredEventsSet;
 
   React.useEffect(() => {
+    console.log(getUsers())
     const searchParams = new URL(location.href).searchParams;
     const departmentParam = searchParams.get('department');
     const categoryParam = searchParams.get('category');
@@ -61,7 +63,7 @@ export default function Events() {
     >
       <HeaderSection
         bannerName={currentEventCategory?.name || "Events"}
-        bannerImg={TechnicalEventsImg.src}
+        bannerImg={TechnicalEventsImg}
        />
       {((events == null) || (filteredEvents == null)) ?
           <div
@@ -179,10 +181,10 @@ export default function Events() {
                         </button>
                       }
                       <Image
-                        isBlurred
                         key={idx}
                         alt={event.name}
-                        src={event.logoUrl}
+                        fallbackSrc={EventsFallbackImg}
+                        src={event?.logoUrl || EventsFallbackImg}
                         className="object-cover w-[20em] h-[20em] cursor-pointer"
                       />
                       <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
@@ -197,7 +199,7 @@ export default function Events() {
         </>
       }
       <CrossVelocity>
-        Explore
+        REGISTER NOW
       </CrossVelocity>
       <GoogleMap />
       <Footer />

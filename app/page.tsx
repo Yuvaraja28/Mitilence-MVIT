@@ -26,7 +26,7 @@ export default function Home() {
         timeleft={1741924800}
       />
       <LineVelocity>
-        Register
+        REGISTER NOW
       </LineVelocity>
       <AboutSection />
       <Departments
@@ -48,7 +48,7 @@ export default function Home() {
         data={["/partners/tcs.png"]}
       />
       <CrossVelocity>
-        Explore
+        REGISTER NOW
       </CrossVelocity>
       <GoogleMap />
       <Footer />

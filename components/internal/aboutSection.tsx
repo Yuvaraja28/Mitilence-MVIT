@@ -1,5 +1,5 @@
-import MVITShowcaseImg from '@/assets/images/mvit_showcase.jpg';
 import { Image } from '@heroui/image';
+import { MVITShowcaseImg } from '@/variables';
 
 export function AboutSection() {
   return (
@@ -26,7 +26,7 @@ export function AboutSection() {
         isBlurred
         width={2800}
         height={260}
-        src={'/images/mvit_showcase.jpg'}
+        src={MVITShowcaseImg}
         className='object-cover rounded-2xl'
       />
     </div>

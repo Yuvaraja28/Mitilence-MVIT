@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
 import { Image } from "@heroui/image";
-import { ArrowUpRight } from "lucide-react";
+import { DefaultMemberImg } from "@/variables";
 import { BlurFade } from "../magicui/blur-fade";
 
 export function MembersDisplay({ title, members }: { title: string, members: ManagementMember[] | TechnicalMember[] }) {
@@ -38,8 +38,8 @@ export function MembersDisplay({ title, members }: { title: string, members: Man
             </div>
             <Image
               alt={memb.id}
-              src={memb?.imageUrl || "/images/default_member.png"}
-              fallbackSrc={'/images/default_member.png'}
+              src={memb?.imageUrl || DefaultMemberImg}
+              fallbackSrc={DefaultMemberImg}
               classNames={{
                 wrapper: 'bg-contain bg-no-repeat'
               }}

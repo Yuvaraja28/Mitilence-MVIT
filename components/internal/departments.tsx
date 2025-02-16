@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Image } from "@heroui/image";
 import { ArrowUpRight } from "lucide-react";
 import { BlurFade } from "../magicui/blur-fade";
+import { EventsFallbackImg } from "@/variables";
 
 export function Departments({ departments }: { departments: Department[] }) {
   return (
@@ -34,7 +35,7 @@ export function Departments({ departments }: { departments: Department[] }) {
               </span>
               <Image
                 alt={dep.id}
-                src={dep?.logoUrl || "/images/events_fallback.png"}
+                src={dep?.logoUrl || EventsFallbackImg}
                 className="h-80 w-80 object-cover border-3 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
               />
               <div className="absolute z-30 bottom-3 right-3 bg-white text-black p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-125">
