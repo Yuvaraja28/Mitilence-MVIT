@@ -12,12 +12,28 @@ import { Departments } from "@/components/internal/departments";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { AboutSection } from "@/components/internal/aboutSection";
 import { MembersDisplay } from "@/components/internal/membersDisplay";
+import { ICTAcademyImg, TCSImg } from "@/variables";
 
 export default function Home() {
   const firebaseContext = useFirebase();
   const faqs = firebaseContext?.faqs || [];
   const departments = firebaseContext?.departments || [];
-  const managementMembers = firebaseContext?.managementMembers || [];
+  const administrationMembers = firebaseContext?.administrationMembers || [];
+
+  React.useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then((registration) => {
+            console.log("Service Worker registered with scope:", registration.scope);
+          })
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      });
+    }
+  }, []);
 
   return (
     <React.Fragment>
@@ -36,16 +52,16 @@ export default function Home() {
         faqs={faqs}
       />
       <MembersDisplay
-        title="Management"
-        members={managementMembers}
+        title="administration"
+        members={administrationMembers}
       />
       <Partners
         type="Knowledge"
-        data={["/partners/ict_academy.png"]}
+        data={[ICTAcademyImg]}
       />
       <Partners
         type="Industry"
-        data={["/partners/tcs.png"]}
+        data={[TCSImg]}
       />
       <CrossVelocity>
         REGISTER NOW

@@ -1,8 +1,8 @@
 import { firestoreDB } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
-export async function getManagementMembers(): Promise<ManagementMember[]> {
-  const querySnapshot = await getDocs(collection(firestoreDB, 'management'));
+export async function getadministrationMembers(): Promise<ManagementMember[]> {
+  const querySnapshot = await getDocs(collection(firestoreDB, 'administration'));
   const members = querySnapshot.docs.map(doc => {
     const data = doc.data();
     return {

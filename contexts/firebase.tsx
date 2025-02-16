@@ -10,8 +10,8 @@ import { getEventCategories } from '@/Firestore/eventCategories';
 import { collection, doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
 import { Auth, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, User } from 'firebase/auth';
 import { Database, getDatabase, ref, onValue, off } from 'firebase/database';
-import { getManagementMembers } from '@/Firestore/management';
 import { getFAQ } from '@/Firestore/faq';
+import { getadministrationMembers } from '@/Firestore/administration';
 
 type EventsObjectType = {
   [key: string]: Events;
@@ -32,7 +32,7 @@ interface FirebaseContextProps {
   events: Events[] | null;
   eventsObject: EventsObjectType;
   departments: Department[];
-  managementMembers: ManagementMember[];
+  administrationMembers: AdministrationMember[];
   eventCategories: EventCategory[];
   registeredEvents: AllRegisteredEvent | null;
   registeredEventsSet: Set<string>;
@@ -54,7 +54,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   const [faqs, setFaqs] = React.useState<FAQ[] | null>([])
   const [events, setEvents] = React.useState<Events[] | null>(null)
   const [departments, setDepartments] = React.useState<Department[]>([]);
-  const [managementMembers, setManagementMembers] = React.useState<ManagementMember[]>([]);
+  const [administrationMembers, setAdministrationMembers] = React.useState<AdministrationMember[]>([]);
   const [registeredEvents, setRegisteredEvents] = React.useState<AllRegisteredEvent | null>(null)
   const [eventCategories, setEventCategories] = React.useState<EventCategory[]>([{ id: 'all_events', name: 'All Events', order: 0 }])
   const registeredEventsSet = React.useMemo(() => new Set(Object.keys(registeredEvents || {})), [registeredEvents])
@@ -81,8 +81,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
       .then(data => setFaqs(() => data))
     getDepartments()
       .then(data => setDepartments(() => data))
-    getManagementMembers()
-      .then(data => setManagementMembers(() => data))
+      getadministrationMembers()
+      .then(data => setAdministrationMembers(() => data))
     getEventCategories()
       .then(data => setEventCategories(prev => {
         const newCategories = data.filter(newCat => !prev.find(prevCat => prevCat.id === newCat.id));
@@ -150,7 +150,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   return (
     <FirebaseContext.Provider value={{ 
       fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB,
-      faqs, events, eventsObject, departments, managementMembers, eventCategories, registeredEvents, registeredEventsSet,
+      faqs, events, eventsObject, departments, administrationMembers, eventCategories, registeredEvents, registeredEventsSet,
       LoginGoogle, LogoutGoogle
      }}>
       {children}

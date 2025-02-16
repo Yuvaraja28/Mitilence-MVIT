@@ -14,7 +14,8 @@ export default function HeaderSection({ bannerName, bannerImg }: HeaderSectionPr
       aria-label="Landing Developer"
     >
       <div
-        className="absolute text-white text-center self-center mt-[13.5vh] lg:mt-[17.5vh] font-medium text-4xl lg:text-[3.5em]"
+        style={{ textShadow: '2px 2px 20px black' }}
+        className="absolute text-white text-center self-center mt-[13.5vh] lg:mt-[18vh] font-medium text-4xl lg:text-[3.5em]"
       >
         {bannerName}
       </div>

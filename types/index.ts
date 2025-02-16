@@ -27,12 +27,15 @@ interface EventOrganizer {
 }
 
 // Firestore DB
-interface ManagementMember {
+interface AdministrationMember {
   readonly id: string;
   readonly name: string;
   readonly role: string;
   readonly imageUrl: string;
   readonly order: number;
+}
+interface ManagementMember extends AdministrationMember {
+
 }
 
 // Firestore DB

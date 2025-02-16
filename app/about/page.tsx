@@ -1,24 +1,30 @@
 'use client';
+import { MVITShowcaseImg } from "@/variables";
+import { useFirebase } from "@/contexts/firebase";
+import HeaderSection from "@/components/internal/headerSection";
+import { MembersDisplay } from "@/components/internal/membersDisplay";
 
 export default function About() {
+  const firebaseContext = useFirebase();
+  const faqs = firebaseContext?.faqs || [];
+  const departments = firebaseContext?.departments || [];
+  const administrationMembers = firebaseContext?.administrationMembers || [];
+
   return (
     <div
-      className="mt-[-8.5vh] h-[100vh] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-center items-center"
-      role="img"
-      aria-label="Landing Developer"
+      className="flex flex-col items-center text-white"
     >
-      <video
-        loop
-        muted
-        autoPlay
-        src="https://ucarecdn.com/65640dde-41f4-4657-89d1-8c27e03c8abc/"
-        className="object-cover h-[100vh] w-full"
+      <HeaderSection
+        bannerName={"About"}
+        bannerImg={MVITShowcaseImg}
       />
-      <span
-        className="absolute text-white text-[4em] px-8 py-5 rounded-full leading-[1em] backdrop-blur-xl text-center font-medium"
-      >
-        Manakula Vinayagar Institute of Technology
-      </span>
+      <MembersDisplay
+        title="administration"
+        members={administrationMembers}
+      />
+      <div>
+
+      </div>
     </div>
   )
 }
