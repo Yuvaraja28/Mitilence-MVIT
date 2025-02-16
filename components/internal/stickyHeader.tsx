@@ -29,7 +29,7 @@ export default function ResponsiveSidebar() {
 
   return (
     <div
-      className='sticky top-5 flex flex-row gap-2 w-full lg:px-10 px-4 z-20 select-none'
+      className='fixed top-5 flex flex-row gap-2 w-full lg:px-10 px-4 z-50 select-none'
     >
       {(fireUserDoc == null && fireUserData != null) &&
         <UserRegistration />
@@ -59,7 +59,9 @@ export default function ResponsiveSidebar() {
         </div>
         {(fireUserDoc == null && fireUserData == null) ?
           <Button
-            onPress={LoginGoogle}
+            onPress={() => {
+              if (LoginGoogle != null) LoginGoogle()
+            }}
             className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-8 pt-0.5 transition-background h-full bg-white"
           >
             Login / Register
@@ -113,7 +115,9 @@ export default function ResponsiveSidebar() {
           ))}
           {(fireUserDoc == null && fireUserData == null) ?
             <Button
-              onPress={LoginGoogle}
+              onPress={() => {
+                if (LoginGoogle != null) LoginGoogle()
+              }}
               className="block mt-4 text-lg font-semibold text-white bg-purpleAccent hover:bg-purple-700 py-2 px-4 rounded-full text-center"
             >
               Login / Register

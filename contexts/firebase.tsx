@@ -1,15 +1,17 @@
 'use client';
 import { fireApp } from '@/lib/firebase';
+import parseEvents from '@/parsers/event';
 import { FirebaseApp } from 'firebase/app';
 import { getUser } from '@/Firestore/users';
+import parseEventUser from '@/parsers/user';
 import { getDepartments } from '@/Firestore/departments';
 import React, { createContext, useContext } from 'react';
-import { collection, doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
 import { getEventCategories } from '@/Firestore/eventCategories';
+import { collection, doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
 import { Auth, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, User } from 'firebase/auth';
 import { Database, getDatabase, ref, onValue, off } from 'firebase/database';
-import parseEventUser from '@/parsers/user';
-import parseEvents from '@/parsers/event';
+import { getManagementMembers } from '@/Firestore/management';
+import { getFAQ } from '@/Firestore/faq';
 
 type EventsObjectType = {
   [key: string]: Events;
@@ -26,13 +28,15 @@ interface FirebaseContextProps {
   firestoreDB: Firestore;
   fireUserData: User | null;
   fireUserDoc: EventUser | null;
+  faqs: FAQ[] | null;
   events: Events[] | null;
   eventsObject: EventsObjectType;
   departments: Department[];
+  managementMembers: ManagementMember[];
   eventCategories: EventCategory[];
   registeredEvents: AllRegisteredEvent | null;
   registeredEventsSet: Set<string>;
-  LoginGoogle: () => void;
+  LoginGoogle: (redirect?: boolean) => void;
   LogoutGoogle: () => void;
 }
 
@@ -47,8 +51,10 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   const [fireUserDoc, setFireUserDoc] = React.useState<EventUser | null>(null);
   const [fireAuth, setFireAuth] = React.useState<ReturnType<typeof getAuth> | null>(null);
   
+  const [faqs, setFaqs] = React.useState<FAQ[] | null>([])
   const [events, setEvents] = React.useState<Events[] | null>(null)
   const [departments, setDepartments] = React.useState<Department[]>([]);
+  const [managementMembers, setManagementMembers] = React.useState<ManagementMember[]>([]);
   const [registeredEvents, setRegisteredEvents] = React.useState<AllRegisteredEvent | null>(null)
   const [eventCategories, setEventCategories] = React.useState<EventCategory[]>([{ id: 'all_events', name: 'All Events', order: 0 }])
   const registeredEventsSet = React.useMemo(() => new Set(Object.keys(registeredEvents || {})), [registeredEvents])
@@ -71,8 +77,12 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   }, [fireUserData]);
 
   React.useLayoutEffect(() => {
+    getFAQ()
+      .then(data => setFaqs(() => data))
     getDepartments()
       .then(data => setDepartments(() => data))
+    getManagementMembers()
+      .then(data => setManagementMembers(() => data))
     getEventCategories()
       .then(data => setEventCategories(prev => {
         const newCategories = data.filter(newCat => !prev.find(prevCat => prevCat.id === newCat.id));
@@ -115,13 +125,15 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
     };
   }, [fireUserData]);
   
-  async function LoginGoogle() {
+  async function LoginGoogle(redirect = true) {
     if (fireAuth == null) return;
     try {
       const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
       getUser(data?.user.uid)
         .then(() => {
-          window.location.href = '/profile';
+          if (redirect) {
+            window.location.href = '/profile';
+          }
         })
         .catch(() => {});
     } catch (e) {
@@ -138,7 +150,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   return (
     <FirebaseContext.Provider value={{ 
       fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB,
-      events, eventsObject, departments, eventCategories, registeredEvents, registeredEventsSet,
+      faqs, events, eventsObject, departments, managementMembers, eventCategories, registeredEvents, registeredEventsSet,
       LoginGoogle, LogoutGoogle
      }}>
       {children}

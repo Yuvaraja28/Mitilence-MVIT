@@ -6,7 +6,7 @@ type HeaderSectionProps = {
 export default function HeaderSection({ bannerName, bannerImg }: HeaderSectionProps) {
   return (
     <div
-      className="h-[21.5vh] lg:h-[31vh] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
+      className="h-[23vh] lg:h-[35vh] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
       style={{
         backgroundImage: `url(${bannerImg})`,
       }}
@@ -14,7 +14,7 @@ export default function HeaderSection({ bannerName, bannerImg }: HeaderSectionPr
       aria-label="Landing Developer"
     >
       <div
-        className="absolute text-white text-center self-center mt-[9vh] lg:mt-[12vh] font-medium text-4xl lg:text-[3.5em]"
+        className="absolute text-white text-center self-center mt-[13.5vh] lg:mt-[17.5vh] font-medium text-4xl lg:text-[3.5em]"
       >
         {bannerName}
       </div>

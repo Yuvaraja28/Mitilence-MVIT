@@ -14,7 +14,7 @@ export default function Landing() {
         backgroundImage: `url(${DeveloperImg.src})`,
       }}
       aria-label="Landing Developer"
-      className="mt-[-8.5vh] lg:h-[100vh] h-[37em] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
+      className="lg:h-[100vh] h-[37em] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
     >
       <video
         loop
@@ -23,7 +23,7 @@ export default function Landing() {
         src="https://ucarecdn.com/65640dde-41f4-4657-89d1-8c27e03c8abc/"
         className="object-cover lg:h-[100vh] h-[37em] absolute w-full"
       />
-      <div className="lg:h-[100vh] h-[36.5em] absolute inset-0 bg-black/25"></div>
+      <div className="lg:h-[100vh] h-[37em] absolute inset-0 bg-black/25"></div>
       <div
         className="flex flex-col items-center lg:justify-normal h-full w-full mt-[26.5vh] lg:mt-[30vh]"
       >
@@ -57,15 +57,15 @@ export default function Landing() {
           background="#9747ff"
           shimmerColor="white"
           shimmerSize="0.10em"
-          className="absolute bottom-[38vh] lg:bottom-[35vh] px-6 py-1.5 font-medium text-[1.2em] lg:text-[1.35em]"
+          className="absolute lg:top-[60vh] top-[46vh] px-6 py-1.5 font-medium text-[1.2em] lg:text-[1.35em]"
         >
           14 March 2025
         </ShimmerButton>
-      </div>
+      </div>      
       <img
         loading='lazy'
         src={StarImg.src}
-        className='absolute bottom-[26vh] ml-[-10px] lg:ml-0 lg:bottom-0 left-0 z-10 h-[8.5em] lg:h-[15em]'
+        className='absolute lg:top-[70vh] top-[28em] ml-[-10px] lg:ml-0 lg:bottom-0 left-0 z-10 h-[8.5em] lg:h-[15em]'
       />
     </div>
   )

@@ -2,34 +2,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-const faqs = [
-  { 
-    "question": "Who can participate in Mitilence?", 
-    "answer": "Mitilence is open to all students of MVIT as well as participants from other colleges. Some events may have specific eligibility criteria." 
-  },
-  { 
-    "question": "How can I register for the events?", 
-    "answer": "Participants can register online through the official Mitilence website or register on-spot for select events during the fest." 
-  },
-  { 
-    "question": "Will there be prizes for the competitions?", 
-    "answer": "Yes! Winners will receive cash prizes, certificates, and exclusive goodies for various competitions." 
-  },
-  { 
-    "question": "Where will Mitilence take place?", 
-    "answer": "The fest will be hosted at MVIT campus, with different activities scheduled at designated venues across the college." 
-  },
-  { 
-    "question": "How can I stay updated about the event schedule?", 
-    "answer": "Stay connected through the official Mitilence website and follow our social media pages for real-time updates on schedules, registrations, and announcements." 
-  },
-  { 
-    "question": "Whom should I contact for more details?", 
-    "answer": "For any queries, you can reach out to the organizing committee through the contact information available on the official website." 
-  }
-];
-
-export default function FAQAccordian() {
+export default function FAQAccordian({ faqs }: { faqs: FAQ[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleAccordion = (index: number) => {

@@ -9,11 +9,11 @@ export default function NotFound() {
   return (
     <React.Fragment>
       <div
-        className="pt-5 h-[65vh] flex flex-col justify-center items-center"
+        className="pt-20 h-[75vh] flex flex-col justify-center items-center w-full"
       >
         <div      
           style={{ boxShadow: '#9747ff 8px 10px 0' }}
-          className="bg-white flex flex-col items-center justify-center pt-6 pb-12 gap-4 rounded-[6px] w-[90%] lg:w-[40%]"
+          className="bg-white flex flex-col items-center justify-center pt-6 pb-8 gap-4 rounded-[6px] w-[90%] lg:w-[40%]"
         >
           <LineShadowText
             shadowColor="white"

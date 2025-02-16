@@ -1,19 +1,11 @@
 'use client';
 import React from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-import { getDepartments } from "@/Firestore/departments";
-import { BlurFade } from "../magicui/blur-fade";
 import { Image } from "@heroui/image";
+import { ArrowUpRight } from "lucide-react";
+import { BlurFade } from "../magicui/blur-fade";
 
-export function Departments() {
-  const [departments, setDepartments] = React.useState<Department[]>([]);
-
-  React.useLayoutEffect(() => {
-    getDepartments()
-      .then(data => setDepartments(() => data))
-  }, []);
-
+export function Departments({ departments }: { departments: Department[] }) {
   return (
     <div
       className="text-white lg:p-10 px-6 py-8 flex flex-col items-center w-full gap-8 lg:gap-14"
@@ -36,7 +28,7 @@ export function Departments() {
               delay={0.1 + (idx+1) * 0.05}
             >
               <span
-                className="absolute z-30 top-5 left-[-20px] -skew-x-6 bg-white text-black text-xl font-semibold rounded-[5px] px-4 py-0.5 uppercase"
+                className="absolute z-30 top-5 left-[-20px] -skew-x-6 bg-white text-black text-xl font-semibold rounded-[5px] px-4 py-0.5 uppercase border-2 border-gray-300 shadow-xl drop-shadow-xl"
               >
                 {dep.name}
               </span>

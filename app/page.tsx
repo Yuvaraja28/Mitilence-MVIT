@@ -1,17 +1,24 @@
 'use client';
 import React from "react";
-import CrossVelocity from "@/components/internal/crossVelocity";
-import LineVelocity from "@/components/internal/lineVelocity";
-import { GoogleMap } from "@/components/internal/googleMap";
-import { AboutSection } from "@/components/internal/aboutSection";
 import Footer from "@/components/internal/footer";
+import { useFirebase } from "@/contexts/firebase";
 import Landing from "@/components/internal/landing";
-import { Departments } from "@/components/internal/departments";
 import FAQAccordian from "@/components/internal/faq";
 import Partners from "@/components/internal/Partners";
 import CountDown from "@/components/internal/countDown";
+import { GoogleMap } from "@/components/internal/googleMap";
+import LineVelocity from "@/components/internal/lineVelocity";
+import { Departments } from "@/components/internal/departments";
+import CrossVelocity from "@/components/internal/crossVelocity";
+import { AboutSection } from "@/components/internal/aboutSection";
+import { MembersDisplay } from "@/components/internal/membersDisplay";
 
 export default function Home() {
+  const firebaseContext = useFirebase();
+  const faqs = firebaseContext?.faqs || [];
+  const departments = firebaseContext?.departments || [];
+  const managementMembers = firebaseContext?.managementMembers || [];
+
   return (
     <React.Fragment>
       <Landing />
@@ -22,8 +29,16 @@ export default function Home() {
         Register
       </LineVelocity>
       <AboutSection />
-      <Departments />
-      <FAQAccordian />
+      <Departments
+        departments={departments}
+      />
+      <FAQAccordian
+        faqs={faqs}
+      />
+      <MembersDisplay
+        title="Management"
+        members={managementMembers}
+      />
       <Partners
         type="Knowledge"
         data={["/partners/ict_academy.png"]}

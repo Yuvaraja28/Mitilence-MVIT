@@ -29,10 +29,10 @@ interface EventOrganizer {
 // Firestore DB
 interface ManagementMember {
   readonly id: string;
-  name: string;
-  role: string;
-  phone?: string;
-  imageUrl?: string;
+  readonly name: string;
+  readonly role: string;
+  readonly imageUrl: string;
+  readonly order: number;
 }
 
 // Firestore DB
@@ -40,8 +40,10 @@ interface TechnicalMember {
   readonly id: string;
   readonly name: string;
   readonly role: string;
+  readonly imageUrl: string;
+  readonly order: number;
+  readonly phone?: string;
   readonly social?: SocialHandle[];
-  readonly imageUrl?: string;
 }
 
 // Firestore DB
@@ -81,6 +83,11 @@ interface EventCategory {
   readonly id: string;
   readonly name: string;
   readonly order: number;
+}
+
+interface FAQ {
+  question: string;
+  answer: string;
 }
 
 // Realtime DB

@@ -30,7 +30,7 @@ export default function Profile() {
 
   return (
     <div
-      className="flex flex-col items-center gap-2 mt-10 lg:mt-[6vh] w-full pb-8"
+      className="flex flex-col items-center justify-center gap-2 w-full pt-28 lg:pt-22 py-8 min-h-[100vh]"
     >
       <div
         className="flex flex-col gap-4 w-[90%] lg:w-[42em]"

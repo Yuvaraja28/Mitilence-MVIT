@@ -8,7 +8,6 @@ import { Image } from "@heroui/image";
 import Markdown from 'react-markdown';
 import NotFound from "@/app/not-found";
 import { Button } from "@heroui/button";
-import { getUser } from '@/Firestore/users';
 import { useFirebase } from '@/contexts/firebase';
 import Footer from "@/components/internal/footer";
 import { GoogleMap } from "@/components/internal/googleMap";
@@ -52,9 +51,6 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
     const teamMembers = Array.from({ length: (eventData?.teamSize || 1) }).map((_, membIndex) => formData.get(`Participant ${membIndex + 1} Name`));
     teamMembers[0] = fireUserData?.displayName || ''
     onClose()
-    if ((fireUserData == null) && (LoginGoogle != null)) {
-      return LoginGoogle();
-    };
     const updateRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData?.uid}/${eventData.id}`);
     update(updateRef, {
       eventId: eventData.id,
@@ -73,7 +69,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
       />
       {(eventData == null) ?
         <div
-          className="h-[60vh]"
+          className="h-[62vh]"
         >
           <CircularLoader />
         </div>
@@ -321,9 +317,27 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                           })}
                         />
                       )}
-                      <span className="text-red-500 text-md text-center mt-1 px-2">
-                        Participant's names once entered cannot be modified. Please double check before clicking register.
-                      </span>
+                      <ul
+                        className='flex flex-col gap-1 mt-3'
+                      >
+                        <li className="text-[#F31260] text-sm px-1">
+                          Participant's names once entered cannot be modified. Please double check before clicking register.
+                        </li>
+                        <li className="text-[#F31260] text-sm px-1">
+                          I confirm, I have read and understood all instructions and consent to register.
+                        </li>
+                      </ul>
+                      <Input
+                        type="text"
+                        size="md"
+                        required
+                        variant={"bordered"}
+                        name={`Decleration`}
+                        label={`Decleration`}
+                        pattern={"REGISTER"}
+                        errorMessage={`type REGISTER and click the register button`}
+                        placeholder={`type REGISTER and click the register button`}
+                      />
                     </div>
                   :
                     <>
@@ -381,7 +395,12 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                   :
                     <Button
                       type='submit'
-                      onPress={generalInstructionsRead ? () => {} : () => setGeneralInstructionsRead(() => true)}
+                      onPress={generalInstructionsRead ? () => {} : () => {
+                        if ((fireUserData == null) && (LoginGoogle != null)) {
+                          return LoginGoogle(false);
+                        };
+                        setGeneralInstructionsRead(() => true)
+                      }}
                       className='bg-purpleAccent text-white font-medium text-lg mb-4'
                     >
                       Register Now

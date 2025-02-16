@@ -65,7 +65,7 @@ export default function Events() {
        />
       {((events == null) || (filteredEvents == null)) ?
           <div
-            className="h-[60vh]"
+            className="h-[62vh]"
           >
             <CircularLoader />
           </div>
