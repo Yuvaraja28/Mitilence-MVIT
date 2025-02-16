@@ -1,22 +1,21 @@
 'use client';
-import { useState } from 'react';
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from 'react';
 import MVITImg from '@/assets/images/mvit.png';
 import { Menu, UserRound, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from '@heroui/button';
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { useFirebase } from '@/contexts/firebase';
-import { getUser } from '@/Firestore/users';
 import UserRegistration from './userRegistration';
   
 export default function ResponsiveSidebar() {
   const pathname = usePathname();
   const firebaseContext = useFirebase();
-  const fireAuth = firebaseContext?.fireAuth;
-  const fireUserData = firebaseContext?.fireUserData;
   const fireUserDoc = firebaseContext?.fireUserDoc;
+  const fireUserData = firebaseContext?.fireUserData;
+  const LoginGoogle = firebaseContext?.LoginGoogle;
+  const LogoutGoogle = firebaseContext?.LogoutGoogle;
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
@@ -28,26 +27,6 @@ export default function ResponsiveSidebar() {
     { name: 'teams', url: 'teams' }
   ];
 
-  async function LoginGoogle() {
-    if (fireAuth == null) return;
-    try {
-      const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
-      getUser(data?.user.uid)
-        .then(() => {
-          window.location.href = '/profile';
-        })
-        .catch(() => {});
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  async function LogoutGoogle() {
-    if (fireAuth == null) return;
-    await signOut(fireAuth);
-    window.location.href = '/'
-  }
-  
   return (
     <div
       className='sticky top-5 flex flex-row gap-2 w-full lg:px-10 px-4 z-20 select-none'

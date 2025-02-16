@@ -9,8 +9,9 @@ import { Drawer, DrawerContent, Select, SelectItem } from "@heroui/react";
 export default function UserRegistration({ update = false }) {
   const firebaseContext = useFirebase();
   const firestoreDB = firebaseContext?.firestoreDB
-  const fireUserData = firebaseContext?.fireUserData
   const fireUserDoc = firebaseContext?.fireUserDoc;
+  const fireUserData = firebaseContext?.fireUserData;
+  const LogoutGoogle = firebaseContext?.LogoutGoogle;
 
   const registrationFields = [
     { name: "Name", param: "name", type: "text", value: fireUserData?.displayName, default: true },
@@ -141,6 +142,15 @@ export default function UserRegistration({ update = false }) {
               'Register'
             }
           </Button>
+          {(!update) &&
+            <Button
+              size="lg"
+              onPress={LogoutGoogle}
+              className="border-2 border-purpleAccent bg-white text-purpleAccent font-semibold text-lg w-full"
+            >
+              Logout
+            </Button>
+          }
         </form>
       </DrawerContent>
     </Drawer>

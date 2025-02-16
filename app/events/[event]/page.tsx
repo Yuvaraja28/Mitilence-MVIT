@@ -16,7 +16,6 @@ import { getDatabase, ref, update } from 'firebase/database';
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { CircularLoader } from "@/components/internal/Loaders";
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import TechnicalEventsImg from '@/assets/images/technical_events.png';
 import { BadgeCheck, Building2, CalendarDays, ContactRound, Navigation, UsersRound } from "lucide-react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
@@ -32,7 +31,7 @@ const GeneralInstruction = [
 export default function Event({ params }: { params: Promise<{ event: string }> }) {
   const firebaseContext = useFirebase();
   const fireApp = firebaseContext?.fireApp;
-  const fireAuth = firebaseContext?.fireAuth;
+  const LoginGoogle = firebaseContext?.LoginGoogle;
   const fireUserData = firebaseContext?.fireUserData;
   const eventsObject = firebaseContext?.eventsObject || {};
   const registeredEventsSet = firebaseContext?.registeredEventsSet || new Set();
@@ -53,26 +52,15 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
     const teamMembers = Array.from({ length: (eventData?.teamSize || 1) }).map((_, membIndex) => formData.get(`Participant ${membIndex + 1} Name`));
     teamMembers[0] = fireUserData?.displayName || ''
     onClose()
-    if (fireUserData == null) {
+    if ((fireUserData == null) && (LoginGoogle != null)) {
       return LoginGoogle();
     };
-    const updateRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData.uid}/${eventData.id}`);
+    const updateRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData?.uid}/${eventData.id}`);
     update(updateRef, {
       eventId: eventData.id,
       teamMembers: teamMembers,
       registeredTime: new Date().toISOString()
     });
-  }
-
-  async function LoginGoogle() {
-    if (fireAuth == null) return;
-    try {
-      const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
-      getUser(data?.user.uid)
-        .catch(() => {});
-    } catch (e) {
-      console.error(e)
-    }
   }
 
   return (

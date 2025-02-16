@@ -6,7 +6,7 @@ import { getDepartments } from '@/Firestore/departments';
 import React, { createContext, useContext } from 'react';
 import { collection, doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
 import { getEventCategories } from '@/Firestore/eventCategories';
-import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { Auth, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, User } from 'firebase/auth';
 import { Database, getDatabase, ref, onValue, off } from 'firebase/database';
 import parseEventUser from '@/parsers/user';
 import parseEvents from '@/parsers/event';
@@ -32,6 +32,8 @@ interface FirebaseContextProps {
   eventCategories: EventCategory[];
   registeredEvents: AllRegisteredEvent | null;
   registeredEventsSet: Set<string>;
+  LoginGoogle: () => void;
+  LogoutGoogle: () => void;
 }
 
 const FirebaseContext = createContext<FirebaseContextProps | null>(null);
@@ -112,11 +114,32 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
       }
     };
   }, [fireUserData]);
+  
+  async function LoginGoogle() {
+    if (fireAuth == null) return;
+    try {
+      const data = await signInWithPopup(fireAuth, new GoogleAuthProvider());
+      getUser(data?.user.uid)
+        .then(() => {
+          window.location.href = '/profile';
+        })
+        .catch(() => {});
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
+  async function LogoutGoogle() {
+    if (fireAuth == null) return;
+    await signOut(fireAuth);
+    window.location.href = '/'
+  }
+  
   return (
     <FirebaseContext.Provider value={{ 
       fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB,
-      events, eventsObject, departments, eventCategories, registeredEvents, registeredEventsSet
+      events, eventsObject, departments, eventCategories, registeredEvents, registeredEventsSet,
+      LoginGoogle, LogoutGoogle
      }}>
       {children}
     </FirebaseContext.Provider>
