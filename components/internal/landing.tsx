@@ -25,7 +25,7 @@ export default function Landing() {
       />
       <div className="lg:h-[100vh] h-[37em] absolute inset-0 bg-black/25"></div>
       <div
-        className="flex flex-col items-center lg:justify-normal h-full w-full mt-[26.5vh] lg:mt-[30vh]"
+        className="flex flex-col items-center lg:justify-normal h-full w-full mt-[20vh] xl:mt-[30vh]"
       >
         <AnimatedGradientText
           className='z-10 bg-white text-sm md:text-lg rounded-full -translate-y-8 md:-translate-y-4'
@@ -42,13 +42,13 @@ export default function Landing() {
         </AnimatedGradientText>
         <LineShadowText
           shadowColor="white"
-          className="absolute text-[16vw] md:text-[9.5em] mt-1 text-white font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
+          className="absolute text-[16vw] lg:text-[9.5em] mt-1 text-white font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
         >
           Mitilence
         </LineShadowText>
         <LineShadowText
           shadowColor="white"
-          className="absolute md:text-[6em] text-[12vw] lg:mt-[1.8em] mt-[1.6em] xl:right-[3.5em] right-[10vw] text-white font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
+          className="absolute lg:text-[6em] text-[12vw] lg:mt-[1.8em] mt-[1.5em] 2xl:right-[3.5em] right-[10vw] text-white font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
         >
           2025
         </LineShadowText>
@@ -57,7 +57,7 @@ export default function Landing() {
           background="#9747ff"
           shimmerColor="white"
           shimmerSize="0.10em"
-          className="absolute lg:top-[60vh] top-[46vh] px-6 py-1.5 font-medium text-[1.2em] lg:text-[1.35em]"
+          className="absolute top-[45vh] sm:top-[50vh] md:top-[60vh] px-6 py-1.5 font-medium text-[1.2em] lg:text-[1.35em]"
         >
           14 March 2025
         </ShimmerButton>

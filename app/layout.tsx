@@ -1,13 +1,22 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { HeroUIProvider } from "@heroui/system";
-import StickyHeader from "@/components/internal/stickyHeader";
 import { FirebaseProvider } from "@/contexts/firebase";
+import StickyHeader from "@/components/internal/stickyHeader";
 
 export const metadata: Metadata = {
-  title: "Mitilence",
-  description: "MVIT Cultural Fest",
+  title: "Mitilence • MVIT",
+  creator: 'Yuvaraja',
+  icons: "https://mitilence.1he.dev/icon.png",
+  description: "MITILENCE is the annual national-level technical symposium hosted by Manakula Vinayagar Institute of Technology (MVIT) in Puducherry. This prestigious event serves as a dynamic platform for students across India to showcase their technical acumen, engage in innovative problem-solving, and collaborate with peers from diverse engineering disciplines.",
 };
+
+export const viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#006FEE' },
+    { media: '(prefers-color-scheme: dark)', color: '#006FEE' },
+  ],
+}
 
 export default function RootLayout({
   children,
