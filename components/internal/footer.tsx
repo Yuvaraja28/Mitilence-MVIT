@@ -53,7 +53,7 @@ export default function Footer() {
             Mitilence 2025
           </span>
         </div>
-        <span className="w-[5px] h-0 lg:h-[20vh] bg-gradient-to-b from-white/0 via-white to-white/0 mx-4" />
+        {/* <span className="w-[5px] h-0 lg:h-[20vh] bg-gradient-to-b from-white/0 via-white to-white/0 mx-4" />
         <div
           className='flex flex-col items-center justify-center gap-2.5 w-full h-full'
         >
@@ -72,7 +72,7 @@ export default function Footer() {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
       <span className="h-[1px] bg-gradient-to-l from-white/0 via-white to-white/0 mx-4" />
       <div
