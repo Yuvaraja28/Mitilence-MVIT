@@ -59,7 +59,7 @@ export default function Events() {
 
   return (
     <div
-      className="flex flex-col items-center text-white"
+      className="flex flex-col items-center text-white w-full"
     >
       <HeaderSection
         bannerName={currentEventCategory?.name || "Events"}
@@ -74,7 +74,7 @@ export default function Events() {
         :
         <>
           <div
-            className="bg-white rounded-full w-[90%] lg:mt-[-5vh] lg:w-[60%] overflow-auto flex flex-row items-center gap-2 px-1 lg:px-2 mb-6"
+            className="bg-white rounded-full w-[90%] lg:mt-[-2em] lg:w-[60%] overflow-auto flex flex-row items-center gap-2 px-1 lg:px-2 mb-6"
           >
             <input
               placeholder="Search for events"

@@ -6,7 +6,7 @@ type HeaderSectionProps = {
 export default function HeaderSection({ bannerName, bannerImg }: HeaderSectionProps) {
   return (
     <div
-      className="h-[23vh] lg:h-[33vh] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
+      className="h-[12.5em] lg:h-[16em] w-full bg-cover bg-center bg-no-repeat flex flex-col justify-between"
       style={{
         backgroundImage: `url(${bannerImg})`,
       }}
@@ -15,15 +15,15 @@ export default function HeaderSection({ bannerName, bannerImg }: HeaderSectionPr
     >
       <div
         style={{ textShadow: '2px 2px 20px black' }}
-        className="absolute text-white text-center self-center mt-[14.5vh] lg:mt-[17vh] font-medium text-4xl lg:text-[3em]"
+        className="absolute text-white text-center self-center mt-[3.3em] lg:mt-[2.8em] font-medium text-4xl lg:text-[3em]"
       >
         {bannerName}
       </div>
       <span
-        className="bg-gradientLandingHeader w-full h-[10vh]"
+        className="bg-gradientLandingHeader w-full h-[5em]"
       />
       <div
-        className="w-full h-[10vh] bg-gradient-to-t from-[#0F1110] to-transparent"
+        className="w-full h-[5em] bg-gradient-to-t from-[#0F1110] to-transparent"
       />
     </div>
   )
