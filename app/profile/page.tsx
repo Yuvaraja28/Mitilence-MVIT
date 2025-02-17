@@ -57,7 +57,7 @@ export default function Profile() {
               <span
                 className="text-3xl font-medium text-center md:text-start"
               >
-                {fireUserDoc?.name} Murali
+                {fireUserDoc?.name}
               </span>
               <span
                 className="text-[18px] text-center md:text-start"
