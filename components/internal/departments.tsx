@@ -36,10 +36,10 @@ export function Departments({ departments }: { departments: Department[] }) {
               <Image
                 alt={dep.id}
                 src={dep?.logoUrl || EventsFallbackImg}
-                className="h-80 w-80 object-cover border-3 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
+                className="h-60 w-60 object-cover border-3 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
               />
-              <div className="absolute z-30 bottom-3 right-3 bg-white text-black p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-125">
-                <ArrowUpRight size={24} />
+              <div className="absolute z-30 bottom-3 right-3 bg-white text-black p-1 rounded-[10px] transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:scale-115">
+                <ArrowUpRight size={22} />
               </div>
             </BlurFade>
           </Link>

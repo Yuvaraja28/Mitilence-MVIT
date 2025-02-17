@@ -64,7 +64,7 @@ export default function Events() {
       <HeaderSection
         bannerName={currentEventCategory?.name || "Events"}
         bannerImg={TechnicalEventsImg}
-       />
+      />
       {((events == null) || (filteredEvents == null)) ?
           <div
             className="h-[62vh]"
@@ -160,7 +160,7 @@ export default function Events() {
               </span>
               :
               <div
-                className="flex flex-row flex-wrap items-center justify-center md:items-start md:justify-start w-full rounded-xl gap-6"
+                className="flex flex-row flex-wrap items-center justify-center md:items-start md:justify-start w-full rounded-xl gap-3"
               >
                 {filteredEvents.map((event, idx) =>
                   <Link
@@ -185,10 +185,10 @@ export default function Events() {
                         alt={event.name}
                         fallbackSrc={EventsFallbackImg}
                         src={event?.logoUrl || EventsFallbackImg}
-                        className="object-cover w-[20em] h-[20em] cursor-pointer"
+                        className="object-cover w-[15em] h-[15em] cursor-pointer"
                       />
                       <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
-                        <ArrowUpRight size={24} />
+                        <ArrowUpRight size={20} />
                       </div>
                     </BlurFade>
                   </Link>

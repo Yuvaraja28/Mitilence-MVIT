@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { AnimatedGradientText } from '../magicui/animated-gradient-text';
-import { DeveloperImg, StarImg } from '@/variables';
+import { DeveloperImg, MitilenceVideo, StarImg } from '@/variables';
 
 export default function Landing() {
   return (
@@ -18,7 +18,7 @@ export default function Landing() {
         loop
         muted
         autoPlay
-        src="https://ucarecdn.com/65640dde-41f4-4657-89d1-8c27e03c8abc/"
+        src={MitilenceVideo}
         className="object-cover lg:h-[100vh] h-[37em] absolute w-full"
       />
       <div className="lg:h-[100vh] h-[37em] absolute inset-0 bg-black/25"></div>

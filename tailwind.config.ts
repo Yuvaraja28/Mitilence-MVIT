@@ -109,7 +109,10 @@ export default {
   					backgroundPosition: 'var(--bg-size) 0'
   				}
   			}
-  		}
+  		},
+			screens: {
+				xmd: '828px',
+			}		
   	}
   },
   plugins: [require("tailwindcss-animate"),heroui()],

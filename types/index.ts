@@ -9,7 +9,7 @@ interface EventUser {
   department: string;
   imageUrl?: string;
   gender: 'male' | 'female';
-  year: number;
+  gradYear: number;
   createdTime: string;
   updatedTime?: string;
   paymentStatus?: 'verified' | 'pending' | 'failed';
@@ -56,7 +56,6 @@ interface Department {
   fullName: string;
   order: number;
   logoUrl?: string;
-  bannerUrl?: string;
 }
 
 // Realtime DB
@@ -75,7 +74,6 @@ interface Events {
   studentOrganizerId: string[];
   eventType: 'technical' | 'non_technical';
   logoUrl?: string;
-  bannerUrl?: string;
   totalSeats?: number;
   seatsLeft?: number;
   entryFee?: number;

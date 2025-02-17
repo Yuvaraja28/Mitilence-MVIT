@@ -14,15 +14,18 @@ export default function UserRegistration({ update = false }) {
   const LogoutGoogle = firebaseContext?.LogoutGoogle;
 
   const registrationFields = [
-    { name: "Name", param: "name", type: "text", value: fireUserData?.displayName, default: true },
+    { name: "Name", param: "name", type: "text", value: fireUserData?.displayName },
     { name: "Email Id", param: "emailId", type: "email", value: fireUserData?.email, default: true },
     { name: "Phone No", param: "phoneNo", type: "tel", value: fireUserData?.phoneNumber || fireUserDoc?.phoneNo },
     { name: "Enroll No", param: "enrollNo", type: "text", value: fireUserDoc?.enrollNo },
     { name: "College", param: "college", type: "text", value: fireUserDoc?.college },
     { name: "Department", param: "department", type: "text", value: fireUserDoc?.department },
-    { name: "Year", param: "year", type: "number", value: fireUserDoc?.year },
+    { name: "Graduation Year", param: "gradYear", type: "text", value: fireUserDoc?.gradYear },
     { name: "Gender", param: "gender", type: "select", value: fireUserDoc?.gender },
   ];
+
+  const minYear = new Date().getFullYear();
+  const maxYear = new Date().getFullYear() + 4;
 
   const registerUser = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,14 +36,14 @@ export default function UserRegistration({ update = false }) {
       const userId = fireUserData.uid;
       if (firestoreDB) {
         setDoc(doc(firestoreDB, "users", userId), {
-          name: fireUserData.displayName,
+          name: data.name,
           emailId: fireUserData.email,
           phoneNo: fireUserData?.phoneNumber || data.phoneNo,
           enrollNo: data.enrollNo,
           college: data.college,
           department: data.department,
           imageUrl: fireUserData?.photoURL,
-          year: +data.year,
+          gradYear: +data.gradYear,
           gender: data.gender,
           createdTime: new Date(fireUserDoc?.createdTime || new Date()),
           ...(update && {
@@ -128,7 +131,11 @@ export default function UserRegistration({ update = false }) {
                   pattern: "\\d{10}",
                   errorMessage: "Please enter a 10 digit phone number",
                 })}
-              />
+                {...(field.param === "gradYear" && {
+                  pattern: `^(${minYear}|${minYear + 1}|${minYear + 2}|${minYear + 3}|${minYear + 4}|${maxYear})$`,
+                  errorMessage: `Please enter a year between ${minYear} and ${maxYear}`,
+                })}
+                />
             )
           )}
           <Button

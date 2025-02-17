@@ -9,6 +9,5 @@ export async function getDepartments(): Promise<Department[]> {
     fullName: doc.data()?.fullName,
     order: doc.data()?.order,
     logoUrl: doc.data()?.logoUrl,
-    bannerUrl: doc.data()?.bannerUrl
   })).sort((a, b) => a.order - b.order);
 }

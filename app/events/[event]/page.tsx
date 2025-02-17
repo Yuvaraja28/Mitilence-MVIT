@@ -23,17 +23,18 @@ import confettiPopUp from '@/animations/confetti';
 import { EventsFallbackImg, TechnicalEventsImg } from '@/variables';
 
 const GeneralInstruction = [
-  'A valid college ID card is required for participation.',
-  'Participants are expected to adhere to the formal dress code.',
-  'Only engineering students are eligible to participate in the symposium.',
-  'Spot registration is available for all events except paper presentations.',
-  'Lunch and participation certificates will be provided to registered participants.',
+  'Engineering students only allowed to participate in the symposium',
+  'Spot registration is allowed except paper presentation',
+  'College ID card essential for participation',
+  'Lunch & Participation certificates are provided for registered participants',
+  'Students are advised to maintain the formal dress code'
 ];
 
 export default function Event({ params }: { params: Promise<{ event: string }> }) {
   const firebaseContext = useFirebase();
   const fireApp = firebaseContext?.fireApp;
   const LoginGoogle = firebaseContext?.LoginGoogle;
+  const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
   const eventsObject = firebaseContext?.eventsObject || {};
   const registeredEventsSet = firebaseContext?.registeredEventsSet || new Set();
@@ -52,7 +53,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const teamMembers = Array.from({ length: (eventData?.teamSize || 1) }).map((_, membIndex) => formData.get(`Participant ${membIndex + 1} Name`));
-    teamMembers[0] = fireUserData?.displayName || ''
+    teamMembers[0] = fireUserDoc?.name || ''
     onClose()
     const updateRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData?.uid}/${eventData.id}`);
     update(updateRef, {
@@ -65,7 +66,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
 
   return (
     <div
-      className="flex flex-col items-center text-white"
+      className="flex flex-col items-center text-white w-full"
     >
       <HeaderSection
         bannerName={eventData?.name || ''}
@@ -79,54 +80,54 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
         </div>
       :
         <div
-          className="flex flex-col items-center gap-8 mt-[-2vh] lg:mt-[-6vh] w-full px-6 md:px-10 pb-20"
+          className="flex flex-col items-center gap-8 lg:mt-[-6vh] px-6 md:px-10 pb-20 w-full lg:w-[62.5em]"
         >
           <div
-            className="flex flex-col gap-6 w-full lg:w-[62.5em]"
+            className='flex flex-col gap-5'
           >
-            <BlurFade
-              inView
-              delay={1 * 0.05}
-            >              
-              <Image
-                isBlurred
-                fallbackSrc={EventsFallbackImg}
-                src={eventData?.bannerUrl || EventsFallbackImg}
-                className="h-full w-full object-cover rounded-[20px] border border-gray-800"
-              />
-              <Popover placement="left">
-                <PopoverTrigger>
-                  <Button
-                    isIconOnly
-                    className="absolute top-4 right-4 z-30 bg-boxBlack text-white border border-white/20"
-                  >
-                    <Share2 size={20} />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="flex flex-row p-2 gap-1.5 bg-boxBlack text-white">
-                  <Link
-                    target='_blank'
-                    className='bg-[#25D366] rounded-[8px] text-white p-1.5'
-                    href={`https://api.whatsapp.com/send/?text=Check%20out%20this%20great%20event%20happening%20in%20MVIT:%0A${window.location.href}`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
-                  </Link>
-                  <Button
-                    size='sm'
-                    isIconOnly
-                    className='bg-white/5'
-                    onPress={() => navigator?.clipboard.writeText(window.location.href)}
-                  >
-                    <Link2 color='#FFFFFF' size={20} />
-                  </Button>
-                </PopoverContent>
-              </Popover>
-            </BlurFade>
             <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              className="flex flex-col items-center xmd:items-start h-full xmd:flex-row gap-3"
             >
+              <BlurFade
+                inView
+                delay={1 * 0.05}
+                className='flex-[1.3]'
+              >
+                <Image
+                  fallbackSrc={EventsFallbackImg}
+                  src={eventData?.logoUrl || EventsFallbackImg}
+                  className="h-[80vw] sm:h-[60vw] xmd:h-full w-full object-cover rounded-[20px] border border-gray-800"
+                />
+                <Popover placement="left">
+                  <PopoverTrigger>
+                    <Button
+                      isIconOnly
+                      className="absolute top-4 right-4 z-30 bg-boxBlack text-white border border-white/20"
+                    >
+                      <Share2 size={20} />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="flex flex-row p-2 gap-1.5 bg-boxBlack text-white">
+                    <Link
+                      target='_blank'
+                      className='bg-[#25D366] rounded-[8px] text-white p-1.5'
+                      href={`https://api.whatsapp.com/send/?text=Check%20out%20this%20great%20event%20happening%20in%20MVIT:%0A${window.location.href}`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+                    </Link>
+                    <Button
+                      size='sm'
+                      isIconOnly
+                      className='bg-white/5'
+                      onPress={() => navigator?.clipboard.writeText(window.location.href)}
+                    >
+                      <Link2 color='#FFFFFF' size={20} />
+                    </Button>
+                  </PopoverContent>
+                </Popover>
+              </BlurFade>
               <div
-                className="w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 pt-5 pb-7 px-5 lg:px-8 rounded-3xl shadow-xl flex flex-col gap-4"
+                className="flex-1 w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 pt-5 pb-7 px-5 rounded-3xl shadow-xl flex flex-col gap-4"
               >
                 <span
                   className="uppercase font-semibold text-2xl text-center"
@@ -175,26 +176,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                     </div>
                   </div>
                   <div
-                    className="bg-[#ebe4ff] rounded-full flex flex-row items-center py-1 lg:py-1.5 px-6 gap-3.5"
-                  >
-                    <Navigation color="#000000" size={25} />
-                    <div
-                      className="text-black flex flex-col gap-0.5"
-                    >
-                      <span
-                        className="uppercase font-semibold text-md"
-                      >
-                        Location
-                      </span>
-                      <span
-                        className="font-medium text-md mt-[-5px] uppercase"
-                      >
-                        {eventData?.place}
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    className="bg-[#ebe4ff] rounded-full flex flex-row items-center py-1 lg:py-1.5 px-6 gap-3.5"
+                    className="bg-[#ebe4ff] rounded-full flex flex-row items-center py-1 lg:py-1.5 px-6 gap-3.5 w-full"
                   >
                     <UsersRound color="#000000" size={25} />
                     <div
@@ -203,7 +185,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                       <span
                         className="uppercase font-semibold text-md"
                       >
-                        No. of Participants
+                        Participants
                       </span>
                       <span
                         className="font-medium text-md mt-[-5px]"
@@ -212,19 +194,6 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                       </span>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div
-                className="flex flex-col justify-between gap-4"
-              >
-                <div
-                  className="w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 pt-5 pb-7 px-5 lg:px-8 rounded-3xl shadow-xl flex flex-col gap-4"
-                >
-                  <span
-                    className="uppercase font-semibold text-xl text-center"
-                  >
-                    Coordinator Details
-                  </span>
                   <div
                     className="flex flex-col gap-3"
                   >
@@ -252,31 +221,12 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                     >
                       <ContactRound color="#000000" size={25} />
                       <div
-                        className="text-black flex flex-col gap-0.5"
+                        className="text-black flex flex-col gap-1"
                       >
                         <span
-                          className="uppercase font-semibold text-md"
+                          className="uppercase font-semibold text-md leading-tight"
                         >
-                          Student Coordinator - 1
-                        </span>
-                        <span
-                          className="font-medium text-md mt-[-5px] uppercase"
-                        >
-                          {eventData?.departmentId} Dept
-                        </span>
-                      </div>
-                    </div>
-                    <div
-                      className="bg-[#ebe4ff] rounded-full flex flex-row items-center py-1 lg:py-1.5 px-6 gap-3.5"
-                    >
-                      <ContactRound color="#000000" size={25} />
-                      <div
-                        className="text-black flex flex-col gap-0.5"
-                      >
-                        <span
-                          className="uppercase font-semibold text-md"
-                        >
-                          Student Coordinator - 2
+                          Coordinator
                         </span>
                         <span
                           className="font-medium text-md mt-[-5px] uppercase"
@@ -286,22 +236,22 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                       </div>
                     </div>
                   </div>
+                  {registeredEventsSet.has(eventData.id) ?
+                    <span
+                      className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-full uppercase h-[3.2rem]"
+                    >
+                      Registered <BadgeCheck />
+                    </span>
+                  :
+                    <Button
+                      onPress={onOpen}
+                      disabled={registeredEventsSet.has(eventData.id)}
+                      className="bg-purpleAccent text-white text-xl font-medium rounded-full uppercase h-[3.2rem]"
+                    >
+                      Register Now
+                    </Button>
+                  }
                 </div>
-                {registeredEventsSet.has(eventData.id) ?
-                  <span
-                    className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-full uppercase h-[3.2rem]"
-                  >
-                    Registered <BadgeCheck />
-                  </span>
-                :
-                  <Button
-                    onPress={onOpen}
-                    disabled={registeredEventsSet.has(eventData.id)}
-                    className="bg-purpleAccent text-white text-xl font-medium rounded-full uppercase h-[3.2rem]"
-                  >
-                    Register Now
-                  </Button>
-                }
               </div>
             </div>
             <div
@@ -350,7 +300,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                           placeholder={`Enter Participant ${membIndex+1} Name`}
                           {...(membIndex == 0 && {
                             disabled: true,
-                            value: fireUserData?.displayName || ''
+                            value: fireUserDoc?.name || ''
                           })}
                         />
                       )}
@@ -405,7 +355,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                           </span>
                         )}
                       </div>
-                      <div
+                      {/* <div
                         className='flex flex-col gap-0.5 px-2'
                       >
                         <span
@@ -416,7 +366,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                         <span>
                           The registration fee covers the entire Mitilence event, permitting participation in multiple events, provided there are no scheduling conflicts. The fee must be paid at the designated payment desk within the college premises.
                         </span>
-                      </div>
+                      </div> */}
                     </>
                   }
                 </ModalBody>

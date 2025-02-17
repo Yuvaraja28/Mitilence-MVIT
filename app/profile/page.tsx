@@ -26,7 +26,7 @@ export default function Profile() {
     { name: "Enroll No", param: "enrollNo", type: "text" },
     { name: "College", param: "college", type: "text" },
     { name: "Department", param: "department", type: "text" },
-    { name: "Year", param: "year", type: "number" },
+    { name: "Graduation Year", param: "gradYear", type: "number" },
     { name: "Gender", param: "gender", type: "select" },
   ];
 

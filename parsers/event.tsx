@@ -13,7 +13,6 @@ export default function parseEvents(id: string, data: any): Events {
     seatsLeft: data?.seatsLeft,
     entryFee: data?.entryFee,
     logoUrl: data?.logoUrl,
-    bannerUrl: data?.bannerUrl,
     eventCategory: data?.eventCategory,
     registrationEndTime: (data.registrationEndTime instanceof Timestamp ? data.registrationEndTime.toDate() : new Date(data.registrationEndTime)).toISOString(),
     studentOrganizerId: data?.studentOrganizerId,

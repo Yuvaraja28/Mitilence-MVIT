@@ -23,7 +23,7 @@ export default function ResponsiveSidebar() {
   const headerList = [
     { name: 'home', url: '/' },
     { name: 'events', url: 'events' },
-    { name: 'about', url: 'about' },
+    { name: 'glimpse ', url: 'glimpse' },
   ];
 
   return (

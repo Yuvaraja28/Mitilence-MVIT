@@ -11,7 +11,7 @@ export default function parseEventUser(id: string, data: any): EventUser {
     department: data?.department,
     imageUrl: data?.imageUrl,
     gender: data?.gender,
-    year: data?.year,
+    gradYear: data?.gradYear,
     paymentStatus: data?.paymentStatus,
     createdTime: (data.createdTime instanceof Timestamp ? data.createdTime.toDate() : new Date(data.createdTime)).toISOString()
   }
