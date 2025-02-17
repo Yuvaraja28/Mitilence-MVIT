@@ -34,9 +34,6 @@ interface AdministrationMember {
   readonly imageUrl: string;
   readonly order: number;
 }
-interface ManagementMember extends AdministrationMember {
-
-}
 
 // Firestore DB
 interface TechnicalMember {
@@ -71,7 +68,7 @@ interface Events {
   eventDescription: string;
   registrationEndTime: string;
   facultyOrganizerId: string;
-  studentOrganizerId: string[];
+  studentOrganizerId: string;
   eventType: 'technical' | 'non_technical';
   logoUrl?: string;
   totalSeats?: number;

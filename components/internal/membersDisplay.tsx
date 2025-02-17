@@ -4,7 +4,7 @@ import { Image } from "@heroui/image";
 import { DefaultMemberImg } from "@/variables";
 import { BlurFade } from "../magicui/blur-fade";
 
-export function MembersDisplay({ title, members }: { title: string, members: ManagementMember[] | TechnicalMember[] }) {
+export function MembersDisplay({ title, members }: { title: string, members: AdministrationMember[] | TechnicalMember[] }) {
   return (
     <div
       className="text-white lg:p-10 px-6 py-8 flex flex-col items-center w-full gap-8 lg:gap-14"

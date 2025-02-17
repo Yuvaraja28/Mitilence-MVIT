@@ -68,7 +68,7 @@ export default function Profile() {
                 showArrow
                 placement="bottom"
                 className="text-md font-medium px-4 py-2"
-                content={(fireUserDoc?.paymentStatus != "verified") ? 'You have not paid the one time Event fee in college permis' : 'You have paid the Event Fee'}
+                content={(fireUserDoc?.paymentStatus != "verified") ? 'You have not paid the one time Mitilence fee in college permis' : 'You have paid the Mitilence Fee'}
               >
                 <Button
                   size="sm"

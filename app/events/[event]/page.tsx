@@ -10,17 +10,18 @@ import NotFound from "@/app/not-found";
 import { Button } from "@heroui/button";
 import { useFirebase } from '@/contexts/firebase';
 import Footer from "@/components/internal/footer";
+import confettiPopUp from '@/animations/confetti';
+import { getOrganizer } from '@/Firestore/organizers';
+import { BlurFade } from '@/components/magicui/blur-fade';
 import { GoogleMap } from "@/components/internal/googleMap";
 import { getDatabase, ref, update } from 'firebase/database';
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { CircularLoader } from "@/components/internal/Loaders";
-import { BadgeCheck, Building2, CalendarDays, ContactRound, Link2, Navigation, Share2, UsersRound } from "lucide-react";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
-import { BlurFade } from '@/components/magicui/blur-fade';
-import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
-import confettiPopUp from '@/animations/confetti';
 import { EventsFallbackImg, TechnicalEventsImg } from '@/variables';
+import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
+import { BadgeCheck, Building2, CalendarDays, ContactRound, Link2, Share2, UsersRound } from "lucide-react";
 
 const GeneralInstruction = [
   'Engineering students only allowed to participate in the symposium',
@@ -38,6 +39,8 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
   const fireUserData = firebaseContext?.fireUserData;
   const eventsObject = firebaseContext?.eventsObject || {};
   const registeredEventsSet = firebaseContext?.registeredEventsSet || new Set();
+  const [studentOrganizer, setStudentOrganizer] = React.useState<EventOrganizer | null>(null);
+  const [facultyOrganizer, setFacultyOrganizer] = React.useState<EventOrganizer | null>(null);
   
   const event = React.use(params).event
   const {isOpen, onOpen, onClose} = useDisclosure();
@@ -63,6 +66,19 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
     });
     confettiPopUp()
   }
+
+  React.useEffect(() => {
+    if (eventData?.facultyOrganizerId) {
+      getOrganizer(eventData.facultyOrganizerId)
+        .then(data => setFacultyOrganizer(data))
+        .catch(() => {})
+    }
+    if (eventData?.studentOrganizerId && typeof eventData.studentOrganizerId === 'string') {
+      getOrganizer(eventData.studentOrganizerId)
+        .then(data => setStudentOrganizer(data))
+        .catch(() => {})
+    }
+  }, [eventData])
 
   return (
     <div
@@ -212,7 +228,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                         <span
                           className="font-medium text-md mt-[-5px] uppercase"
                         >
-                          {eventData?.departmentId} Dept
+                          {facultyOrganizer?.name}
                         </span>
                       </div>
                     </div>
@@ -231,7 +247,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                         <span
                           className="font-medium text-md mt-[-5px] uppercase"
                         >
-                          {eventData?.departmentId} Dept
+                          {studentOrganizer?.name} ( {studentOrganizer?.phoneNo} )
                         </span>
                       </div>
                     </div>
