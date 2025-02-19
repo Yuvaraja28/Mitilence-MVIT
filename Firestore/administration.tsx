@@ -1,17 +1,23 @@
-import { firestoreDB } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { realtimeDB } from "@/lib/firebase";
+import { ref, get } from "firebase/database";
 
-export async function getadministrationMembers(): Promise<AdministrationMember[]> {
-  const querySnapshot = await getDocs(collection(firestoreDB, 'administration'));
-  const members = querySnapshot.docs.map(doc => {
-    const data = doc.data();
-    return {
-      id: doc.id,
+export async function getAdministrationMembers(): Promise<AdministrationMember[]> {
+  const dbRef = ref(realtimeDB, 'administration');
+  try {
+    const snapshot = await get(dbRef);
+    if (!snapshot.exists()) {
+      return [];
+    }
+    const members: AdministrationMember[] = Object.entries(snapshot.val()).map(([id, data]: [string, any]) => ({
+      id,
       name: data.name,
       role: data.role,
       imageUrl: data.imageUrl,
       order: data.order
-    } as AdministrationMember;
-  });
-  return members.sort((a, b) => a.order - b.order);
+    }));
+    return members.sort((a, b) => a.order - b.order);
+  } catch (error) {
+    console.error("Error fetching administration members:", error);
+    return [];
+  }
 }

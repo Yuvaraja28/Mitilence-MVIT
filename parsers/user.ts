@@ -12,7 +12,7 @@ export default function parseEventUser(id: string, data: any): EventUser {
     imageUrl: data?.imageUrl,
     gender: data?.gender,
     gradYear: data?.gradYear,
-    paymentStatus: data?.paymentStatus,
-    createdTime: (data.createdTime instanceof Timestamp ? data.createdTime.toDate() : new Date(data.createdTime)).toISOString()
+    createdTime: (data?.createdTime == null) ? null : (data.createdTime instanceof Timestamp ? data.createdTime.toDate() : new Date(data.createdTime)).toISOString(),
+    updatedTime: (data?.updatedTime == null) ? null : (data.updatedTime instanceof Timestamp ? data.updatedTime.toDate() : new Date(data.updatedTime)).toISOString()
   }
 }

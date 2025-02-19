@@ -7,3 +7,60 @@ export const MVITImg = "https://ucarecdn.com/b43468a3-ef20-4eed-8b28-7eb3fbcb2a2
 export const MVITLogoImg = "https://ucarecdn.com/8ef2db20-fd0e-47b5-84a2-58d40bae70bb/-/preview/526x625/"
 export const EventsFallbackImg = "https://ucarecdn.com/02f10002-1976-4726-9d94-b89e9b1ac98e/-/preview/1000x667/"
 export const MitilenceVideo = "/videos/mitilence.mp4"
+
+export const DepartmentsVar = [
+  {
+    "id": "cse",
+    "name": "CSE",
+    "order": 1,
+    "logoUrl": "https://ucarecdn.com/279b2c26-6171-4436-9ed6-9a2e1ed2b104/-/preview/1000x1000/"
+  },
+  {
+    "id": "it",
+    "name": "IT",
+    "order": 2,
+    "logoUrl": null
+  },
+  {
+    "id": "aiml",
+    "name": "AIML",
+    "order": 3,
+    "logoUrl": null
+  },
+  {
+    "id": "ece",
+    "name": "ECE",
+    "order": 4,
+    "logoUrl": null
+  },
+  {
+    "id": "eee",
+    "name": "EEE",
+    "order": 5,
+    "logoUrl": null
+  },
+  {
+    "id": "mech",
+    "name": "MECH",
+    "order": 6,
+    "logoUrl": null
+  },
+  {
+    "id": "icb",
+    "name": "ICB",
+    "order": 7,
+    "logoUrl": null
+  },
+  {
+    "id": "robotics",
+    "name": "ROBOTICS",
+    "order": 8,
+    "logoUrl": null
+  },
+  {
+    "id": "ft",
+    "name": "FT",
+    "order": 9,
+    "logoUrl": null
+  }
+]

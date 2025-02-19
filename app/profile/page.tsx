@@ -4,22 +4,26 @@ import Link from "next/link";
 import { Image } from "@heroui/image";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { Tooltip } from "@heroui/tooltip";
 import { DefaultMemberImg } from "@/variables";
 import { useFirebase } from "@/contexts/firebase";
 import UserRegistration from "@/components/internal/userRegistration";
+import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
-import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, Navigation, UserRoundPen } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, IndianRupee, Navigation, UserRoundPen } from "lucide-react";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
   const eventsObject = firebaseContext?.eventsObject || {};
-  const registeredEvents = firebaseContext?.registeredEvents || {};
+  const fireCustomClaims = firebaseContext?.fireCustomClaims;
+  const eventPayments: EventUserPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
 
   const [userUpdate, setUserUpdate] = React.useState(false)
   const [currentEvent, setCurrentEvent] = React.useState<string | null>(null)
+
+  const paidEvents = React.useMemo(() => Object.entries(eventPayments?.events || {}), [eventPayments?.events])
+  const paidDepartments = React.useMemo(() => Object.entries(eventPayments?.mitilence || {}), [eventPayments?.mitilence])
 
   const Fields = [
     { name: "Phone No", param: "phoneNo", type: "tel", value: fireUserData?.phoneNumber },
@@ -38,16 +42,28 @@ export default function Profile() {
         className="flex flex-col gap-4 w-[90%] lg:w-[42em]"
       >
         <div
-          className="flex flex-col gap-6 bg-white rounded-2xl p-8"
+          className="flex flex-col gap-4 bg-white rounded-2xl p-8"
         >
-          <Button
-            color="primary"
-            onPress={() => setUserUpdate(true)}
-            startContent={<UserRoundPen size={20} />}
-            className="flex flex-row gap-2 text-md self-end font-medium bg-blue-500 text-white px-4 py-1.5 rounded-[10px]"
+          <div
+            className="flex flex-row gap-2 self-end"
           >
-            Update
-          </Button>
+            {(fireCustomClaims?.role != null) &&
+              <Link
+                href={`/${fireCustomClaims?.role}`}
+                className="flex flex-row gap-2 text-md font-medium bg-cyan-600 text-white px-5 py-2 rounded-[10px] capitalize"
+              >
+                {fireCustomClaims.role}
+              </Link>
+            }
+            <Button
+              color="primary"
+              onPress={() => setUserUpdate(true)}
+              startContent={<UserRoundPen size={20} />}
+              className="flex flex-row gap-2 text-md font-medium bg-blue-500 text-white px-4 py-1.5 rounded-[10px]"
+            >
+              Update
+            </Button>
+          </div>
           <div
             className="flex md:flex-row gap-2.5 items-center justify-between flex-col-reverse"
           >
@@ -55,7 +71,7 @@ export default function Profile() {
               className="flex flex-col items-center md:items-start h-full"
             >
               <span
-                className="text-3xl font-medium text-center md:text-start"
+                className="text-4xl font-medium text-center md:text-start"
               >
                 {fireUserDoc?.name}
               </span>
@@ -64,21 +80,6 @@ export default function Profile() {
               >
                 {fireUserDoc?.emailId}
               </span>
-              <Tooltip
-                showArrow
-                placement="bottom"
-                className="text-md font-medium px-4 py-2"
-                content={(fireUserDoc?.paymentStatus != "verified") ? 'You have not paid the one time Mitilence fee in college permis' : 'You have paid the Mitilence Fee'}
-              >
-                <Button
-                  size="sm"
-                  color={(fireUserDoc?.paymentStatus == "verified") ? "success" : "warning"}
-                  startContent={<BadgeIndianRupee />}
-                  className="text-md font-medium w-fit !px-4 !py-2 capitalize mt-1"
-                >
-                  Payment {fireUserDoc?.paymentStatus || 'pending'}
-                </Button>
-              </Tooltip>
             </div>
             <Image
               width={100}
@@ -91,8 +92,42 @@ export default function Profile() {
               className="object-cover bg-contain"
             />
           </div>
+          {(paidDepartments.length > 0) &&
+            <div
+              className="flex flex-col gap-2 px-1 mt-[-5px] lg:mt-[-15px]"
+            >
+              <span
+                className="text-xl font-semibold uppercase"
+              >
+                Paid Departments
+              </span>
+              <div
+                className="flex flex-row flex-wrap gap-2"
+              >
+                {paidDepartments.map(mitilence =>
+                  <Popover
+                    showArrow
+                    placement="top"
+                    key={mitilence[0]}
+                  >
+                    <PopoverTrigger>
+                      <Button
+                        size="sm"
+                        className="text-lg bg-purpleAccent text-white font-medium w-fit !px-1 !py-2 uppercase"
+                      >
+                        {mitilence[0]}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="text-md font-medium px-4 py-2">
+                      You have paid for {mitilence[0].toUpperCase()} department events
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </div>
+            </div>
+          }
           <div
-            className="grid md:grid-cols-2 gap-5"
+            className="grid md:grid-cols-2 gap-4"
           >
             {Fields.map(field =>
               <Input
@@ -111,8 +146,8 @@ export default function Profile() {
         <span
           className="flex flex-row justify-between items-center gap-4 bg-white rounded-2xl px-8 py-4 text-xl font-medium"
         >
-          Registered Events ( {Object.keys(registeredEvents).length} )
-          {(Object.keys(registeredEvents).length > 0) ?
+          Registered Events ( {paidEvents.length} )
+          {(paidEvents.length > 0) ?
             <ChevronDown size={30} />
           :
             <Link
@@ -124,11 +159,11 @@ export default function Profile() {
             </Link>
           }
         </span>
-        {(Object.keys(registeredEvents).length > 0) &&
+        {(paidEvents.length > 0) &&
           <div
             className="flex flex-col sm:grid grid-cols-2 gap-4 bg-white text-white rounded-2xl px-6 py-8"
           >
-            {(Object.entries(registeredEvents)).map(registerEve => 
+            {(Object.entries(eventPayments?.events || {})).map(registerEve => 
               <div
                 key={registerEve[0]}
                 className="flex flex-col gap-3 bg-boxBlack p-4 rounded-3xl"
@@ -149,20 +184,21 @@ export default function Profile() {
                     >
                       {eventsObject[registerEve[0]].departmentId}
                     </span>
-                    <Tooltip
-                      showArrow
-                      className="text-md font-medium px-4 py-2"
-                      content={`You have ${(registerEve[1]?.checkedInStatus == 'checkedin') ? 'checked' : 'not checked'} in for the Event`}
-                    >
-                      <Button
-                        size="sm"
-                        color={(registerEve[1]?.checkedInStatus == 'checkedin') ? "success" : "warning"}
-                        startContent={(registerEve[1]?.checkedInStatus == 'checkedin') ? <BadgeCheck /> : <CircleDashed />}
-                        className="text-md font-medium w-fit !px-4 !py-2 capitalize"
+                    <Popover placement="top" showArrow>
+                      <PopoverTrigger>
+                        <Button
+                          size="sm"
+                          color={(registerEve[1]?.checkedInStatus) ? "success" : "warning"}
+                          startContent={(registerEve[1]?.checkedInStatus) ? <BadgeCheck /> : <CircleDashed />}
+                          className="text-sm font-medium w-fit !px-4 !py-2 capitalize"
                         >
-                        {(registerEve[1]?.checkedInStatus == 'checkedin') ? 'Checked In' : 'Not Checked In'}
-                      </Button>
-                    </Tooltip>
+                          {(registerEve[1]?.checkedInStatus) ? 'Checked In' : 'Not Checked In'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="text-md font-medium px-4 py-2">
+                        You have {(registerEve[1]?.checkedInStatus) ? 'checked' : 'not checked'} in for the Event
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <Button
                     isIconOnly
@@ -189,22 +225,8 @@ export default function Profile() {
           onClose={() => setCurrentEvent(null)}
         >
           <ModalContent>
-            <ModalHeader className="flex flex-col gap-1 text-2xl pt-6">
+            <ModalHeader className="text-2xl">
               {eventsObject[currentEvent].name}
-              <Tooltip
-                showArrow
-                className="text-md font-medium px-4 py-2"
-                content={`You have ${(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? 'checked' : 'not checked'} in for the Event`}
-              >
-                <Button
-                  size="sm"
-                  color={(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? "success" : "warning"}
-                  startContent={(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? <BadgeCheck /> : <CircleDashed />}
-                  className="text-sm font-medium w-fit !px-4 !py-2 capitalize"
-                >
-                  {(registeredEvents[currentEvent]?.checkedInStatus == 'checkedin') ? 'Checked In' : 'Not Checked In'}
-                </Button>
-              </Tooltip>
             </ModalHeader>
             <ModalBody>
               <div
@@ -214,33 +236,20 @@ export default function Profile() {
                   className="w-[17em]"
                   src={eventsObject[currentEvent].logoUrl}
                 />
-                <div
-                  className="flex flex-col gap-2.5 w-full"
-                >
-                  <span
-                    className="flex flex-row gap-1.5 items-center text-xl font-semibold"
-                  >
-                    Participants <span
-                      className="bg-boxBlack px-2 rounded-[8px] text-md font-medium text-white"
+                <Popover placement="top" showArrow>
+                  <PopoverTrigger>
+                    <Button
+                      color={(eventPayments.events[currentEvent]?.checkedInStatus) ? "success" : "warning"}
+                      startContent={(eventPayments.events[currentEvent]?.checkedInStatus) ? <BadgeCheck /> : <CircleDashed />}
+                      className="text-sm font-medium w-fit !px-4 !py-2 capitalize"
                     >
-                      {eventsObject[currentEvent].teamSize}
-                    </span>
-                  </span>
-                  {(registeredEvents[currentEvent]?.teamMembers != null) &&
-                    <div
-                      className="flex flex-col gap-1.5"
-                    >
-                      {registeredEvents[currentEvent].teamMembers.map((members, membIndex) =>
-                        <span
-                          key={membIndex}
-                          className="bg-gray-100 border border-gray-300 text-black text-lg font-medium px-4 py-1.5 rounded-xl"
-                        >
-                          {members}
-                        </span>
-                      )}
-                    </div>
-                  }
-                </div>
+                      {(eventPayments.events[currentEvent]?.checkedInStatus) ? 'Checked In' : 'Not Checked In'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="text-md font-medium px-4 py-2">
+                    You have {(eventPayments.events[currentEvent]?.checkedInStatus) ? 'checked' : 'not checked'} in for the Event
+                  </PopoverContent>
+                </Popover>
                 <div
                   className="flex flex-row flex-wrap gap-1.5"
                 >

@@ -49,7 +49,7 @@ export default function UserRegistration({ update = false }) {
           ...(update && {
             updatedTime: new Date()
           })
-        }, { merge: true })
+        })
           .then(() => {
             console.log("User registered successfully");
             return window.location.href = '/profile'

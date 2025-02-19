@@ -1,3 +1,9 @@
+ol {
+  color: white; /* White text */
+  list-style-type: disc; /* Default bullet points */
+  padding-left: 1.25rem; /* Equivalent to pl-5 in Tailwind CSS */
+}
+
 ul {
   color: white; /* White text */
   list-style-type: disc; /* Default bullet points */
@@ -6,4 +12,29 @@ ul {
 
 li {
   color: white; /* Ensure all list items are white */
+}
+
+/* Default styles for headings */
+h1, h2, h3, h4, h5, h6 {
+  color: white; /* Adjust color as needed */
+  font-weight: bold;
+  margin-bottom: -6px;
+}
+
+/* Specific styles per heading */
+h1 { font-size: 2rem; } /* 40px */
+h2 { font-size: 1.75rem; }   /* 32px */
+h3 { font-size: 1.5rem; } /* 28px */
+h4 { font-size: 1.25rem; }  /* 24px */
+h5 { font-size: 1rem; } /* 20px */
+h6 { font-size: 0.75rem; }    /* 16px */
+
+/* Optional: Add responsive adjustments */
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.125rem; }
+  h6 { font-size: 1rem; }
 }

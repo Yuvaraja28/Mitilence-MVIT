@@ -11,18 +11,23 @@ import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import { ArrowUpRight, BadgeCheck, Search } from "lucide-react";
 import CrossVelocity from "@/components/internal/crossVelocity";
-import { getUser, getUsers } from "@/Firestore/users";
 import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
+
+const eventCategories = [
+  { id: 'all_events', name: 'All Events', order: 0 },
+  { id: 'technical', name: 'Technical', order: 1 },
+  { id: 'non_technical', name: 'Non-Technical', order: 2 },
+  { id: 'presentation', name: 'Presentation', order: 3 },
+  { id: 'expo', name: 'Expo', order: 4 },
+]
 
 export default function Events() {
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events
   const departments = firebaseContext?.departments || []
-  const eventCategories = firebaseContext?.eventCategories || []
   const registeredEventsSet = firebaseContext?.registeredEventsSet;
 
   React.useEffect(() => {
-    console.log(getUsers())
     const searchParams = new URL(location.href).searchParams;
     const departmentParam = searchParams.get('department');
     const categoryParam = searchParams.get('category');
@@ -177,7 +182,6 @@ export default function Events() {
                           className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-md font-medium w-fit !px-4 !py-1.5 capitalize"
                         >
                           <BadgeCheck /> Registered
-                          {/* Payment {registerEve[1].paymentStatus || 'pending'} */}
                         </button>
                       }
                       <Image

@@ -12,7 +12,6 @@ interface EventUser {
   gradYear: number;
   createdTime: string;
   updatedTime?: string;
-  paymentStatus?: 'verified' | 'pending' | 'failed';
 }
 
 // Firestore DB
@@ -50,9 +49,8 @@ interface TechnicalMember {
 interface Department {
   readonly id: string;
   name: string;
-  fullName: string;
   order: number;
-  logoUrl?: string;
+  logoUrl?: string | null;
 }
 
 // Realtime DB
@@ -62,7 +60,7 @@ interface Events {
   departmentId: string;
   startTime: string;
   endTime: string;
-  teamSize: number;
+  teamSize: string; // Eg Data [1 - 2] [1]
   place: string;
   eventCategory: string;
   eventDescription: string;
@@ -88,17 +86,28 @@ interface FAQ {
   answer: string;
 }
 
-// Realtime DB
-interface AllRegisteredEvent {
-  [key: string]: RegisteredEvent;
+interface MitilencePaymentDepartment {
+  departmentId: string;
+  paymentTime: string;
+  paymentVerifiedBy: string;
 }
 
 interface RegisteredEvent {
   eventId: string;
-  teamMembers: string[];
+  checkedInBy: string;
+  checkedInTime: string;
+  checkedInStatus: boolean;
   registeredTime: string;
-  paymentUpdatedBy?: string;
-  checkedInStatus?: 'checkedin' | 'not_checkedin';
+}
+
+interface EventUserPayments {
+  readonly id: string;
+  mitilence: {
+    [departmentId: string]: MitilencePaymentDepartment,
+  },
+  events: {
+    [eventsId: string]: RegisteredEvent
+  }
 }
 
 // Sub Types

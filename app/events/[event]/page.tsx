@@ -5,16 +5,13 @@ import Link from 'next/link';
 import remarkGfm from 'remark-gfm';
 import { Input } from '@heroui/input';
 import { Image } from "@heroui/image";
-import Markdown from 'react-markdown';
 import NotFound from "@/app/not-found";
 import { Button } from "@heroui/button";
 import { useFirebase } from '@/contexts/firebase';
 import Footer from "@/components/internal/footer";
-import confettiPopUp from '@/animations/confetti';
 import { getOrganizer } from '@/Firestore/organizers';
 import { BlurFade } from '@/components/magicui/blur-fade';
 import { GoogleMap } from "@/components/internal/googleMap";
-import { getDatabase, ref, update } from 'firebase/database';
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { CircularLoader } from "@/components/internal/Loaders";
@@ -22,6 +19,11 @@ import { EventsFallbackImg, TechnicalEventsImg } from '@/variables';
 import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/modal';
 import { BadgeCheck, Building2, CalendarDays, ContactRound, Link2, Share2, UsersRound } from "lucide-react";
+import confettiPopUp from '@/animations/confetti';
+import dynamic from "next/dynamic";
+
+const Markdown = dynamic(() => import("react-markdown"), { ssr: false });
+
 
 const GeneralInstruction = [
   'Engineering students only allowed to participate in the symposium',
@@ -33,7 +35,6 @@ const GeneralInstruction = [
 
 export default function Event({ params }: { params: Promise<{ event: string }> }) {
   const firebaseContext = useFirebase();
-  const fireApp = firebaseContext?.fireApp;
   const LoginGoogle = firebaseContext?.LoginGoogle;
   const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
@@ -55,16 +56,19 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
   async function registerNow(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const teamMembers = Array.from({ length: (eventData?.teamSize || 1) }).map((_, membIndex) => formData.get(`Participant ${membIndex + 1} Name`));
-    teamMembers[0] = fireUserDoc?.name || ''
-    onClose()
-    const updateRef = ref(getDatabase(fireApp), `/registeredEvents/${fireUserData?.uid}/${eventData.id}`);
-    update(updateRef, {
-      eventId: eventData.id,
-      teamMembers: teamMembers,
-      registeredTime: new Date().toISOString()
-    });
-    confettiPopUp()
+    fetch("/api/eventRegister", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${fireUserData?.accessToken}`
+      },
+      body: JSON.stringify({
+        eventId: eventData.id
+      })
+    })
+      .then(() => {
+        onClose()
+        confettiPopUp()
+      })
   }
 
   React.useEffect(() => {
@@ -247,7 +251,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                         <span
                           className="font-medium text-md mt-[-5px] uppercase"
                         >
-                          {studentOrganizer?.name} ( {studentOrganizer?.phoneNo} )
+                          {studentOrganizer?.name}
                         </span>
                       </div>
                     </div>
@@ -303,29 +307,19 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                     <div
                       className='flex flex-col gap-2'
                     >
-                      {Array.from({ length: (eventData?.teamSize || 1) }).map((_, membIndex) =>
-                        <Input
-                          type="text"
-                          size="lg"
-                          required
-                          key={membIndex}
-                          variant={"bordered"}
-                          name={`Participant ${membIndex+1} Name`}
-                          errorMessage={`Enter Participant ${membIndex+1} Name`}
-                          label={`Participant ${membIndex+1} Name`}
-                          placeholder={`Enter Participant ${membIndex+1} Name`}
-                          {...(membIndex == 0 && {
-                            disabled: true,
-                            value: fireUserDoc?.name || ''
-                          })}
-                        />
-                      )}
+                      <Input
+                        type="email"
+                        size="lg"
+                        required
+                        variant={"bordered"}
+                        name={`Participant Name`}
+                        label={`Participant Name`}
+                        disabled={true}
+                        value={fireUserDoc?.name || ''}
+                      />
                       <ul
-                        className='flex flex-col gap-1 mt-3'
+                        className='flex flex-col gap-1'
                       >
-                        <li className="text-[#F31260] text-sm px-1">
-                          Participant's names once entered cannot be modified. Please double check before clicking register.
-                        </li>
                         <li className="text-[#F31260] text-sm px-1">
                           I confirm, I have read and understood all instructions and consent to register.
                         </li>
