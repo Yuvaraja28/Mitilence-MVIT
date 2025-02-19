@@ -42,6 +42,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
   const registeredEventsSet = firebaseContext?.registeredEventsSet || new Set();
   const [studentOrganizer, setStudentOrganizer] = React.useState<EventOrganizer | null>(null);
   const [facultyOrganizer, setFacultyOrganizer] = React.useState<EventOrganizer | null>(null);
+  const [isEventSubmitting, setIsEventSubmitting] = React.useState<boolean>(false);
   
   const event = React.use(params).event
   const {isOpen, onOpen, onClose} = useDisclosure();
@@ -55,7 +56,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
 
   async function registerNow(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    setIsEventSubmitting(() => true);
     fetch("/api/eventRegister", {
       method: "POST",
       headers: {
@@ -69,6 +70,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
         onClose()
         confettiPopUp()
       })
+      .finally(() => setIsEventSubmitting(() => false))
   }
 
   React.useEffect(() => {
@@ -266,9 +268,15 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                     <Button
                       onPress={onOpen}
                       disabled={registeredEventsSet.has(eventData.id)}
-                      className="bg-purpleAccent text-white text-xl font-medium rounded-full uppercase h-[3.2rem]"
+                      isDisabled={((!registeredEventsSet.has(eventData.id)) && (eventData?.closed))}
+                      className={`${((!registeredEventsSet.has(eventData.id)) && (eventData?.closed)) ? "bg-red-500" : "bg-purpleAccent"} text-white text-xl font-medium rounded-full uppercase h-[3.2rem]`}
                     >
-                      Register Now
+                      {
+                        ((!registeredEventsSet.has(eventData.id)) && (eventData?.closed)) ?
+                          "Registrations Closed"
+                        :
+                          "Register Now"
+                      }
                     </Button>
                   }
                 </div>
@@ -284,13 +292,13 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
               </span>
               <Markdown
                 remarkPlugins={[remarkGfm]}
-                className={'p-6 flex flex-col gap-5 text-xl'}
+                className={'p-6 flex flex-col gap-5 text-xl select-none'}
               >
                 {eventData?.eventDescription || ''}
               </Markdown>
             </div>
           </div>
-          <Modal isOpen={isOpen} size={'lg'} onClose={() => {onClose(); setGeneralInstructionsRead(() => false)}}>
+          <Modal isOpen={isOpen} size={'lg'} onClose={isEventSubmitting ? () => {} : () => {onClose(); setGeneralInstructionsRead(() => false)}}>
             <ModalContent>
               <ModalHeader className="flex flex-col gap-1 text-2xl">
                 {(generalInstructionsRead) ?
@@ -391,6 +399,7 @@ export default function Event({ params }: { params: Promise<{ event: string }> }
                     </Link>
                   :
                     <Button
+                      isLoading={isEventSubmitting}
                       type={generalInstructionsRead ? 'submit' : 'button'}
                       onPress={generalInstructionsRead ? () => {} : () => {
                         if ((fireUserData == null) && (LoginGoogle != null)) {

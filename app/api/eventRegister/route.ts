@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
   
   try {
     const eventData = await req.json();
+    if (eventData?.eventId == null) throw "Event Id not passed";
     const userPaymentDoc = db.collection('payments').doc(userId);
     const userPaymentData = (await userPaymentDoc.get()).data() || {};
     
@@ -42,9 +43,9 @@ export async function POST(req: NextRequest) {
     const eventUserPayment = {
       ...userPaymentData,
       events: {
-        ...userPaymentData.events,
+        ...(userPaymentData?.events || {}),
         [String(eventData.eventId)]: {
-          ...(userPaymentData[String(eventData.eventId)] || {}), ...eventObject
+          ...(userPaymentData?.events?.[String(eventData.eventId)] || {}), ...eventObject
         },
       },
     };

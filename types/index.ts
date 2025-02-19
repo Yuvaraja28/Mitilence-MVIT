@@ -20,9 +20,7 @@ interface EventOrganizer {
   name: string;
   role: string;
   emailId: string;
-  phoneNo: string;
   departmentId: string;
-  imageUrl?: string;
 }
 
 // Firestore DB
@@ -73,6 +71,7 @@ interface Events {
   seatsLeft?: number;
   entryFee?: number;
   linkRegistration?: string;
+  closed: boolean;
 }
 
 interface EventCategory {

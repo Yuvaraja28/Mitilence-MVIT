@@ -19,6 +19,7 @@ export default function parseEvents(id: string, data: any): Events {
     facultyOrganizerId: data?.facultyOrganizerId,
     eventType: data?.eventType,
     eventDescription: data?.eventDescription,
-    linkRegistration: data?.linkRegistration
+    linkRegistration: data?.linkRegistration,
+    closed: data?.closed || false,
   };
 }

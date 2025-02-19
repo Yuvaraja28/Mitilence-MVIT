@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 5000",
+    "dev": "next dev --port 5000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -36,7 +36,6 @@
     "@heroui/tooltip": "^2.2.8",
     "@radix-ui/react-slot": "^1.1.2",
     "@types/canvas-confetti": "^1.9.0",
-    "@uploadcare/react-uploader": "^1.5.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

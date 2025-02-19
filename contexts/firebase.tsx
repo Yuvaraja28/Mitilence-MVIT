@@ -85,6 +85,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
         .finally(() => setFireUserData(currentUser))
       auth.currentUser?.getIdTokenResult()
         .then((idTokenResult) => {
+          console.log(idTokenResult)
           setFireCustomClaims(idTokenResult.claims)
         })
         .catch((error) => {

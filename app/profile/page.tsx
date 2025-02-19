@@ -10,6 +10,7 @@ import UserRegistration from "@/components/internal/userRegistration";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { ArrowUpRight, BadgeCheck, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, IndianRupee, Navigation, UserRoundPen } from "lucide-react";
+import { parseDateTime } from "@/utils/parseDate";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
@@ -119,7 +120,16 @@ export default function Profile() {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="text-md font-medium px-4 py-2">
-                      You have paid for {mitilence[0].toUpperCase()} department events
+                      <div
+                        className="flex flex-col items-center"
+                      >
+                        <span>
+                          Paid for {mitilence[0].toUpperCase()} department event
+                        </span>
+                        <span>
+                          {parseDateTime(mitilence[1].paymentTime)}
+                        </span>
+                      </div>
                     </PopoverContent>
                   </Popover>
                 )}
@@ -177,12 +187,12 @@ export default function Profile() {
                     <span
                       className="text-xl font-medium"
                     >
-                      {eventsObject[registerEve[0]].name}
+                      {eventsObject[registerEve[0]]?.name}
                     </span>
                     <span
                       className="text-md font-normal uppercase"
                     >
-                      {eventsObject[registerEve[0]].departmentId}
+                      {eventsObject[registerEve[0]]?.departmentId}
                     </span>
                     <Popover placement="top" showArrow>
                       <PopoverTrigger>
@@ -209,7 +219,7 @@ export default function Profile() {
                   </Button>
                 </div>
                 <Image
-                  src={eventsObject[registerEve[0]].logoUrl}
+                  src={eventsObject[registerEve[0]]?.logoUrl}
                 />
               </div>
             )}
@@ -241,7 +251,7 @@ export default function Profile() {
                     <Button
                       color={(eventPayments.events[currentEvent]?.checkedInStatus) ? "success" : "warning"}
                       startContent={(eventPayments.events[currentEvent]?.checkedInStatus) ? <BadgeCheck /> : <CircleDashed />}
-                      className="text-sm font-medium w-fit !px-4 !py-2 capitalize"
+                      className="text-md font-medium w-fit !px-4 !py-2 capitalize"
                     >
                       {(eventPayments.events[currentEvent]?.checkedInStatus) ? 'Checked In' : 'Not Checked In'}
                     </Button>
