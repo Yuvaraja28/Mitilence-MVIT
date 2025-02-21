@@ -2,7 +2,7 @@ export function parseEventOrganizer(id: string, data: any): EventOrganizer {
   return {
     id: id,
     name: data?.name,
-    role: data?.role,
+    roles: data?.roles || [],
     emailId: data?.emailId,
     departmentId: data?.departmentId
   };

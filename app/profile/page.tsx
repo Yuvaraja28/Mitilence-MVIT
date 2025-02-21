@@ -2,20 +2,17 @@
 import React from "react";
 import Link from "next/link";
 import { Image } from "@heroui/image";
-import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { DefaultMemberImg } from "@/variables";
 import { useFirebase } from "@/contexts/firebase";
+import { UserProfile } from "@/components/internal/userProfile";
 import UserRegistration from "@/components/internal/userRegistration";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { ArrowUpRight, BadgeCheck, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, IndianRupee, Navigation, UserRoundPen } from "lucide-react";
-import { parseDateTime } from "@/utils/parseDate";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
-  const fireUserData = firebaseContext?.fireUserData;
   const eventsObject = firebaseContext?.eventsObject || {};
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
   const eventPayments: EventUserPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
@@ -26,15 +23,6 @@ export default function Profile() {
   const paidEvents = React.useMemo(() => Object.entries(eventPayments?.events || {}), [eventPayments?.events])
   const paidDepartments = React.useMemo(() => Object.entries(eventPayments?.mitilence || {}), [eventPayments?.mitilence])
 
-  const Fields = [
-    { name: "Phone No", param: "phoneNo", type: "tel", value: fireUserData?.phoneNumber },
-    { name: "Enroll No", param: "enrollNo", type: "text" },
-    { name: "College", param: "college", type: "text" },
-    { name: "Department", param: "department", type: "text" },
-    { name: "Graduation Year", param: "gradYear", type: "number" },
-    { name: "Gender", param: "gender", type: "select" },
-  ];
-
   return (
     <div
       className="flex flex-col items-center justify-center gap-2 w-full pt-28 lg:pt-22 py-8 min-h-[100vh]"
@@ -42,117 +30,12 @@ export default function Profile() {
       <div
         className="flex flex-col gap-4 w-[90%] lg:w-[42em]"
       >
-        <div
-          className="flex flex-col gap-4 bg-white rounded-2xl p-8"
-        >
-          <div
-            className="flex flex-row gap-2 self-end"
-          >
-            {(fireCustomClaims?.role != null) &&
-              <Link
-                href={`/${fireCustomClaims?.role}`}
-                className="flex flex-row gap-2 text-md font-medium bg-cyan-600 text-white px-5 py-2 rounded-[10px] capitalize"
-              >
-                {fireCustomClaims.role}
-              </Link>
-            }
-            <Button
-              color="primary"
-              onPress={() => setUserUpdate(true)}
-              startContent={<UserRoundPen size={20} />}
-              className="flex flex-row gap-2 text-md font-medium bg-blue-500 text-white px-4 py-1.5 rounded-[10px]"
-            >
-              Update
-            </Button>
-          </div>
-          <div
-            className="flex md:flex-row gap-2.5 items-center justify-between flex-col-reverse"
-          >
-            <div
-              className="flex flex-col items-center md:items-start h-full"
-            >
-              <span
-                className="text-4xl font-medium text-center md:text-start"
-              >
-                {fireUserDoc?.name}
-              </span>
-              <span
-                className="text-[18px] text-center md:text-start"
-              >
-                {fireUserDoc?.emailId}
-              </span>
-            </div>
-            <Image
-              width={100}
-              height={100}
-              src={fireUserDoc?.imageUrl || DefaultMemberImg}
-              classNames={{
-                wrapper: 'bg-contain bg-no-repeat'
-              }}
-              fallbackSrc={DefaultMemberImg}
-              className="object-cover bg-contain"
-            />
-          </div>
-          {(paidDepartments.length > 0) &&
-            <div
-              className="flex flex-col gap-2 px-1 mt-[-5px] lg:mt-[-15px]"
-            >
-              <span
-                className="text-xl font-semibold uppercase"
-              >
-                Paid Departments
-              </span>
-              <div
-                className="flex flex-row flex-wrap gap-2"
-              >
-                {paidDepartments.map(mitilence =>
-                  <Popover
-                    showArrow
-                    placement="top"
-                    key={mitilence[0]}
-                  >
-                    <PopoverTrigger>
-                      <Button
-                        size="sm"
-                        className="text-lg bg-purpleAccent text-white font-medium w-fit !px-1 !py-2 uppercase"
-                      >
-                        {mitilence[0]}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="text-md font-medium px-4 py-2">
-                      <div
-                        className="flex flex-col items-center"
-                      >
-                        <span>
-                          Paid for {mitilence[0].toUpperCase()} department event
-                        </span>
-                        <span>
-                          {parseDateTime(mitilence[1].paymentTime)}
-                        </span>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </div>
-            </div>
-          }
-          <div
-            className="grid md:grid-cols-2 gap-4"
-          >
-            {Fields.map(field =>
-              <Input
-                key={field.param}
-                label={field.name}
-                disabled={true}
-                labelPlacement={"outside"}
-                placeholder={field.name}
-                size="lg"
-                className="font-medium border-2 border-gray-300 rounded-2xl"
-                value={(typeof fireUserDoc == 'object') ? String(fireUserDoc?.[field.param as keyof EventUser] || '') : ''}
-              />
-            )}
-          </div>
-        </div>
+        <UserProfile
+          fireUserDoc={fireUserDoc}
+          setUserUpdate={setUserUpdate}
+          paidDepartments={paidDepartments}
+          fireCustomClaims={fireCustomClaims}
+        />
         <span
           className="flex flex-row justify-between items-center gap-4 bg-white rounded-2xl px-8 py-4 text-xl font-medium"
         >
@@ -190,7 +73,7 @@ export default function Profile() {
                       {eventsObject[registerEve[0]]?.name}
                     </span>
                     <span
-                      className="text-md font-normal uppercase"
+                      className="text-base font-normal uppercase"
                     >
                       {eventsObject[registerEve[0]]?.departmentId}
                     </span>
@@ -205,7 +88,7 @@ export default function Profile() {
                           {(registerEve[1]?.checkedInStatus) ? 'Checked In' : 'Not Checked In'}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="text-md font-medium px-4 py-2">
+                      <PopoverContent className="text-base font-medium px-4 py-2">
                         You have {(registerEve[1]?.checkedInStatus) ? 'checked' : 'not checked'} in for the Event
                       </PopoverContent>
                     </Popover>
@@ -251,12 +134,12 @@ export default function Profile() {
                     <Button
                       color={(eventPayments.events[currentEvent]?.checkedInStatus) ? "success" : "warning"}
                       startContent={(eventPayments.events[currentEvent]?.checkedInStatus) ? <BadgeCheck /> : <CircleDashed />}
-                      className="text-md font-medium w-fit !px-4 !py-2 capitalize"
+                      className="text-base font-medium w-fit !px-4 !py-2 capitalize"
                     >
                       {(eventPayments.events[currentEvent]?.checkedInStatus) ? 'Checked In' : 'Not Checked In'}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="text-md font-medium px-4 py-2">
+                  <PopoverContent className="text-base font-medium px-4 py-2">
                     You have {(eventPayments.events[currentEvent]?.checkedInStatus) ? 'checked' : 'not checked'} in for the Event
                   </PopoverContent>
                 </Popover>

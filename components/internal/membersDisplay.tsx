@@ -31,7 +31,7 @@ export function MembersDisplay({ title, members }: { title: string, members: Adm
                 {memb.name}
               </span>
               <span
-                className="text-purpleAccent text-md mt-[-2px]"
+                className="text-purpleAccent text-xl mt-[-2px]"
               >
                 {memb.role}
               </span>

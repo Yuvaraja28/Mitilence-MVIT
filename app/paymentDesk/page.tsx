@@ -1,15 +1,14 @@
 'use client';
 import React from "react";
-import { Search, VerifiedIcon } from "lucide-react";
-import { Button } from "@heroui/button";
-import { useFirebase } from "@/contexts/firebase";
-import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Input } from "@heroui/input";
-import { DefaultMemberImg } from "@/variables";
-import { Image } from "@heroui/image";
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
-import { parseDateTime } from "@/utils/parseDate";
+import { Button } from "@heroui/button";
+import { addToast } from "@heroui/toast";
+import { useFirebase } from "@/contexts/firebase";
+import { Search, VerifiedIcon } from "lucide-react";
+import { Select, SelectItem } from "@heroui/select";
 import { CircularLoader } from "@/components/internal/Loaders";
+import { UserProfile } from "@/components/internal/userProfile";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
 
 interface SearchedEventUser {
   user: EventUser;
@@ -34,7 +33,6 @@ export default function Organizers() {
 
   const {isOpen, onOpen, onClose, onOpenChange} = useDisclosure();
 
-  const [respError, setRespError] = React.useState('');
   const [currentSearch, setCurrentSearch] = React.useState('');
   const [isMakingPayment, setIsMakingPayment] = React.useState(false);
   const [isEventSubmitting, setIsEventSubmitting] = React.useState(false);
@@ -44,7 +42,6 @@ export default function Organizers() {
 
   async function searchUser(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setRespError(() => '')
     setUserData(() => null);
     setIsEventSubmitting(() => true);
     try {
@@ -61,12 +58,19 @@ export default function Organizers() {
       if ((userResp.status == 401) && (LogoutGoogle != null)) {
         return LogoutGoogle();
       } else if (userResp.status != 200) {
-        return setRespError(() => userData?.error)
+        return addToast({
+          title: "Warn!",
+          description: userData?.error || ':<',
+          color: "warning"
+        })
       }
       setUserData(userData as SearchedEventUser)
     } catch (e) {
-      setRespError(() => "An unknown error occured")
-      console.log(e)
+      addToast({
+        title: "Error Occured!",
+        description: "An unknown error occured",
+        color: "danger"
+      })
     } finally {
       setIsEventSubmitting(() => false)
     }
@@ -74,7 +78,8 @@ export default function Organizers() {
 
   async function processPayment(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setRespError(() => '')
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData.entries());
     setIsMakingPayment(() => true);
     try {
       const userResp = await fetch("/api/confirmPayment", {
@@ -83,18 +88,27 @@ export default function Organizers() {
           "Authorization": `Bearer ${fireUserData?.accessToken}`
         },
         body: JSON.stringify({
-          userId: userData?.user.id
+          userId: userData?.user.id,
+          participantType: data.participantType
         })
       })
       const userResponseData = await userResp.json();
       if ((userResp.status == 401) && (LogoutGoogle != null)) {
         return LogoutGoogle();
       } else if (userResp.status != 200) {
-        return setRespError(() => userResponseData?.error)
+        return addToast({
+          title: "Warn!",
+          description: userResponseData?.error || ':<',
+          color: "warning"
+        })
       }
       setUserData(userResponseData as SearchedEventUser)
     } catch (e) {
-      setRespError(() => "An unknown error occured")
+      addToast({
+        title: "Error Occured!",
+        description: "An unknown error occured",
+        color: "danger"
+      })
       console.log(e)
     } finally {
       onClose()
@@ -120,11 +134,11 @@ export default function Organizers() {
         className="flex flex-col items-center md:flex-row justify-between gap-3 w-full"
       >
         <span
-          className="flex flex-row gap-2 items-center text-3xl capitalize font-semibold"
+          className="flex flex-row gap-2 items-center text-2xl capitalize font-semibold"
         >
           Payment Desk 
           <span
-            className="bg-purpleAccent px-2 py-1 rounded-xl text-2xl"
+            className="bg-purpleAccent px-2 py-1 rounded-xl text-xl"
           >
             {fireCustomClaims?.departmentId?.toUpperCase()}
           </span>
@@ -169,7 +183,7 @@ export default function Organizers() {
               <Search />
             </Button>
           </form>
-          {((userData != null) && (respError == "")) &&
+          {(userData != null) &&
             <Button
               size="lg"
               onPress={onOpen}
@@ -181,105 +195,13 @@ export default function Organizers() {
             </Button>
           }
         </div>
-        {(respError != '') &&
-          <span
-            className="text-red-500 text-xl font-medium px-2"
-          >
-            {respError}
-          </span>
-        }
-        {((userData != null) && (respError == '')) &&
-          <div
-            className="flex flex-col gap-3 bg-white text-black rounded-2xl p-6 w-full md:w-[45em] shadow-md shadow-gray-500"
-          >
-            <div
-              className="flex md:flex-row gap-2.5 items-center justify-between flex-col-reverse"
-            >
-              <div
-                className="flex flex-col items-center md:items-start h-full"
-              >
-                <span
-                  className="text-4xl font-medium text-center md:text-start"
-                >
-                  {userData?.user?.name}
-                </span>
-                <span
-                  className="text-[18px] text-center md:text-start"
-                >
-                  {userData?.user?.emailId}
-                </span>
-              </div>
-              <Image
-                width={100}
-                height={100}
-                src={userData?.user?.imageUrl || DefaultMemberImg}
-                classNames={{
-                  wrapper: 'bg-contain bg-no-repeat'
-                }}
-                fallbackSrc={DefaultMemberImg}
-                className="object-cover bg-contain"
-              />
-            </div>
-            {(paidDepartments.length > 0) &&
-              <div
-                className="flex flex-col gap-1 px-1 mt-[-5px] lg:mt-[-15px]"
-              >
-                <span
-                  className="text-xl font-semibold uppercase"
-                >
-                  Paid Departments
-                </span>
-                <div
-                  className="flex flex-row flex-wrap gap-2"
-                >
-                  {paidDepartments.map(mitilence =>
-                    <Popover
-                      showArrow
-                      placement="top"
-                      key={mitilence[0]}
-                    >
-                      <PopoverTrigger>
-                        <Button
-                          size="sm"
-                          className="text-lg bg-purpleAccent text-white font-medium w-fit !px-1 !py-2 uppercase"
-                        >
-                          {mitilence[0]}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="text-md font-medium px-4 py-2">
-                        <div
-                          className="flex flex-col items-center"
-                        >
-                          <span>
-                            Paid for {mitilence[0].toUpperCase()} department event
-                          </span>
-                          <span>
-                            {parseDateTime(mitilence[1].paymentTime)}
-                          </span>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                </div>
-              </div>
-            }
-            <div
-              className="grid md:grid-cols-2 gap-4"
-            >
-              {Fields.map(field =>
-                <Input
-                size="lg"
-                  key={field.param}
-                  label={field.name}
-                  disabled={true}
-                  labelPlacement={"outside"}
-                  placeholder={field.name}
-                  className="font-medium border-2 border-gray-300 rounded-2xl"
-                  value={(typeof fireUserDoc == 'object') ? String(userData?.user?.[field.param as keyof EventUser] || '') : ''}
-                />
-              )}
-            </div>
-          </div>
+        {(userData != null) &&
+          <UserProfile
+            fireUserDoc={userData?.user}
+            paidDepartments={paidDepartments}
+            onlyShowData={true}
+            classNames="w-full md:w-[45em] shadow-md shadow-gray-500"
+          />
         }
       </div>
       <Modal
@@ -306,7 +228,7 @@ export default function Organizers() {
                 <Input
                   type="email"
                   size="lg"
-                  required
+                  isRequired={true}
                   variant={"bordered"}
                   name={`Participant Name`}
                   label={`Participant Name`}
@@ -316,13 +238,37 @@ export default function Organizers() {
                 <Input
                   type="text"
                   size="lg"
-                  required
+                  isRequired={true}
                   variant={"bordered"}
                   name={`Enroll No`}
                   label={`Enroll No`}
                   disabled={true}
                   value={userData?.user.enrollNo || ''}
                 />
+                <Select
+                  size="md"
+                  radius="lg"
+                  isRequired={true}
+                  variant={"bordered"}
+                  label="Participant Type"
+                  placeholder="Select the Participant Type"
+                  name="participantType"
+                  className="w-full mt-1 text-black"
+                  errorMessage="You must select Participant Type"
+                  validate={(value) =>
+                    value != "" || "You must select the Participant Type"
+                  }
+                >
+                  {["External", "Internal"].map((type) => (
+                    <SelectItem
+                      key={type}
+                      className="capitalize"
+                      value={type}
+                    >
+                      {type}
+                    </SelectItem>
+                  ))}
+                </Select>
                 <ul
                   className='flex flex-col gap-1'
                 >
@@ -333,7 +279,7 @@ export default function Organizers() {
                 <Input
                   type="text"
                   size="md"
-                  required
+                  isRequired={true}
                   variant={"bordered"}
                   name={`Confirmation`}
                   label={`Confirmation`}

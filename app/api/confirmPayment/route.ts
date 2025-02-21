@@ -22,7 +22,9 @@ export async function POST(req: NextRequest) {
   try {
     const idToken = authHeader.split('Bearer ')[1];
     var decodedToken = await admin.auth().verifyIdToken(idToken);
-    if (!['paymentDesk', 'organizer', 'admin'].includes(decodedToken?.role)) throw "Invalid Role";
+    if (!decodedToken?.roles?.some((role: string) => ['paymentDesk'].includes(role))) {
+      throw "Invalid Role";
+    }
   } catch (e) {
     console.error('Invalid Token Passed');
     return NextResponse.json({ error: 'Invalid Token Passed' }, { status: 401 });
@@ -30,9 +32,10 @@ export async function POST(req: NextRequest) {
   
   try {
     const userJson = await req.json();
-    if (userJson?.userId == null) throw "User Id not passed";
-    const userPaymentDoc = db.collection('payments').doc(userJson?.userId);
-    const userPaymentData = (await userPaymentDoc.get()).data() || {};
+    if ((userJson?.userId == null) || (userJson?.participantType == null)) throw "User Id / Participant Type not passed";
+    const userPaymentDocRef = db.collection('payments').doc(userJson?.userId)
+    const userPaymentDoc = await  userPaymentDocRef.get();
+    const userPaymentData = parsePayments(userPaymentDoc.id, userPaymentDoc.data() || {});
     
     if (Object.keys(userPaymentData?.mitilence || {}).includes(String(decodedToken.departmentId))) {
       return NextResponse.json({ error: `${decodedToken.departmentId.toUpperCase()} Department Amount already Paid` }, { status: 403 });
@@ -41,7 +44,9 @@ export async function POST(req: NextRequest) {
     const paymentDataUpdate = {
       departmentId: String(decodedToken.departmentId),
       paymentTime: new Date(),
-      paymentVerifiedBy: decodedToken.uid
+      paymentVerifiedBy: decodedToken.uid,
+      paymentVerifiedByName: decodedToken?.name,
+      participantType: userJson?.participantType
     }
 
     const eventUserPayment = {
@@ -53,7 +58,7 @@ export async function POST(req: NextRequest) {
         },
       },
     };
-    await userPaymentDoc.set(eventUserPayment, { merge: true });
+    await userPaymentDocRef.set(eventUserPayment, { merge: true });
 
     const userDoc = await db.collection('users').doc(userJson?.userId).get()
     const userData = parseEventUser(userDoc.id, userDoc.data() || {}, false);

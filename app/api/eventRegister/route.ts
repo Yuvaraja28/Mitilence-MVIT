@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as admin from 'firebase-admin';
+import parseEvents from '@/parsers/event';
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -30,6 +31,15 @@ export async function POST(req: NextRequest) {
     if (eventData?.eventId == null) throw "Event Id not passed";
     const userPaymentDoc = db.collection('payments').doc(userId);
     const userPaymentData = (await userPaymentDoc.get()).data() || {};
+
+    const eventsDoc = await db.collection('events').doc(eventData?.eventId).get();
+    if (!eventsDoc.exists) {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+    }
+    const eventDBData = parseEvents(eventsDoc.id, eventsDoc.data() || {});
+    if ((eventDBData?.eventClosed || false) || (eventDBData?.registrationsClosed || false)) {
+      return NextResponse.json({ error: 'Event Registrations closed' }, { status: 403 });
+    }
     
     if (Object.keys(userPaymentData?.events || {}).includes(String(eventData.eventId))) {
       return NextResponse.json({ error: 'Event Registration already done' }, { status: 403 });      
@@ -37,6 +47,8 @@ export async function POST(req: NextRequest) {
     
     const eventObject: any = {
       eventId: String(eventData.eventId),
+      eventName: String(eventDBData?.name),
+      departmentId: String(eventDBData.departmentId),
       registeredTime: new Date()
     }
 

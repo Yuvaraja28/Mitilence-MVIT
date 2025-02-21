@@ -1,0 +1,75 @@
+'use client';
+import React from "react";
+import { useFirebase } from "@/contexts/firebase";
+import EventParticipants from "../admin/eventParticipants";
+import { Modal, ModalContent, ModalBody } from "@heroui/react";
+import { UserProfile } from "@/components/internal/userProfile";
+
+export type PopUserProps = {
+  user: EventUser;
+  payment: EventUserPayments;
+}
+
+export default function OrganizerDashboard() {
+  const firebaseContext = useFirebase();
+  const fireUserDoc = firebaseContext?.fireUserDoc;
+  const fireCustomClaims = firebaseContext?.fireCustomClaims;
+
+  const [popupUser, setPopupUser] = React.useState<PopUserProps | null>()
+
+  return (
+    <div
+      className="flex flex-col items-center gap-6 w-full px-6 lg:px-16 pt-28 lg:pt-22 py-8 min-h-[100vh]"
+    >
+      <div
+        className="flex flex-col items-center md:flex-row justify-between gap-3 w-full text-white"
+      >
+        <span
+          className="flex flex-row gap-2 items-center text-2xl capitalize font-semibold"
+        >
+          Organizer Dashboard
+          <span
+            className="bg-purpleAccent px-2 py-1 rounded-xl text-xl"
+          >
+            {fireCustomClaims?.departmentId?.toUpperCase()}
+          </span>
+        </span>
+        <div
+          className="flex flex-row gap-1 text-lg bg-white px-1 py-1 text-black rounded-2xl items-center font-medium"
+        >
+          <span
+            className="px-4"
+          >
+            Logged in as
+          </span>
+          <span
+            className="bg-green-500 text-lg px-4 py-1 rounded-2xl text-center"
+          >
+            {fireUserDoc?.name}
+          </span>
+        </div>
+      </div>
+      <EventParticipants
+        setPopupUser={setPopupUser}
+      />
+      {(popupUser != null) &&
+        <Modal
+          size={'2xl'}
+          isOpen={true}
+          onClose={() => setPopupUser(null)}
+        >
+          <ModalContent>
+            <ModalBody>
+              <UserProfile
+                fireUserDoc={popupUser.user}
+                paidDepartments={Object.entries(popupUser?.payment?.mitilence || {})}
+                classNames="!px-2 !py-8"
+                onlyShowData={true}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      }
+    </div>
+  );
+}

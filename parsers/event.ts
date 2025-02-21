@@ -15,11 +15,12 @@ export default function parseEvents(id: string, data: any): Events {
     logoUrl: data?.logoUrl,
     eventCategory: data?.eventCategory,
     registrationEndTime: (data.registrationEndTime instanceof Timestamp ? data.registrationEndTime.toDate() : new Date(data.registrationEndTime)).toISOString(),
-    studentOrganizerId: data?.studentOrganizerId,
-    facultyOrganizerId: data?.facultyOrganizerId,
+    studentCoordinatorId: data?.studentCoordinatorId,
+    facultyCoordinatorId: data?.facultyCoordinatorId,
     eventType: data?.eventType,
     eventDescription: data?.eventDescription,
     linkRegistration: data?.linkRegistration,
-    closed: data?.closed || false,
+    eventClosed: data?.eventClosed || false,
+    registrationsClosed: data?.registrationsClosed || false,
   };
 }

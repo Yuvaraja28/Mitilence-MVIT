@@ -53,7 +53,7 @@ export default function ResponsiveSidebar() {
             <Link
               key={head.name}
               href={`/${head.url}`}
-              className={`flex items-center justify-center uppercase text-md font-semibold rounded-full px-7 pt-0.5 transition-background h-full ${(pathname == head.url || pathname.split('/').slice(1)[0] === (head.url)) ? 'text-white bg-purpleAccent border-purpleAccent' : 'text-boxBlack border-white'}`}
+              className={`flex items-center justify-center uppercase text-base font-semibold rounded-full px-7 pt-0.5 transition-background h-full ${(pathname == head.url || pathname.split('/').slice(1)[0] === (head.url)) ? 'text-white bg-purpleAccent border-purpleAccent' : 'text-boxBlack border-white'}`}
             >
               {head.name}
             </Link>
@@ -64,7 +64,7 @@ export default function ResponsiveSidebar() {
             onPress={() => {
               if (LoginGoogle != null) LoginGoogle()
             }}
-            className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-8 pt-0.5 transition-background h-full bg-white"
+            className="hidden lg:flex items-center justify-center uppercase border-3 text-base font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-8 pt-0.5 transition-background h-full bg-white"
           >
             Login / Register
           </Button>
@@ -74,13 +74,13 @@ export default function ResponsiveSidebar() {
           >
             <Link
               href={'/profile'}
-              className="hidden lg:flex items-center justify-center uppercase text-md font-semibold bg-purpleAccent text-white rounded-full px-3.5 pt-0.5 transition-background h-full"
+              className="hidden lg:flex items-center justify-center uppercase text-base font-semibold bg-purpleAccent text-white rounded-full px-3.5 pt-0.5 transition-background h-full"
             >
               <UserRound />
             </Link>
             <Button
               onPress={LogoutGoogle}
-              className="hidden lg:flex items-center justify-center uppercase border-3 text-md font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-6 pt-0.5 transition-background h-full bg-white"
+              className="hidden lg:flex items-center justify-center uppercase border-3 text-base font-semibold text-purpleAccent hover:text-white hover:bg-purpleAccent border-purpleAccent rounded-full px-6 pt-0.5 transition-background h-full bg-white"
             >
               Logout
             </Button>
@@ -88,7 +88,7 @@ export default function ResponsiveSidebar() {
         }
         <button
           onClick={toggleSidebar}
-          className="lg:hidden h-full flex items-center justify-center border-3 text-md font-semibold text-white bg-purpleAccent border-purpleAccent hover:text-purpleAccent hover:bg-white rounded-full px-2 transition-all"
+          className="lg:hidden h-full flex items-center justify-center border-3 text-base font-semibold text-white bg-purpleAccent border-purpleAccent hover:text-purpleAccent hover:bg-white rounded-full px-2 transition-all"
         >
           {isSidebarOpen ? <X /> : <Menu />}
         </button>

@@ -21,12 +21,12 @@ interface FirebaseProviderProps {
   children: React.ReactNode;
 }
 
-interface UserToken extends User {
+export interface UserToken extends User {
   accessToken?: string;
 }
 
-interface CustomClaims extends ParsedToken {
-  role?: string;
+export interface CustomClaims extends ParsedToken {
+  roles?: string[];
   departmentId?: string;
 }
 

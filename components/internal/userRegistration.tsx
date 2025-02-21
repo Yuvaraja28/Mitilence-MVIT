@@ -121,7 +121,7 @@ export default function UserRegistration({ update = false }) {
                 disabled={field?.default}
                 labelPlacement={"outside"}
                 placeholder={field.name}
-                required={true}
+                isRequired={true}
                 className="font-medium"
                 style={{
                   color: "black",

@@ -18,8 +18,15 @@ interface EventUser {
 interface EventOrganizer {
   readonly id: string;
   name: string;
-  role: string;
+  roles: string[];
   emailId: string;
+  departmentId: string;
+}
+
+interface EventCoordinator {
+  readonly id: string;
+  name: string;
+  role: string;
   departmentId: string;
 }
 
@@ -63,15 +70,16 @@ interface Events {
   eventCategory: string;
   eventDescription: string;
   registrationEndTime: string;
-  facultyOrganizerId: string;
-  studentOrganizerId: string;
+  facultyCoordinatorId: string;
+  studentCoordinatorId: string;
   eventType: 'technical' | 'non_technical';
   logoUrl?: string;
   totalSeats?: number;
   seatsLeft?: number;
   entryFee?: number;
   linkRegistration?: string;
-  closed: boolean;
+  eventClosed: boolean;
+  registrationsClosed: boolean;
 }
 
 interface EventCategory {
@@ -89,11 +97,16 @@ interface MitilencePaymentDepartment {
   departmentId: string;
   paymentTime: string;
   paymentVerifiedBy: string;
+  paymentVerifiedByName: string;
+  participantType: 'Internal' | 'External';
 }
 
 interface RegisteredEvent {
   eventId: string;
+  eventName: string;
+  departmentId: string;
   checkedInBy: string;
+  checkedInByName: string;
   checkedInTime: string;
   checkedInStatus: boolean;
   registeredTime: string;

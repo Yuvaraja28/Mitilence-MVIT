@@ -22,7 +22,9 @@ export async function POST(req: NextRequest) {
   try {
     const idToken = authHeader.split('Bearer ')[1];
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    if (!['paymentDesk', 'organizer', 'admin'].includes(decodedToken?.role)) throw "Invalid Role";
+    if (!decodedToken?.roles?.some((role: string) => ['paymentDesk', 'organizer', 'admin', 'superadmin'].includes(role))) {
+      throw "Invalid Role";
+    }
   } catch (e) {
     console.error('Invalid Token Passed');
     return NextResponse.json({ error: 'Invalid Token Passed' }, { status: 401 });
@@ -34,6 +36,9 @@ export async function POST(req: NextRequest) {
     const userRecord = await admin.auth().getUserByEmail(eventData?.emailId);
     const userDoc = await db.collection('users').doc(userRecord.uid).get()
     const userData = parseEventUser(userDoc.id, userDoc.data() || {}, false);
+    if (userData?.name == null) {
+      return NextResponse.json({ error: 'User not done onboarding process' }, { status: 403 });
+    }
     const paymentDoc = await db.collection('payments').doc(userRecord.uid).get()
     const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {}, false);
     return NextResponse.json({
@@ -41,6 +46,7 @@ export async function POST(req: NextRequest) {
       payments: paymentData
     }, { status: 200 });
   } catch (error) {
+    console.log(error)
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 }
