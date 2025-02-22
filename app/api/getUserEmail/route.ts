@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User not done onboarding process' }, { status: 403 });
     }
     const paymentDoc = await db.collection('payments').doc(userRecord.uid).get()
-    const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {}, false);
+    const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {});
     return NextResponse.json({
       user: userData,
       payments: paymentData

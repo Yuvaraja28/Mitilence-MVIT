@@ -33,7 +33,6 @@ import { useFirebase } from "@/contexts/firebase";
 import parseEventUser from "@/parsers/user";
 import parsePayments from "@/parsers/payments";
 import downloadBlob from "@/utils/downloadBlob";
-import { CircularLoader } from "@/components/internal/Loaders";
 import { DefaultMemberImg } from "@/variables";
 import { PopUserProps } from "./page";
 
@@ -43,13 +42,14 @@ export const columns = [
   { name: "PHONE", uid: "phoneNo" },
   { name: "COLLEGE", uid: "college" },
   { name: "GENDER", uid: "gender", sortable: true },
+  { name: "CHECKED IN", uid: "checkedIn", sortable: true },
   { name: "PAYMENT", uid: "payment" },
   { name: "ACTIONS", uid: "actions" },
 ];
 
 export const statusOptions = [
-  {name: "Amount Paid", uid: "paid"},
-  {name: "Amount Not Paid", uid: "not_paid"},
+  {name: "Checked In", uid: "checkedin"},
+  {name: "Not Checked In", uid: "not_checkedin"},
 ];
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -59,7 +59,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const INITIAL_VISIBLE_COLUMNS = columns.map(c => c.uid);
 
-export default function EventParticipants({ setPopupUser }: { setPopupUser: (param: PopUserProps) => void }) {
+export default function EventParticipants({ setPopupUser, children, setCurrentEvent }: { setPopupUser: (param: PopUserProps) => void, setCurrentEvent?: (param: string) => void, children?: React.ReactNode }) {
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events;
   const firestoreDB = firebaseContext?.firestoreDB;
@@ -171,6 +171,29 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
             <p className="text-bold text-base capitalize">{(departmentParticipants[user.id]?.updatedTime == null) ? '' : parseDateTimeShort(departmentParticipants[user.id]?.updatedTime || '')}</p>
           </div>
         );
+      case "checkedIn":
+        return (
+          <Popover placement="top" showArrow>
+            <PopoverTrigger>
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInStatus) ? '' : 'Not'} Checked In
+              </Chip>
+            </PopoverTrigger>
+            {(departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInStatus) &&
+              <PopoverContent>
+                <div
+                  className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
+                >
+                  <span>
+                    CheckedIn by <b className="text-purpleAccent font-medium">
+                      {departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInByName}
+                    </b>
+                  </span>
+                </div>
+              </PopoverContent>
+            }
+          </Popover>
+        );
       case "payment":
         return (
           <Popover placement="top" showArrow>
@@ -224,7 +247,6 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
                 >
                   View Profile
                 </DropdownItem>
-                <DropdownItem key="checkin">Check In</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -258,7 +280,7 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
       <div className="flex flex-col gap-4">
         <div className="flex justify-between gap-3 items-end">
           <div
-            className="flex flex-row items-center gap-2 w-full sm:max-w-[44%]"
+            className="flex flex-col items-center gap-2 w-full sm:max-w-[44%]"
           >
             <Input
               isClearable
@@ -274,24 +296,31 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
               onClear={() => onClear()}
               onValueChange={onSearchChange}
             />
-            <Autocomplete
-              size="sm"
-              variant="bordered"
-              className="max-w-2xl"
-              label="Select Event"
-              placeholder="Select an Event"
-              onSelectionChange={(e) => {if (e == selectedEvent) return; setDepartmentParticipants(() => ({})); setSelectedEvent(String(e))}}
+            <form
+              onSubmit={(e) => {e.preventDefault(); if ((setCurrentEvent != null) && (selectedEvent != null)) { setCurrentEvent(String(selectedEvent)) }}}
+              className="flex flex-row gap-2 w-full"
             >
-              {filteredEvents.map((event) => (
-                <AutocompleteItem key={String(event.id)}>{event.name}</AutocompleteItem>
-              ))}
-            </Autocomplete>
+              <Autocomplete
+                size="sm"
+                isRequired
+                variant="bordered"
+                className="w-full"
+                label="Select Event"
+                placeholder="Select an Event"
+                onSelectionChange={(e) => {if (e == selectedEvent) return; setDepartmentParticipants(() => ({})); setSelectedEvent(String(e)) }}
+              >
+                {filteredEvents.map((event) => (
+                  <AutocompleteItem key={String(event.id)}>{event.name}</AutocompleteItem>
+                ))}
+              </Autocomplete>
+              {children}
+            </form>
           </div>
           <div className="flex gap-3">
-            {/* <Dropdown>
+            <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-base" />} variant="bordered" className="border-blue-500 text-blue-500 font-medium text-base">
-                  Payment
+                  Staus
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -308,7 +337,7 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
                   </DropdownItem>
                 ))}
               </DropdownMenu>
-            </Dropdown> */}
+            </Dropdown>
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-base" />} variant="bordered" className="border-blue-500 text-blue-500 font-medium text-base">
@@ -403,8 +432,7 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
     }
   
     const workbook = new ExcelJS.Workbook();
-    
-    let eventSheetData: any = [];
+    let eventSheetData: any[] = [];
   
     Object.entries(departmentPaymentParticipants).forEach(([userId, paymentData]) => {
       const user = departmentParticipants[userId];
@@ -412,17 +440,18 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
   
       Object.values(paymentData.events).forEach((event) => {
         if (event.eventId !== selectedEvent) return; // 🔹 Filter by selected event ID
-        
-        eventSheetData.push({
-          Name: user?.name,
-          "Event Name": event.eventName,
-          "Registered Time": parseDateTimeShort(event.registeredTime),
-          "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
-          "Checked In By": event?.checkedInByName || "N/A",
-          "Checked In Time": event?.checkedInTime ? parseDateTimeShort(event.checkedInTime) : "N/A",
-          "User ID": user?.id,
-          "Checked In By Id": event?.checkedInBy || "N/A",
-        });
+        if (event?.checkedInStatus) {
+          eventSheetData.push({
+            Name: user?.name,
+            "Event Name": event.eventName,
+            "Registered Time": parseDateTimeShort(event.registeredTime),
+            "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
+            "Checked In By": event?.checkedInByName || "N/A",
+            "Checked In Time": event?.checkedInTime ? parseDateTimeShort(event.checkedInTime) : "N/A",
+            "User ID": user?.id,
+            "Checked In By Id": event?.checkedInBy || "N/A",
+          });
+        }
       });
     });
   
@@ -432,15 +461,28 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
     }
   
     // 🔹 Create a single sheet for the selected event
-    const sheetName = eventSheetData[0]["Event Name"].length > 31 
-      ? eventSheetData[0]["Event Name"].substring(0, 28) + "..." 
-      : eventSheetData[0]["Event Name"];
+    const sheetName =
+      eventSheetData[0]["Event Name"].length > 31
+        ? eventSheetData[0]["Event Name"].substring(0, 28) + "..."
+        : eventSheetData[0]["Event Name"];
   
     const eventSheet = workbook.addWorksheet(sheetName);
   
-    eventSheet.columns = Object.keys(eventSheetData[0]).map((key) => ({
-      header: key,
-      key,
+    // 🔹 Define event sheet headers explicitly
+    const eventHeaders = [
+      "Name",
+      "Event Name",
+      "Registered Time",
+      "Checked In Status",
+      "Checked In By",
+      "Checked In Time",
+      "User ID",
+      "Checked In By Id",
+    ];
+  
+    eventSheet.columns = eventHeaders.map((header) => ({
+      header,
+      key: header,
       width: 25,
     }));
   
@@ -461,7 +503,7 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
     const buffer = await workbook.xlsx.writeBuffer();
     downloadBlob(new Blob([buffer]), fileName);
   };
-      
+        
   function listenToPayments(callback: (data: Record<string, EventUserPayments>) => void) {
     if (firestoreDB == null) return () => {};
     const paymentsRef = collection(firestoreDB, "payments");
@@ -547,16 +589,6 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
   
     return () => unsubscribeListenToUsers();
   }, [firestoreDB, departmentPaymentParticipants]);
-    
-  if ((fireUserDoc == null) || (fireUserData == null)) {
-    return (
-      <div
-        className="flex flex-col items-center gap-6 w-full px-6 lg:px-16 pt-28 lg:pt-22 py-8 min-h-[100vh] text-white"
-      >
-        <CircularLoader />
-      </div>
-    )
-  }
 
   return (
     <Table
@@ -564,7 +596,7 @@ export default function EventParticipants({ setPopupUser }: { setPopupUser: (par
       aria-label="Example table with custom cells, pagination and sorting"
       bottomContent={bottomContent()}
       selectedKeys={selectedKeys}
-      selectionMode="multiple"
+      // selectionMode="multiple"
       sortDescriptor={sortDescriptor}
       topContent={topContent()}
       onSelectionChange={setSelectedKeys}

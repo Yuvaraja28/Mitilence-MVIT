@@ -263,7 +263,7 @@ export default function Organizers() {
                     <SelectItem
                       key={type}
                       className="capitalize"
-                      value={type}
+                      textValue={type}
                     >
                       {type}
                     </SelectItem>

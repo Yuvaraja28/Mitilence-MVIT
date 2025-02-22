@@ -30,9 +30,8 @@ import { collection, documentId, onSnapshot, query, where } from "firebase/fires
 import { useFirebase } from "@/contexts/firebase";
 import parseEventUser from "@/parsers/user";
 import parsePayments from "@/parsers/payments";
-import downloadBlob from "@/utils/downloadBlob";
-import { CircularLoader } from "@/components/internal/Loaders";
 import { DefaultMemberImg } from "@/variables";
+import downloadBlob from "@/utils/downloadBlob";
 import { PopUserProps } from "./page";
 
 export const columns = [
@@ -41,7 +40,6 @@ export const columns = [
   { name: "PHONE", uid: "phoneNo" },
   { name: "GENDER", uid: "gender", sortable: true },
   { name: "PAYMENT", uid: "payment" },
-  { name: "PAYMENT TIME", uid: "abcv" },
   { name: "ACTIONS", uid: "actions" },
 ];
 
@@ -364,37 +362,65 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
     }
   
     const workbook = new ExcelJS.Workbook();
-    
+  
     // Create Users Sheet
     const userSheet = workbook.addWorksheet("Users");
-    const userSheetData = Object.values(departmentParticipants).map((user) => {
-      const paymentInfo = departmentPaymentParticipants[user?.id].mitilence?.[fireCustomClaims?.departmentId || ''] || {};
-      return ({
-        Name: user.name,
-        "Enrollment No": user.enrollNo,
-        Email: user.emailId,
-        Phone: user.phoneNo,
-        College: user.college,
-        "Participant Type": paymentInfo.participantType || "N/A",
-        "Payment Verified By": paymentInfo?.paymentVerifiedByName || "N/A",
-        "Payment Time": paymentInfo?.paymentTime ? parseDateTimeShort(paymentInfo.paymentTime) : "N/A",
-        Department: user.department,
-        Gender: user.gender,
-        "Grad Year": user.gradYear,
-        "Created Time": parseDateTimeShort(user.createdTime),
-        "Updated Time": user?.updatedTime ? parseDateTimeShort(user.updatedTime) : "N/A",
-        "User ID": user.id,
-        "Payment Verified By Id": paymentInfo?.paymentVerifiedBy || "N/A",
-      })
-    });
   
-    // Add User Sheet Headers & Data
-    userSheet.columns = Object.keys(userSheetData[0]).map((key) => ({
-      header: key,
-      key,
+    // Define User Sheet Headers
+    const userHeaders = [
+      "Name",
+      "Enrollment No",
+      "Email",
+      "Phone",
+      "College",
+      "Participant Type",
+      "Payment Verified By",
+      "Payment Time",
+      "Department",
+      "Gender",
+      "Grad Year",
+      "Created Time",
+      "Updated Time",
+      "User ID",
+      "Payment Verified By Id",
+    ];
+  
+    userSheet.columns = userHeaders.map((header) => ({
+      header,
+      key: header,
       width: 20, // Adjust column width
     }));
-    
+  
+    // Add User Data
+    const userSheetData = Object.values(departmentParticipants).map((user) => {
+      const paymentInfo =
+        departmentPaymentParticipants[user?.id]?.mitilence?.[
+          fireCustomClaims?.departmentId || ""
+        ] || {};
+  
+      return {
+        "Name": user.name,
+        "Enrollment No": user.enrollNo,
+        "Email": user.emailId,
+        "Phone": user.phoneNo,
+        "College": user.college,
+        "Participant Type": paymentInfo.participantType || "N/A",
+        "Payment Verified By": paymentInfo?.paymentVerifiedByName || "N/A",
+        "Payment Time": paymentInfo?.paymentTime
+          ? parseDateTimeShort(paymentInfo.paymentTime)
+          : "N/A",
+        "Department": user.department,
+        "Gender": user.gender,
+        "Grad Year": user.gradYear,
+        "Created Time": parseDateTimeShort(user.createdTime),
+        "Updated Time": user?.updatedTime
+          ? parseDateTimeShort(user.updatedTime)
+          : "N/A",
+        "User ID": user.id,
+        "Payment Verified By Id": paymentInfo?.paymentVerifiedBy || "N/A",
+      };
+    });
+  
     userSheet.addRows(userSheetData);
   
     // Apply Bold Styling to Headers
@@ -404,50 +430,67 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
   
     // 🔹 Group events by name
     const eventGroups: Record<string, any[]> = {};
-
+  
     Object.entries(departmentPaymentParticipants).forEach(([userId, paymentData]) => {
       const user = departmentParticipants[userId];
       if (!user) return;
-
+  
       Object.values(paymentData.events).forEach((event) => {
         const eventName = event.eventName || "Uncategorized";
-        
+  
         if (!eventGroups[eventName]) {
           eventGroups[eventName] = [];
         }
-
-        eventGroups[eventName].push({
-          Name: user?.name,
-          "Event Name": event.eventName,
-          "Registered Time": parseDateTimeShort(event.registeredTime),
-          "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
-          "Checked In By": event?.checkedInByName || "N/A",
-          "Checked In Time": event?.checkedInTime ? parseDateTimeShort(event.checkedInTime) : "N/A",
-          "User ID": user?.id,
-          "Checked In By Id": event?.checkedInBy || "N/A",
-        });
+  
+        if (event?.checkedInStatus) {
+          eventGroups[eventName].push({
+            "Name": user?.name,
+            "Event Name": event.eventName,
+            "Registered Time": parseDateTimeShort(event.registeredTime),
+            "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
+            "Checked In By": event?.checkedInByName || "N/A",
+            "Checked In Time": event?.checkedInTime
+              ? parseDateTimeShort(event.checkedInTime)
+              : "N/A",
+            "User ID": user?.id,
+            "Checked In By Id": event?.checkedInBy || "N/A",
+          });
+        }
       });
     });
-
+  
+    // 🔹 Define Event Sheet Headers
+    const eventHeaders = [
+      "Name",
+      "Event Name",
+      "Registered Time",
+      "Checked In Status",
+      "Checked In By",
+      "Checked In Time",
+      "User ID",
+      "Checked In By Id",
+    ];
+  
     // 🔹 Create a separate sheet for each event
     Object.entries(eventGroups).forEach(([eventName, eventData]) => {
-      const sheetName = eventName.length > 31 ? eventName.substring(0, 28) + "..." : eventName; // Excel limits sheet names to 31 chars
+      const sheetName =
+        eventName.length > 31 ? eventName.substring(0, 28) + "..." : eventName; // Excel limits sheet names to 31 chars
       const eventSheet = workbook.addWorksheet(sheetName);
-
-      eventSheet.columns = Object.keys(eventData[0]).map((key) => ({
-        header: key,
-        key,
+  
+      eventSheet.columns = eventHeaders.map((header) => ({
+        header,
+        key: header,
         width: 25,
       }));
-
+  
       eventSheet.addRows(eventData);
-
+  
       // Apply Bold Styling to Headers
       eventSheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true };
       });
     });
-
+  
     // Generate File Name
     const fileName = `EventUsers_${new Date()
       .toISOString()
@@ -458,7 +501,7 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
     const buffer = await workbook.xlsx.writeBuffer();
     downloadBlob(new Blob([buffer]), fileName);
   };
-    
+      
   function listenToPayments(callback: (data: Record<string, EventUserPayments>) => void) {
     if (firestoreDB == null) return () => {};
     const paymentsRef = collection(firestoreDB, "payments");
@@ -543,16 +586,6 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
   
     return () => unsubscribeListenToUsers();
   }, [firestoreDB, departmentPaymentParticipants]);
-    
-  if ((fireUserDoc == null) || (fireUserData == null)) {
-    return (
-      <div
-        className="flex flex-col items-center gap-6 w-full px-6 lg:px-16 pt-28 lg:pt-22 py-8 min-h-[100vh] text-white"
-      >
-        <CircularLoader />
-      </div>
-    )
-  }
 
   return (
     <Table

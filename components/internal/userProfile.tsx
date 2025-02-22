@@ -3,10 +3,10 @@ import QRCode from "react-qr-code";
 import { Input } from "@heroui/input";
 import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
-import { QrCodeIcon, UserRoundPen } from "lucide-react";
 import { DefaultMemberImg } from "@/variables";
 import { parseDateTime } from "@/utils/parseDate";
 import { CustomClaims } from "@/contexts/firebase";
+import { QrCodeIcon, UserRoundPen } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/modal";
 
@@ -39,13 +39,13 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
     >
       {((!onlyShowData) && (fireCustomClaims != null)) &&
         <div
-          className="flex flex-row gap-2 self-end"
+          className="flex flex-row gap-1.5 flex-wrap self-end"
         >
           {fireCustomClaims?.roles?.map(role =>
             <Link
               key={role}
               href={`/${role}`}
-              className="flex flex-row gap-2 text-base font-medium bg-cyan-600 text-white px-5 py-2 rounded-[10px] capitalize"
+              className="flex flex-row gap-2 text-base font-medium bg-orange-500 text-white px-5 py-2 rounded-[10px] capitalize"
             >
               {role}
             </Link>

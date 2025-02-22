@@ -28,19 +28,23 @@ export default function RootLayout({
     <html lang="en">
       <body className={`antialiased`}>
         <HeroUIProvider>
-          <ToastProvider
-            placement="bottom-right"
-            toastOffset={10}
-            toastProps={{
-              color: "primary",
-              variant: "solid",
-              timeout: 10000,
-              classNames: {
-                title: "text-base font-medium",
-                description: "text-base font-medium",
-              },
-            }}
-          /> 
+          <div
+            className="absolute z-[9999]"
+          >
+            <ToastProvider
+              placement="bottom-right"
+              toastOffset={10}
+              toastProps={{
+                color: "primary",
+                variant: "solid",
+                timeout: 10000,
+                classNames: {
+                  title: "text-base font-medium",
+                  description: "text-base font-medium",
+                },
+              }}
+            /> 
+          </div>
           <FirebaseProvider>
             <StickyHeader />
             {children}

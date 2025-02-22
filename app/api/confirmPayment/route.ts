@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     const userDoc = await db.collection('users').doc(userJson?.userId).get()
     const userData = parseEventUser(userDoc.id, userDoc.data() || {}, false);
     const paymentDoc = await db.collection('payments').doc(userJson?.userId).get()
-    const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {}, false);
+    const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {});
     return NextResponse.json({
       user: userData,
       payments: paymentData

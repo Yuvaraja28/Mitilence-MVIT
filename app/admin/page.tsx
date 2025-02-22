@@ -5,6 +5,7 @@ import { useFirebase } from "@/contexts/firebase";
 import EventParticipants from "./eventParticipants";
 import { UserProfile } from "@/components/internal/userProfile";
 import { Tabs, Tab, Modal, ModalContent, ModalBody } from "@heroui/react";
+import { CircularLoader } from "@/components/internal/Loaders";
 
 export type PopUserProps = {
   user: EventUser;
@@ -14,10 +15,21 @@ export type PopUserProps = {
 export default function AdminDashboard() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
+  const fireUserData = firebaseContext?.fireUserData;
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
 
   const [currentTab, setCurrentTab] = React.useState('All Participants')
   const [popupUser, setPopupUser] = React.useState<PopUserProps | null>()
+    
+  if ((fireUserDoc == null) || (fireUserData == null)) {
+    return (
+      <div
+        className="flex flex-col items-center gap-6 w-full px-6 lg:px-16 pt-28 lg:pt-22 py-8 min-h-[100vh] text-white"
+      >
+        <CircularLoader />
+      </div>
+    )
+  }
 
   return (
     <div
@@ -45,7 +57,7 @@ export default function AdminDashboard() {
           shouldSelectOnPressUp={false}
           onSelectionChange={(key) => setCurrentTab(String(key))}
           classNames={{
-            tabList: "empty:hidden grid md:flex grid-cols-2 gap-1 p-1 border-1.5 border-purpleAccent rounded-2xl",
+            tabList: "empty:hidden  md:grid flex flex-col md:grid-cols-2 gap-1 p-1 border-1.5 border-purpleAccent rounded-2xl",
             cursor: "w-full bg-purpleAccent text-white font-medium text-xl outline-none border-none",
             tab: "px-5 py-1 outline-none border-none text-lg font-medium",
             tabContent: "group-data-[selected=true]:text-white text-white border-none",

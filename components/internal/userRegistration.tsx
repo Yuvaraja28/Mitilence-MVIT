@@ -106,7 +106,7 @@ export default function UserRegistration({ update = false }) {
                   <SelectItem
                     key={gender}
                     className="capitalize"
-                    value={gender}
+                    textValue={gender}
                   >
                     {gender}
                   </SelectItem>

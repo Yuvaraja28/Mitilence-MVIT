@@ -1,8 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
 import * as admin from 'firebase-admin';
-import parseEventUser from '@/parsers/user';
-import parsePayments from '@/parsers/payments';
 import parseEvents from '@/parsers/event';
+import parsePayments from '@/parsers/payments';
+import { NextRequest, NextResponse } from 'next/server';
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -65,7 +64,6 @@ export async function POST(req: NextRequest) {
       },
     };
     await userPaymentDocRef.set(eventUserPayment, { merge: true });
-
     return NextResponse.json({ message: "Successfully Checked in this Participant" }, { status: 200 });
   } catch (error) {
     console.log(error)
