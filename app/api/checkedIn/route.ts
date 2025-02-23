@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin';
-import parseEvents from '@/parsers/event';
 import parsePayments from '@/parsers/payments';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -37,7 +36,7 @@ export async function POST(req: NextRequest) {
     const userPaymentDoc = await  userPaymentDocRef.get();
     const userPaymentData = parsePayments(userPaymentDoc.id, userPaymentDoc.data() || {});
     
-    if (!(userPaymentData?.mitilence || {})?.[decodedToken.departmentId].paymentStatus) {
+    if (!(userPaymentData?.mitilence || {})?.[decodedToken.departmentId]?.paymentStatus) {
       return NextResponse.json({ error: `${decodedToken.departmentId.toUpperCase()} Department Amount not Paid` }, { status: 403 });
     }
 

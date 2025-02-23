@@ -37,11 +37,12 @@ export async function POST(req: NextRequest) {
     const userPaymentDoc = await  userPaymentDocRef.get();
     const userPaymentData = parsePayments(userPaymentDoc.id, userPaymentDoc.data() || {});
     
-    if ((userPaymentData?.mitilence || {})?.[decodedToken.departmentId].paymentStatus) {
+    if ((userPaymentData?.mitilence || {})?.[decodedToken.departmentId]?.paymentStatus) {
       return NextResponse.json({ error: `${decodedToken.departmentId.toUpperCase()} Department Amount already Paid` }, { status: 403 });
     }
 
     const paymentDataUpdate = {
+      ...userPaymentData?.mitilence?.[String(decodedToken.departmentId)] || {},
       paymentStatus: true,
       paymentVerifiedBy: decodedToken.uid,
       paymentTime: new Date().toISOString(),
@@ -49,14 +50,17 @@ export async function POST(req: NextRequest) {
       participantType: userJson?.participantType,
       departmentId: String(decodedToken.departmentId),
     }
+    if (!(paymentDataUpdate?.registrationStatus || false)) {
+      paymentDataUpdate['departmentId'] = String(decodedToken.departmentId),
+      paymentDataUpdate['registeredTime'] = new Date().toISOString(),
+      paymentDataUpdate['registrationStatus'] = true
+    }
 
     const eventUserPayment = {
       ...userPaymentData,
       mitilence: {
         ...(userPaymentData?.mitilence || {}),
-        [String(decodedToken.departmentId)]: {
-          ...(userPaymentData?.mitilence?.[String(decodedToken.departmentId)] || {}), ...paymentDataUpdate
-        },
+        [String(decodedToken.departmentId)]: { ...paymentDataUpdate },
       },
     };
     await userPaymentDocRef.set(eventUserPayment, { merge: true });

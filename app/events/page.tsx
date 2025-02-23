@@ -14,7 +14,7 @@ import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
-import { ArrowUpRight, BadgeCheck, Building2, CalendarDays, ContactRound, IndianRupeeIcon, Link2, Search, Share2, UsersRound } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, UsersRound } from "lucide-react";
 import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 
 const Markdown = dynamic(() => import("react-markdown"), { ssr: false });
@@ -262,7 +262,7 @@ export default function Events() {
             >
               {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ? (
                 <span className={`flex items-center justify-center gap-2 ${(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? "bg-[#17C964]" : "bg-yellow-500"} select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 mt-1 w-fit`}>
-                  Registered and {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 'Paid' : 'Not Paid'} {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? <BadgeCheck /> : <IndianRupeeIcon size={20} />}
+                  Registered {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 'and Paid' : 'but not Paid'} {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? <BadgeCheck /> : <BadgeIndianRupee />}
                 </span>
               ) : (
                 <Button
@@ -314,13 +314,13 @@ export default function Events() {
                         inView
                         delay={0 + (idx+1) * 0.05}
                       >
-                        {(registeredEventsSet?.has(event.id)) &&
+                        {/* {(registeredEventsSet?.has(event.id)) &&
                           <button
                             className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-base font-medium w-fit !px-4 !py-1.5 capitalize"
                           >
                             <BadgeCheck /> Registered
                           </button>
-                        }
+                        } */}
                         <Image
                           key={idx}
                           alt={event.name}
@@ -423,7 +423,7 @@ export default function Events() {
                     </Popover>
                   </BlurFade>
                 </div>
-                <div className="w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-1 select-none">
+                <div className="w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2 select-none">
                   <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full">
                     Event Details
                   </span>
@@ -485,11 +485,11 @@ export default function Events() {
                     </div>
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
                       <ContactRound color="#000000" size={25} />
-                      <div className="text-black flex flex-col h-full">
+                      <div className="text-black flex flex-col gap-0.5 h-full">
                         <span className="uppercase font-semibold text-base">
                           Student Coordinator
                         </span>
-                        <span className="font-medium text-base mt-[-5px]">
+                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
                           {currentEvent?.studentOrganizer || "TBA"}
                         </span>
                       </div>

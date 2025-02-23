@@ -4,25 +4,19 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 import { useFirebase } from "@/contexts/firebase";
-import { Search, VerifiedIcon } from "lucide-react";
+import { QrCodeIcon, Search, VerifiedIcon } from "lucide-react";
 import { Select, SelectItem } from "@heroui/select";
 import { CircularLoader } from "@/components/internal/Loaders";
 import { UserProfile } from "@/components/internal/userProfile";
+import { boundingBox, IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
+import { getUser } from "@/Firestore/users";
+import { getPayment } from "@/Firestore/payments";
 
 interface SearchedEventUser {
   user: EventUser;
   payments: EventUserPayments
 }
-
-const Fields = [
-  { name: "Phone No", param: "phoneNo", type: "tel" },
-  { name: "Enroll No", param: "enrollNo", type: "text" },
-  { name: "College", param: "college", type: "text" },
-  { name: "Department", param: "department", type: "text" },
-  { name: "Graduation Year", param: "gradYear", type: "number" },
-  { name: "Gender", param: "gender", type: "select" },
-];
 
 export default function Organizers() {
   const firebaseContext = useFirebase();
@@ -33,12 +27,27 @@ export default function Organizers() {
 
   const {isOpen, onOpen, onClose, onOpenChange} = useDisclosure();
 
+  const [scanPaused, setScanPaused] = React.useState(false)
   const [currentSearch, setCurrentSearch] = React.useState('');
+  const [scannerOpened, setScannerOpened] = React.useState(false)
   const [isMakingPayment, setIsMakingPayment] = React.useState(false);
   const [isEventSubmitting, setIsEventSubmitting] = React.useState(false);
   const [userData, setUserData] = React.useState<SearchedEventUser | null>(null);
 
   const paidDepartments = React.useMemo(() => Object.entries(userData?.payments?.mitilence || {}), [userData])
+
+  const onScanCallback = async (result: IDetectedBarcode[]) => {
+    setScanPaused(() => true)
+    console.log("Scanning...")
+    const userData = await getUser(result[0].rawValue);
+    const paymentData = await getPayment(result[0].rawValue);
+    setUserData({
+      user: userData,
+      payments: paymentData
+    })
+    setScanPaused(() => false)
+    setScannerOpened(() => false)
+  }
 
   async function searchUser(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -162,11 +171,11 @@ export default function Organizers() {
         className="flex flex-col gap-3"
       >
         <div
-          className="flex flex-col lg:flex-row items-start gap-3"
+          className="flex flex-col lg:flex-row items-center sm:items-start gap-3"
         >
           <form
             onSubmit={searchUser}
-            className="bg-white rounded-3xl overflow-auto w-full md:w-[35em] flex flex-row items-center gap-2 px-1 lg:px-2"
+            className="bg-white rounded-3xl overflow-auto w-full md:w-[35em] flex flex-row items-center gap-1.5 px-1 lg:px-2"
           >
             <input
               required
@@ -175,6 +184,14 @@ export default function Organizers() {
               onChange={(e) => setCurrentSearch(e.target.value)}
               className="w-full outline-none border-none px-4 font-medium text-lg text-black py-3"
             />
+            <Button
+              isIconOnly
+              isLoading={isEventSubmitting}
+              onPress={() => setScannerOpened(true)}
+              className="bg-boxBlack text-white w-2 rounded-xl px-1.5"
+            >
+              <QrCodeIcon />
+            </Button>
             <Button
               type="submit"
               isLoading={isEventSubmitting}
@@ -204,6 +221,44 @@ export default function Organizers() {
           />
         }
       </div>
+      {(scannerOpened) &&
+        <Modal
+          size={'md'}
+          isOpen={true}
+          onClose={() => setScannerOpened(false)}
+          placement="center"
+        >
+          <ModalContent>
+            <ModalBody
+              className="flex flex-col justify-center items-center gap-2 py-12"
+            >
+              <Scanner
+                components={{
+                  audio: true,
+                  onOff: true,
+                  torch: true,
+                  zoom: true,
+                  finder: true,
+                  tracker: boundingBox,
+                }}
+                allowMultiple={true}
+                scanDelay={5000}
+                onScan={scanPaused ? () => {} : onScanCallback}
+                styles={{ container: { height: "400px", width: "350px" } }}
+              />
+              <div
+                className="flex flex-col items-center gap-1"
+              >
+                <span
+                  className="text-3xl font-semibold text-center text-purpleAccent"
+                >
+                  Payment Desk
+                </span>
+              </div>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      }
       <Modal
         size={'md'}
         isOpen={isOpen}
