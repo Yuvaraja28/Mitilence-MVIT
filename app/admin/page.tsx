@@ -98,6 +98,7 @@ export default function AdminDashboard() {
         <Modal
           size={'2xl'}
           isOpen={true}
+          scrollBehavior="inside"
           onClose={() => setPopupUser(null)}
         >
           <ModalContent>

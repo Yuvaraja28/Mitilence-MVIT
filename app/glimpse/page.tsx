@@ -51,7 +51,7 @@ export default function Glimpse() {
           <span
             className="text-center text-xl"
           >
-            Mitilance is a premier event at Manakula Vinayagar Institute of Technology, featuring a dynamic mix of technical and non-technical competitions. This event serves as a platform for students to showcase their skills in coding, design, innovation, and problem-solving while also engaging in fun and creative activities. With hackathons, quizzes, workshops, and cultural contests, Mitlance fosters learning, teamwork, and excitement for all participants.
+            Mitilance is a premier event at Manakula Vinayagar Institute of Technology, featuring a dynamic mix of technical and non-technical competitions. This event serves as a platform for students to showcase their skills in coding, design, innovation, and problem-solving while also engaging in fun and creative activities. Mitilance fosters learning, teamwork, and excitement for all participants.
           </span>
         </div>
         <div

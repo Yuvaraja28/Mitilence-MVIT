@@ -18,7 +18,6 @@ import {
   Pagination,
   Selection,
   ChipProps,
-  SortDescriptor,
   Popover,
   PopoverTrigger,
   PopoverContent

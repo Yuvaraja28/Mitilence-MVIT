@@ -113,7 +113,7 @@ export default function Profile() {
         <Modal
           size={'lg'}
           placement="center"
-          scrollBehavior="inside"
+          scrollBehavior="outside"
           isOpen={currentEvent != null}
           onClose={() => setCurrentEvent(null)}
         >

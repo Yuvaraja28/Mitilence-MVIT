@@ -225,8 +225,9 @@ export default function Organizers() {
         <Modal
           size={'md'}
           isOpen={true}
-          onClose={() => setScannerOpened(false)}
           placement="center"
+          scrollBehavior="inside"
+          onClose={() => setScannerOpened(false)}
         >
           <ModalContent>
             <ModalBody
@@ -262,6 +263,7 @@ export default function Organizers() {
       <Modal
         size={'md'}
         isOpen={isOpen}
+        scrollBehavior="inside"
         onOpenChange={isMakingPayment ? () => {} : onOpenChange}
       >
         <ModalContent>

@@ -342,11 +342,11 @@ export default function Events() {
       }
       {(currentEvent != null) &&
         <Modal
-          scrollBehavior="inside"
-          isOpen={true}
-          size={"3xl"}
-          placement="bottom"
-          backdrop="blur"
+        isOpen={true}
+        size={"3xl"}
+        backdrop="blur"
+        placement="bottom"
+        scrollBehavior="inside"
           classNames={{
             body: "py-6",
             backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
@@ -507,7 +507,12 @@ export default function Events() {
           </ModalContent>
         </Modal>
       }
-      <Modal isOpen={isOpen} size={'lg'} onClose={isEventSubmitting ? () => {} : () => {onClose(); setGeneralInstructionsRead(() => false)}}>
+      <Modal
+        size={'lg'}
+        isOpen={isOpen}
+        scrollBehavior="inside"
+        onClose={isEventSubmitting ? () => {} : () => {onClose(); setGeneralInstructionsRead(() => false)}}
+      >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 text-2xl">
             {(generalInstructionsRead) ?

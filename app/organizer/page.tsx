@@ -159,6 +159,7 @@ export default function OrganizerDashboard() {
             <Modal
               size={'2xl'}
               isOpen={true}
+              scrollBehavior="inside"
               onClose={() => setPopupUser(null)}
             >
               <ModalContent>
@@ -179,8 +180,9 @@ export default function OrganizerDashboard() {
         <Modal
           size={'md'}
           isOpen={true}
-          onClose={() => setCurrentEvent(null)}
           placement="center"
+          scrollBehavior="inside"
+          onClose={() => setCurrentEvent(null)}
         >
           <ModalContent>
             <ModalBody

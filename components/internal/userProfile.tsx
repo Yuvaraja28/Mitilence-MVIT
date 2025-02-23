@@ -172,7 +172,13 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
         )}
       </div>
       {(fireUserDoc?.id != null) &&
-        <Modal isOpen={isOpen} size={'sm'} onClose={onClose} placement="center">
+        <Modal
+          size={'sm'}
+          isOpen={isOpen}
+          onClose={onClose}
+          placement="center"
+          scrollBehavior="outside"
+        >
           <ModalContent>
             <ModalBody
               className="flex flex-col justify-center items-center gap-6 py-12"
