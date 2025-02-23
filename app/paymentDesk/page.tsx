@@ -188,7 +188,7 @@ export default function Organizers() {
               size="lg"
               onPress={onOpen}
               startContent={<VerifiedIcon />}
-              isDisabled={(userData?.payments?.mitilence[fireCustomClaims?.departmentId || ''] != null)}
+              isDisabled={((userData?.payments?.mitilence || {})?.[fireCustomClaims?.departmentId || '']?.paymentStatus)}
               className="bg-blue-500 text-white text-lg font-medium rounded-3xl uppercase"
             >
               Make Payment

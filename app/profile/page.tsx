@@ -8,7 +8,7 @@ import { UserProfile } from "@/components/internal/userProfile";
 import UserRegistration from "@/components/internal/userRegistration";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
-import { ArrowUpRight, BadgeCheck, Building2, CalendarDays, ChevronDown, CircleDashed, Clock8, FileText, IndianRupee, Navigation, UserRoundPen } from "lucide-react";
+import { BadgeCheck, Building2, CalendarDays, CircleDashed, Clock8, FileText, Navigation } from "lucide-react";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
@@ -20,7 +20,7 @@ export default function Profile() {
   const [userUpdate, setUserUpdate] = React.useState(false)
   const [currentEvent, setCurrentEvent] = React.useState<string | null>(null)
 
-  const paidEvents = React.useMemo(() => Object.entries(eventPayments?.events || {}), [eventPayments?.events])
+  const checkedInEvents = React.useMemo(() => Object.entries(eventPayments?.events || {}).filter(events => events[1].checkedInStatus), [eventPayments?.events])
   const paidDepartments = React.useMemo(() => Object.entries(eventPayments?.mitilence || {}), [eventPayments?.mitilence])
 
   return (
@@ -39,9 +39,9 @@ export default function Profile() {
         <span
           className="flex flex-row justify-between items-center gap-4 bg-white rounded-2xl px-8 py-4 text-xl font-medium"
         >
-          Registered Events ( {paidEvents.length} )
-          {(paidEvents.length > 0) ?
-            <ChevronDown size={30} />
+          Checked In Events: {checkedInEvents.length}
+          {/* {(paidEvents.length > 0) ?
+            <ChevronDown size=.filter(events => events[1].checkedInStatus){30} />
           :
             <Link
               href={'/events'}
@@ -50,13 +50,13 @@ export default function Profile() {
               Register Now
               <ArrowUpRight />
             </Link>
-          }
+          } */}
         </span>
-        {(paidEvents.length > 0) &&
+        {(checkedInEvents.length > 0) &&
           <div
             className="flex flex-col sm:grid grid-cols-2 gap-4 bg-white text-white rounded-2xl px-6 py-8"
           >
-            {(Object.entries(eventPayments?.events || {})).map(registerEve => 
+            {checkedInEvents.map(registerEve => 
               <div
                 key={registerEve[0]}
                 className="flex flex-col gap-3 bg-boxBlack p-4 rounded-3xl"
@@ -81,15 +81,15 @@ export default function Profile() {
                       <PopoverTrigger>
                         <Button
                           size="sm"
-                          color={(registerEve[1]?.checkedInStatus) ? "success" : "warning"}
-                          startContent={(registerEve[1]?.checkedInStatus) ? <BadgeCheck /> : <CircleDashed />}
+                          color={"success"}
+                          startContent={<BadgeCheck />}
                           className="text-sm font-medium w-fit !px-4 !py-2 capitalize"
                         >
-                          {(registerEve[1]?.checkedInStatus) ? 'Checked In' : 'Not Checked In'}
+                          Checked In
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="text-base font-medium px-4 py-2">
-                        You have {(registerEve[1]?.checkedInStatus) ? 'checked' : 'not checked'} in for the Event
+                        You have checked in for the Event
                       </PopoverContent>
                     </Popover>
                   </div>

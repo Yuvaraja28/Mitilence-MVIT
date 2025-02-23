@@ -16,7 +16,7 @@ export function parseDateTimeShort(date: string) {
   return new Date(date).toLocaleDateString('en-US', {
     localeMatcher: 'best fit',
     year: '2-digit',
-    month: '2-digit',
+    month: 'short',
     day: '2-digit',
     hour12: true,
     formatMatcher: 'basic',

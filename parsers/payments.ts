@@ -27,11 +27,14 @@ export default function parsePayments(
     (prev, curr) => ({
       ...prev,
       [curr]: {
+        paymentStatus: paymentData.mitilence[curr]?.paymentStatus || false,
         departmentId: paymentData.mitilence[curr]?.departmentId || "",
         participantType: paymentData.mitilence[curr]?.participantType || "",
         paymentVerifiedBy: paymentData.mitilence[curr]?.paymentVerifiedBy || "",
         paymentVerifiedByName: paymentData.mitilence[curr]?.paymentVerifiedByName || "",
         paymentTime: parseTimestamp(paymentData.mitilence[curr]?.paymentTime),
+        registeredTime: parseTimestamp(paymentData.mitilence[curr]?.registeredTime),
+        registrationStatus: paymentData.mitilence[curr]?.registrationStatus || false
       },
     }),
     {}
@@ -42,7 +45,6 @@ export default function parsePayments(
       ...prev,
       [curr]: {
         eventId: curr,
-        eventName: paymentData.events[curr]?.eventName || "Unknown Event",
         departmentId: paymentData.events[curr]?.departmentId || "",
         checkedInBy: paymentData.events[curr]?.checkedInBy || "",
         checkedInByName: paymentData.events[curr]?.checkedInByName || "",

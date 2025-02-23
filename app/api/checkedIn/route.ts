@@ -37,20 +37,15 @@ export async function POST(req: NextRequest) {
     const userPaymentDoc = await  userPaymentDocRef.get();
     const userPaymentData = parsePayments(userPaymentDoc.id, userPaymentDoc.data() || {});
     
-    if (!Object.keys(userPaymentData?.mitilence || {}).includes(String(decodedToken.departmentId))) {
+    if (!(userPaymentData?.mitilence || {})?.[decodedToken.departmentId].paymentStatus) {
       return NextResponse.json({ error: `${decodedToken.departmentId.toUpperCase()} Department Amount not Paid` }, { status: 403 });
     }
 
-    const eventsDoc = await db.collection('events').doc(userJson?.eventId).get();
-    if (!eventsDoc.exists) {
-      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
-    }
-    const eventDBData = parseEvents(eventsDoc.id, eventsDoc.data() || {});
-
     const eventDataUpdate = {
+      eventId: userJson.eventId,
       checkedInBy: decodedToken.uid,
       checkedInByName: decodedToken.name,
-      checkedInTime: new Date(),
+      checkedInTime: new Date().toISOString(),
       checkedInStatus: true
     }
 
@@ -58,8 +53,8 @@ export async function POST(req: NextRequest) {
       ...userPaymentData,
       events: {
         ...(userPaymentData?.events || {}),
-        [String(eventDBData.id)]: {
-          ...(userPaymentData?.events?.[String(eventDBData.id)] || {}), ...eventDataUpdate
+        [String(userJson?.eventId)]: {
+          ...(userPaymentData?.events?.[String(userJson?.eventId)] || {}), ...eventDataUpdate
         },
       },
     };

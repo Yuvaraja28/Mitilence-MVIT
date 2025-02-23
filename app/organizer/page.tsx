@@ -14,7 +14,7 @@ export type PopUserProps = {
   payment: EventUserPayments;
 }
 
-export default function AdminDashboard() {
+export default function OrganizerDashboard() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
@@ -30,19 +30,20 @@ export default function AdminDashboard() {
   const onScanCallback = async (result: IDetectedBarcode[]) => {
     if (currentEvent == null) return;
     setScanPaused(() => true)
+    console.log("Scanning...")
     const paymentData = await getPayment(result[0].rawValue);
-    const userPaymentData = paymentData.events?.[currentEvent];
-    if (userPaymentData?.checkedInStatus) {
+    console.log(paymentData.mitilence?.[fireCustomClaims?.departmentId || ''])
+    if (!(paymentData.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false)) {
+      addToast({
+        title: "Not Paid Amount",
+        description: `Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
+        color: "warning"
+      })
+    } else if (paymentData.events?.[currentEvent]?.checkedInStatus) {
       addToast({
         title: "Duplicate Checkin",
         description: "Participant already Checked in for this Event",
         color: "danger"
-      })
-    } else if (userPaymentData == null) {
-      addToast({
-        title: "Not Registered",
-        description: "Participant has not even registered for this Event",
-        color: "warning"
       })
     } else {
       const checkinResp = await fetch("/api/checkedIn", {

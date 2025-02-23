@@ -8,14 +8,13 @@ import { Button } from "@heroui/button";
 import confettiPopUp from "@/animations/confetti";
 import Footer from "@/components/internal/footer";
 import { useFirebase } from "@/contexts/firebase";
-import { getCoordinator } from "@/Firestore/coordinators";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { GoogleMap } from "@/components/internal/googleMap";
 import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
-import { ArrowUpRight, BadgeCheck, Building2, CalendarDays, ContactRound, Link2, Search, Share2, UsersRound } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Building2, CalendarDays, ContactRound, IndianRupeeIcon, Link2, Search, Share2, UsersRound } from "lucide-react";
 import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 
 const Markdown = dynamic(() => import("react-markdown"), { ssr: false });
@@ -71,17 +70,18 @@ const eventCategories = [
 
 export default function Events() {
   const firebaseContext = useFirebase();
-  const events = firebaseContext?.events
+  const events = firebaseContext?.events;
   const LoginGoogle = firebaseContext?.LoginGoogle;
   const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
-  const departments = firebaseContext?.departments || []
+  const departments = firebaseContext?.departments || [];
   const eventsObject = firebaseContext?.eventsObject || {};
   const registeredEventsSet = firebaseContext?.registeredEventsSet || new Set();
+  const eventPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
   const [isEventSubmitting, setIsEventSubmitting] = React.useState<boolean>(false);
   const [generalInstructionsRead, setGeneralInstructionsRead] = React.useState(false);
-  const [studentOrganizer, setStudentOrganizer] = React.useState<EventCoordinator | null>(null);
-  const [facultyOrganizer, setFacultyOrganizer] = React.useState<EventCoordinator | null>(null);
+  // const [studentOrganizer, setStudentOrganizer] = React.useState<EventCoordinator | null>(null);
+  // const [facultyOrganizer, setFacultyOrganizer] = React.useState<EventCoordinator | null>(null);
   
   const [currentSearch, setCurrentSearch] = React.useState('');
   const [currentEvent, setCurrentEvent] = React.useState<Events | null>();
@@ -118,30 +118,30 @@ export default function Events() {
     
   }, [events, departments, eventCategories]);
 
-  React.useEffect(() => {
-    if (currentEvent?.facultyCoordinatorId) {
-      getCoordinator(currentEvent.facultyCoordinatorId)
-        .then(data => setFacultyOrganizer(data))
-        .catch(() => {})
-    }
-    if (currentEvent?.studentCoordinatorId && typeof currentEvent.studentCoordinatorId === 'string') {
-      getCoordinator(currentEvent.studentCoordinatorId)
-        .then(data => setStudentOrganizer(data))
-        .catch(() => {})
-    }
-  }, [currentEvent])
+  // React.useEffect(() => {
+  //   if (currentEvent?.facultyCoordinatorId) {
+  //     getCoordinator(currentEvent.facultyCoordinatorId)
+  //       .then(data => setFacultyOrganizer(data))
+  //       .catch(() => {})
+  //   }
+  //   if (currentEvent?.studentCoordinatorId && typeof currentEvent.studentCoordinatorId === 'string') {
+  //     getCoordinator(currentEvent.studentCoordinatorId)
+  //       .then(data => setStudentOrganizer(data))
+  //       .catch(() => {})
+  //   }
+  // }, [currentEvent])
   
   async function registerNow(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (currentEvent?.id == null) return;
+    if (currentDepartment?.id == null) return;
     setIsEventSubmitting(() => true);
-    fetch("/api/eventRegister", {
+    fetch("/api/departmentRegister", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${fireUserData?.accessToken}`
       },
       body: JSON.stringify({
-        eventId: currentEvent.id
+        departmentId: currentDepartment.id
       })
     })
       .then(() => {
@@ -201,7 +201,7 @@ export default function Events() {
             defaultSelectedKey={currentDepartment?.id}
             shouldSelectOnPressUp={false}
             onSelectionChange={(index) => {
-              if (currentDepartment == null) return;
+              if (currentDepartment?.id == null) return;
               const selectedDepartment = departments.find(dep => dep.id === index);
               setCurrentDepartment(() => selectedDepartment);
               const params = new URLSearchParams(window.location.search);
@@ -257,57 +257,86 @@ export default function Events() {
                 />
               ))}
             </Tabs>
-            {(events?.length == 0) || (filteredEvents?.length == 0) ?
-              <span
-                className="text-xl w-full font-normal mt-2 text-center md:text-start"
-              >
-                Currently, there are no events available under this filter.
-              </span>
-              :
-              <div
-                className="flex flex-row flex-wrap items-center justify-center md:items-start md:justify-start w-full rounded-xl gap-3"
-              >
-                {filteredEvents.map((event, idx) =>
-                  <div
-                    key={event.id}
-                    className="group"
-                    onClick={() => {
-                      const selectedEvent = eventsObject[event.id];
-                      if (selectedEvent) {
-                        setCurrentEvent(() => selectedEvent);
-                      }
-                      const params = new URL(location.href).searchParams;
-                      if (selectedEvent) { params.set('event', selectedEvent.id) }
-                      else { params.delete('event') }
-                      window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);
-                    }}
-                  >
-                    <BlurFade
-                      inView
-                      delay={0 + (idx+1) * 0.05}
+            <div
+              className="flex flex-col items-center lg:items-start gap-6 lg:gap-4"
+            >
+              {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ? (
+                <span className={`flex items-center justify-center gap-2 ${(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? "bg-[#17C964]" : "bg-yellow-500"} select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 mt-1 w-fit`}>
+                  Registered and {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 'Paid' : 'Not Paid'} {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? <BadgeCheck /> : <IndianRupeeIcon size={20} />}
+                </span>
+              ) : (
+                <Button
+                  size="lg"
+                  onPress={onOpen}
+                  // disabled={registeredEventsSet.has(currentEvent?.id || '')}
+                  // isDisabled={
+                  //   !registeredEventsSet.has(currentEvent?.id || '') &&
+                  //   (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
+                  // }
+                  className={`bg-purpleAccent text-white text-xl font-medium rounded-xl mt-1 w-fit`}
+                    // ${!registeredEventsSet.has(currentEvent?.id || '') &&
+                    // (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
+                    //   ? "bg-red-500"
+                    //   : "bg-purpleAccent"}
+                >
+                  {/* {!registeredEventsSet.has(currentEvent?.id || '') &&
+                  (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
+                    ? "Registrations Closed" */}
+                    Register Now for {currentDepartment?.id.toUpperCase()} Events
+                </Button>
+              )}
+              {(events?.length == 0) || (filteredEvents?.length == 0) ?
+                <span
+                  className="text-xl w-full font-normal text-center md:text-start px-1"
+                >
+                  Currently, there are no events available under this filter.
+                </span>
+                :
+                <div
+                  className="flex flex-row flex-wrap items-center justify-center md:items-start md:justify-start w-full rounded-xl gap-3"
+                >
+                  {filteredEvents.map((event, idx) =>
+                    <div
+                      key={event.id}
+                      className="group"
+                      onClick={() => {
+                        const selectedEvent = eventsObject[event.id];
+                        if (selectedEvent) {
+                          setCurrentEvent(() => selectedEvent);
+                        }
+                        const params = new URL(location.href).searchParams;
+                        if (selectedEvent) { params.set('event', selectedEvent.id) }
+                        else { params.delete('event') }
+                        window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);
+                      }}
                     >
-                      {(registeredEventsSet?.has(event.id)) &&
-                        <button
-                          className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-base font-medium w-fit !px-4 !py-1.5 capitalize"
-                        >
-                          <BadgeCheck /> Registered
-                        </button>
-                      }
-                      <Image
-                        key={idx}
-                        alt={event.name}
-                        fallbackSrc={EventsFallbackImg}
-                        src={event?.logoUrl || EventsFallbackImg}
-                        className="object-cover w-[15em] h-[15em] cursor-pointer"
-                      />
-                      <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
-                        <ArrowUpRight size={20} />
-                      </div>
-                    </BlurFade>
-                  </div>
-                )}
-              </div>
-            }
+                      <BlurFade
+                        inView
+                        delay={0 + (idx+1) * 0.05}
+                      >
+                        {(registeredEventsSet?.has(event.id)) &&
+                          <button
+                            className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-base font-medium w-fit !px-4 !py-1.5 capitalize"
+                          >
+                            <BadgeCheck /> Registered
+                          </button>
+                        }
+                        <Image
+                          key={idx}
+                          alt={event.name}
+                          fallbackSrc={EventsFallbackImg}
+                          src={event?.logoUrl || EventsFallbackImg}
+                          className="object-cover w-[15em] h-[15em] cursor-pointer"
+                        />
+                        <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
+                          <ArrowUpRight size={20} />
+                        </div>
+                      </BlurFade>
+                    </div>
+                  )}
+                </div>
+              }
+            </div>
           </div>
         </>
       }
@@ -393,34 +422,8 @@ export default function Events() {
                       </PopoverContent>
                     </Popover>
                   </BlurFade>
-                  {registeredEventsSet.has(currentEvent?.id || '') ? (
-                    <span className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-2xl uppercase px-2 py-2.5 mt-1">
-                      Registered <BadgeCheck />
-                    </span>
-                  ) : (
-                    <Button
-                      size="lg"
-                      onPress={onOpen}
-                      disabled={registeredEventsSet.has(currentEvent?.id || '')}
-                      isDisabled={
-                        !registeredEventsSet.has(currentEvent?.id || '') &&
-                        (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
-                      }
-                      className={`${
-                        !registeredEventsSet.has(currentEvent?.id || '') &&
-                        (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
-                          ? "bg-red-500"
-                          : "bg-purpleAccent"
-                      } text-white text-lg font-medium rounded-2xl uppercase mt-1`}
-                    >
-                      {!registeredEventsSet.has(currentEvent?.id || '') &&
-                      (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
-                        ? "Registrations Closed"
-                        : "Register Now"}
-                    </Button>
-                  )}
                 </div>
-                <div className="w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 pt-5 pb-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-4 select-none">
+                <div className="w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-1 select-none">
                   <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full">
                     Event Details
                   </span>
@@ -476,7 +479,7 @@ export default function Events() {
                           Department Staff
                         </span>
                         <span className="font-medium text-base mt-[-5px]">
-                          {facultyOrganizer?.name || "TBA"}
+                          {currentEvent?.facultyOrganizer || "TBA"}
                         </span>
                       </div>
                     </div>
@@ -487,7 +490,7 @@ export default function Events() {
                           Student Coordinator
                         </span>
                         <span className="font-medium text-base mt-[-5px]">
-                          {studentOrganizer?.name || "TBA"}
+                          {currentEvent?.studentOrganizer || "TBA"}
                         </span>
                       </div>
                     </div>
@@ -523,7 +526,7 @@ export default function Events() {
                   className='flex flex-col gap-2'
                 >
                   <Input
-                    type="email"
+                    type="text"
                     size="lg"
                     isRequired={true}
                     variant={"bordered"}
@@ -531,6 +534,16 @@ export default function Events() {
                     label={`Participant Name`}
                     disabled={true}
                     value={fireUserDoc?.name || ''}
+                  />
+                  <Input
+                    type="text"
+                    size="lg"
+                    isRequired={true}
+                    variant={"bordered"}
+                    name={`Department`}
+                    label={`Department`}
+                    disabled={true}
+                    value={currentDepartment?.name?.toUpperCase() || ''}
                   />
                   <ul
                     className='flex flex-col gap-1'
@@ -596,29 +609,19 @@ export default function Events() {
               }
             </ModalBody>
             <ModalFooter>
-              {(currentEvent?.linkRegistration != null) ?
-                <Link
-                  target='_blank'
-                  href={currentEvent.linkRegistration}
-                  className='bg-purpleAccent text-white font-medium text-lg mb-4 px-4 py-1.5 rounded-xl'
-                >
-                  Register Now
-                </Link>
-              :
-                <Button
-                  isLoading={isEventSubmitting}
-                  type={generalInstructionsRead ? 'submit' : 'button'}
-                  onPress={generalInstructionsRead ? () => {} : () => {
-                    if ((fireUserData == null) && (LoginGoogle != null)) {
-                      return LoginGoogle(false);
-                    };
-                    setGeneralInstructionsRead(() => true)
-                  }}
-                  className='bg-purpleAccent text-white font-medium text-lg mb-4'
-                >
-                  Register Now
-                </Button>
-              }
+              <Button
+                isLoading={isEventSubmitting}
+                type={generalInstructionsRead ? 'submit' : 'button'}
+                onPress={generalInstructionsRead ? () => {} : () => {
+                  if ((fireUserData == null) && (LoginGoogle != null)) {
+                    return LoginGoogle(false);
+                  };
+                  setGeneralInstructionsRead(() => true)
+                }}
+                className='bg-purpleAccent text-white font-medium text-lg mb-4'
+              >
+                Register Now
+              </Button>
             </ModalFooter>
           </form>
         </ModalContent>

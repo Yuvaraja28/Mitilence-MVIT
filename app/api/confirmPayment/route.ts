@@ -37,16 +37,17 @@ export async function POST(req: NextRequest) {
     const userPaymentDoc = await  userPaymentDocRef.get();
     const userPaymentData = parsePayments(userPaymentDoc.id, userPaymentDoc.data() || {});
     
-    if (Object.keys(userPaymentData?.mitilence || {}).includes(String(decodedToken.departmentId))) {
+    if ((userPaymentData?.mitilence || {})?.[decodedToken.departmentId].paymentStatus) {
       return NextResponse.json({ error: `${decodedToken.departmentId.toUpperCase()} Department Amount already Paid` }, { status: 403 });
     }
 
     const paymentDataUpdate = {
-      departmentId: String(decodedToken.departmentId),
-      paymentTime: new Date(),
+      paymentStatus: true,
       paymentVerifiedBy: decodedToken.uid,
+      paymentTime: new Date().toISOString(),
       paymentVerifiedByName: decodedToken?.name,
-      participantType: userJson?.participantType
+      participantType: userJson?.participantType,
+      departmentId: String(decodedToken.departmentId),
     }
 
     const eventUserPayment = {

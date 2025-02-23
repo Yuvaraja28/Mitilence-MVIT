@@ -99,7 +99,7 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
           </Button>
         </div>
       </div>
-      {(paidDepartments.length > 0) &&
+      {(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0) &&
         <div
           className="flex flex-col gap-2 px-1 mt-[-5px] lg:mt-[-15px]"
         >
@@ -111,7 +111,7 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
           <div
             className="flex flex-row flex-wrap gap-2"
           >
-            {paidDepartments.map(mitilence =>
+            {paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).map(mitilence =>
               <Popover
                 showArrow
                 placement="top"

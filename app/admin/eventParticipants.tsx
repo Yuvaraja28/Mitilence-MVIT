@@ -22,8 +22,8 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Autocomplete,
-  AutocompleteItem,
+  Select,
+  SelectItem
 } from "@heroui/react";
 import ExcelJS from "exceljs";
 import { ChevronDownIcon, Download, SearchIcon } from "lucide-react";
@@ -32,24 +32,20 @@ import { collection, documentId, onSnapshot, query, where } from "firebase/fires
 import { useFirebase } from "@/contexts/firebase";
 import parseEventUser from "@/parsers/user";
 import parsePayments from "@/parsers/payments";
-import downloadBlob from "@/utils/downloadBlob";
 import { DefaultMemberImg } from "@/variables";
+import downloadBlob from "@/utils/downloadBlob";
 import { PopUserProps } from "./page";
 
 export const columns = [
-  { name: "NAME", uid: "name", sortable: true },
-  { name: "ENROLL NO", uid: "enrollNo", sortable: true },
+  { name: "NAME", uid: "name" },
+  { name: "ENROLL NO", uid: "enrollNo" },
   { name: "PHONE", uid: "phoneNo" },
   { name: "COLLEGE", uid: "college" },
-  { name: "GENDER", uid: "gender", sortable: true },
-  { name: "CHECKED IN", uid: "checkedIn", sortable: true },
+  { name: "GENDER", uid: "gender" },
+  { name: "REGISTER TIME", uid: "registerTime" },
+  { name: "CHECKED IN", uid: "checkedIn" },
   { name: "PAYMENT", uid: "payment" },
   { name: "ACTIONS", uid: "actions" },
-];
-
-export const statusOptions = [
-  {name: "Checked In", uid: "checkedin"},
-  {name: "Not Checked In", uid: "not_checkedin"},
 ];
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -63,8 +59,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events;
   const firestoreDB = firebaseContext?.firestoreDB;
-  const fireUserDoc = firebaseContext?.fireUserDoc;
-  const fireUserData = firebaseContext?.fireUserData;
+  const eventsObject = firebaseContext?.eventsObject;
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
 
   const filteredEvents = React.useMemo(() => (events?.filter(e => (e.departmentId == fireCustomClaims?.departmentId)) || []), [events, fireCustomClaims]);
@@ -79,11 +74,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
-  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
-    column: "age",
-    direction: "ascending",
-  });
+  const [statusFilter, setStatusFilter] = React.useState<string>("All");
 
   const [page, setPage] = React.useState(1);
 
@@ -91,6 +82,11 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
 
   const headerColumns = columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 
+  React.useEffect(() => {
+    if (events == null) return;
+    setSelectedEvent(events[0].id)
+  }, [events])
+  
   const filteredItems = () => {
     let filteredUsers = [...Object.values(departmentParticipants)];
 
@@ -103,12 +99,10 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
         departmentParticipants[user.id]?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
       );
     }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(departmentParticipants[user.id].gender),
-      );
+    filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false));
+    if (statusFilter != "All") {
+      filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus || false) == (statusFilter == 'Checked In'));
     }
-
     return filteredUsers;
   }
 
@@ -123,14 +117,12 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
 
   const sortedItems = [...items()];
   sortedItems.sort((a: EventUser, b: EventUser) => {
-    const first = departmentParticipants[a.id]?.[sortDescriptor.column as keyof EventUser] as number;
-    const second = departmentParticipants[b.id]?.[sortDescriptor.column as keyof EventUser] as number;
-    const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-    return sortDescriptor.direction === "descending" ? -cmp : cmp;
+    const first = new Date(departmentPaymentParticipants[a.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.registeredTime);
+    const second = new Date(departmentPaymentParticipants[b.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.registeredTime);
+    return first > second ? -1 : 0;
   });
 
-  const renderCell = (user: EventUser, columnKey: React.Key) => {
+  const renderCell = React.useCallback((user: EventUser, columnKey: React.Key) => {
     const cellValue = departmentParticipants[user.id]?.[columnKey as keyof EventUser];
     switch (columnKey) {
       case "name":
@@ -150,19 +142,19 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
       case "createdTime":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-base capitalize">{parseDateTimeShort(departmentParticipants[user.id].createdTime)}</p>
+            <p className="text-bold text-base capitalize">{parseDateTimeShort(departmentParticipants[user.id]?.createdTime)}</p>
           </div>
         );
       case "enrollNo":
         return (
-          <div className="flex flex-col max-w-[3em]" title={departmentParticipants[user.id].enrollNo}>
-            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id].enrollNo}</p>
+          <div className="flex flex-col max-w-[3em]" title={departmentParticipants[user.id]?.enrollNo}>
+            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
           </div>
         );
       case "college":
         return (
-          <div className="flex flex-col max-w-[8em]" title={departmentParticipants[user.id].college}>
-            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id].college}</p>
+          <div className="flex flex-col max-w-[8em]" title={departmentParticipants[user.id]?.college}>
+            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.college}</p>
           </div>
         );
       case "updatedTime":
@@ -171,22 +163,36 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
             <p className="text-bold text-base capitalize">{(departmentParticipants[user.id]?.updatedTime == null) ? '' : parseDateTimeShort(departmentParticipants[user.id]?.updatedTime || '')}</p>
           </div>
         );
+      case "registerTime":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.registeredTime)}</p>
+          </div>
+        );
       case "checkedIn":
         return (
           <Popover placement="top" showArrow>
             <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
-                {(departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInStatus) ? '' : 'Not'} Checked In
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) ? '' : 'Not'} Checked In
               </Chip>
             </PopoverTrigger>
-            {(departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInStatus) &&
+            {(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) &&
               <PopoverContent>
                 <div
                   className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
                 >
                   <span>
-                    CheckedIn by <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id].events?.[selectedEvent || ''].checkedInByName}
+                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentTime)}
+                  </span>
+                  <span>
+                    <b className="text-purpleAccent font-medium">
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].participantType}
+                    </b> Participant
+                  </span>
+                  <span>
+                    Checked In by <b className="text-purpleAccent font-medium">
+                      {departmentPaymentParticipants[user.id]?.events?.[selectedEvent || ''].checkedInByName}
                     </b>
                   </span>
                 </div>
@@ -198,32 +204,34 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
         return (
           <Popover placement="top" showArrow>
             <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap["paid"]} size="lg" variant="flat">
-                Paid
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentStatus) ? '' : 'Not'} Paid
               </Chip>
             </PopoverTrigger>
-            <PopoverContent>
-              <div
-                className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
-              >
-                <span>
-                  Paid for <b className="text-purpleAccent">{departmentPaymentParticipants[user.id].mitilence?.[fireCustomClaims?.departmentId || ''].departmentId?.toUpperCase()}</b> department event
-                </span>
-                <span>
-                  {parseDateTimeShort(departmentPaymentParticipants[user.id].mitilence?.[fireCustomClaims?.departmentId || ''].paymentTime)}
-                </span>
-                <span>
-                  <b className="text-purpleAccent font-medium">
-                    {departmentPaymentParticipants[user.id].mitilence?.[fireCustomClaims?.departmentId || ''].participantType}
-                  </b> Participant
-                </span>
-                <span>
-                  Verified by <b className="text-purpleAccent font-medium">
-                    {departmentPaymentParticipants[user.id].mitilence?.[fireCustomClaims?.departmentId || ''].paymentVerifiedByName}
-                  </b>
-                </span>
-              </div>
-            </PopoverContent>
+            {(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus) &&
+              <PopoverContent>
+                <div
+                  className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
+                >
+                  <span>
+                    Paid for <b className="text-purpleAccent">{departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].departmentId?.toUpperCase()}</b> department event
+                  </span>
+                  <span>
+                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentTime)}
+                  </span>
+                  <span>
+                    <b className="text-purpleAccent font-medium">
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].participantType}
+                    </b> Participant
+                  </span>
+                  <span>
+                    Verified by <b className="text-purpleAccent font-medium">
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentVerifiedByName}
+                    </b>
+                  </span>
+                </div>
+              </PopoverContent>
+            }
           </Popover>
         );
       case "actions":
@@ -254,7 +262,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
       default:
         return cellValue;
     }
-  };
+  }, [selectedEvent, departmentParticipants, departmentPaymentParticipants]);
 
   const onRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value));
@@ -278,9 +286,9 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
   const topContent = () => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
-          <div
-            className="flex flex-col items-center gap-2 w-full sm:max-w-[44%]"
+        <div className="flex flex-col md:flex-row justify-between gap-3 w-full">
+        <div
+            className="flex flex-col items-center gap-2 w-full md:max-w-[44%]"
           >
             <Input
               isClearable
@@ -298,48 +306,48 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
             />
             <form
               onSubmit={(e) => {e.preventDefault(); if ((setCurrentEvent != null) && (selectedEvent != null)) { setCurrentEvent(String(selectedEvent)) }}}
-              className="flex flex-row gap-2 w-full"
+              className="flex flex-col lg:flex-row gap-2 w-full"
             >
-              <Autocomplete
+              <Select
                 size="sm"
                 isRequired
                 variant="bordered"
                 className="w-full"
                 label="Select Event"
                 placeholder="Select an Event"
-                onSelectionChange={(e) => {if (e == selectedEvent) return; setDepartmentParticipants(() => ({})); setSelectedEvent(String(e)) }}
+                selectedKeys={[String(selectedEvent)]}
+                onSelectionChange={(e) => {if (e.currentKey == null) return; setDepartmentPaymentParticipants((prev) => ({...prev})); setSelectedEvent(String(e.currentKey)) }}
               >
                 {filteredEvents.map((event) => (
-                  <AutocompleteItem key={String(event.id)}>{event.name}</AutocompleteItem>
+                  <SelectItem key={String(event.id)}>{event.name}</SelectItem>
                 ))}
-              </Autocomplete>
+              </Select>
               {children}
             </form>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2">
             <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
+              <DropdownTrigger>
                 <Button endContent={<ChevronDownIcon className="text-base" />} variant="bordered" className="border-blue-500 text-blue-500 font-medium text-base">
-                  Staus
+                  Status
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
+                selectionMode="single"
+                selectedKeys={[statusFilter]}
+                onSelectionChange={(e) => setStatusFilter(String(e.currentKey))}
               >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {status.name}
+                {['All', 'Checked In', 'Not Checked In'].map((status) => (
+                  <DropdownItem key={status} className="capitalize">
+                    {status}
                   </DropdownItem>
                 ))}
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
+              <DropdownTrigger>
                 <Button endContent={<ChevronDownIcon className="text-base" />} variant="bordered" className="border-blue-500 text-blue-500 font-medium text-base">
                   Filter
                 </Button>
@@ -410,21 +418,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
       </div>
     );
   }
-
-  const classNames = {
-    td: [
-      // changing the rows border radius
-      // first
-      "group-data-[first=true]/tr:first:before:rounded-none",
-      "group-data-[first=true]/tr:last:before:rounded-none",
-      // middle
-      "group-data-[middle=true]/tr:before:rounded-none",
-      // last
-      "group-data-[last=true]/tr:first:before:rounded-none",
-      "group-data-[last=true]/tr:last:before:rounded-none",
-    ],
-  }
-
+  
   const generateExcelDatas = async () => {  
     if (Object.keys(departmentParticipants).length === 0) {
       console.warn("No user data available to export.");
@@ -437,14 +431,16 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
     Object.entries(departmentPaymentParticipants).forEach(([userId, paymentData]) => {
       const user = departmentParticipants[userId];
       if (!user) return;
-  
+      
       Object.values(paymentData.events).forEach((event) => {
         if (event.eventId !== selectedEvent) return; // 🔹 Filter by selected event ID
+        const eventName = eventsObject?.[event.eventId].name || "Uncategorized";
+        
         if (event?.checkedInStatus) {
           eventSheetData.push({
             Name: user?.name,
-            "Event Name": event.eventName,
-            "Registered Time": parseDateTimeShort(event.registeredTime),
+            "Event Name": eventName,
+            "Participant Type": departmentPaymentParticipants[userId]?.mitilence?.[fireCustomClaims?.departmentId || '']?.participantType,
             "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
             "Checked In By": event?.checkedInByName || "N/A",
             "Checked In Time": event?.checkedInTime ? parseDateTimeShort(event.checkedInTime) : "N/A",
@@ -472,7 +468,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
     const eventHeaders = [
       "Name",
       "Event Name",
-      "Registered Time",
+      "Participant Type",
       "Checked In Status",
       "Checked In By",
       "Checked In Time",
@@ -494,7 +490,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
     });
   
     // Generate File Name
-    const fileName = `Event_${selectedEvent}_${new Date()
+    const fileName = `${fireCustomClaims?.departmentId?.toUpperCase()}_${eventsObject?.[selectedEvent || '']?.name}_mitilence_${new Date()
       .toISOString()
       .replace(/[-T:]/g, "")
       .split(".")[0]}.xlsx`;
@@ -503,24 +499,23 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
     const buffer = await workbook.xlsx.writeBuffer();
     downloadBlob(new Blob([buffer]), fileName);
   };
-        
+      
   function listenToPayments(callback: (data: Record<string, EventUserPayments>) => void) {
     if (firestoreDB == null) return () => {};
     const paymentsRef = collection(firestoreDB, "payments");
-    const q = query(paymentsRef, where(`events.${selectedEvent}.departmentId`, "==", fireCustomClaims?.departmentId));
+    const q = query(paymentsRef, where(`mitilence.${fireCustomClaims?.departmentId}.departmentId`, "==", fireCustomClaims?.departmentId));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const payments = querySnapshot.docs.reduce((obj, doc) => ({...obj, [doc.id]: parsePayments(doc.id, doc.data())}), {});
-      console.log(payments)
       callback(payments);
     });
     return unsubscribe;
   }
 
   React.useEffect(() => {
-    if ((fireCustomClaims?.departmentId == null) || (selectedEvent == null)) return;
+    if (fireCustomClaims?.departmentId == null) return;
     const unsubscribePayments = listenToPayments(setDepartmentPaymentParticipants)
     return () => unsubscribePayments();
-  }, [fireCustomClaims?.departmentId, selectedEvent]);
+  }, [fireCustomClaims?.departmentId]);
 
   function listenToUsersByIds(
     userIds: string[], 
@@ -597,18 +592,14 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
       bottomContent={bottomContent()}
       selectedKeys={selectedKeys}
       // selectionMode="multiple"
-      sortDescriptor={sortDescriptor}
       topContent={topContent()}
       onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-      classNames={classNames}
     >
       <TableHeader columns={headerColumns} className="text-2xl">
         {(column) => (
           <TableColumn
             key={column.uid}
             align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
           >
             {column.name}
           </TableColumn>

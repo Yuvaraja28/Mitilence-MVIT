@@ -78,8 +78,10 @@ interface Events {
   seatsLeft?: number;
   entryFee?: number;
   linkRegistration?: string;
-  eventClosed: boolean;
-  registrationsClosed: boolean;
+  // eventClosed: boolean;
+  // registrationsClosed: boolean;
+  studentOrganizer?: string;
+  facultyOrganizer?: string;
 }
 
 interface EventCategory {
@@ -96,6 +98,9 @@ interface FAQ {
 interface MitilencePaymentDepartment {
   departmentId: string;
   paymentTime: string;
+  paymentStatus: boolean;
+  registrationStatus: boolean;
+  registeredTime: string;
   paymentVerifiedBy: string;
   paymentVerifiedByName: string;
   participantType: 'Internal' | 'External';
@@ -103,13 +108,11 @@ interface MitilencePaymentDepartment {
 
 interface RegisteredEvent {
   eventId: string;
-  eventName: string;
   departmentId: string;
   checkedInBy: string;
   checkedInByName: string;
   checkedInTime: string;
   checkedInStatus: boolean;
-  registeredTime: string;
 }
 
 interface EventUserPayments {
