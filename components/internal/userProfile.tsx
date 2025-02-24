@@ -54,6 +54,7 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
             color="primary"
             onPress={() => setUserUpdate(true)}
             startContent={<UserRoundPen size={20} />}
+            isDisabled={(paidDepartments?.length || 0) > 0}
             className="flex flex-row gap-2 text-base font-medium bg-blue-500 text-white px-4 py-1.5 rounded-[10px]"
           >
             Update

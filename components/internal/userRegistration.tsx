@@ -69,7 +69,7 @@ export default function UserRegistration({ update = false }) {
     <Drawer
       isOpen={true}
       backdrop="blur"
-      scrollBehavior="inside"
+      scrollBehavior="outside"
       closeButton={<span />}
       classNames={{
         base: "data-[placement=right]:sm:m-4 data-[placement=left]:sm:m-2 rounded-medium p-6",

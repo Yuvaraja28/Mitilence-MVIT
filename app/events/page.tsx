@@ -342,31 +342,31 @@ export default function Events() {
       }
       {(currentEvent != null) &&
         <Modal
-        isOpen={true}
-        size={"3xl"}
-        backdrop="blur"
-        placement="bottom"
-        scrollBehavior="inside"
-          classNames={{
-            body: "py-6",
-            backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
-            base: "border-[#292f46] bg-[#19172c] dark:bg-[#19172c] text-[#a8b0d3] rounded-3xl customScrollBar",
-            header: "border-b-[1px] border-[#292f46]",
-            footer: "border-t-[1px] border-[#292f46]",
-            closeButton: "hover:bg-white/5 active:bg-white/10",
-          }}
-          onClose={
-            isEventSubmitting
-              ? () => {}
-              : () => {
-                setGeneralInstructionsRead(() => false);
-                setCurrentEvent(() => null);
-                const params = new URL(location.href).searchParams;
-                params.delete('event')
-                window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);
-              }
-          }
-        >
+          isOpen={true}
+          size={"3xl"}
+          backdrop="blur"
+          placement="bottom"
+          scrollBehavior="outside"
+            classNames={{
+              body: "py-6",
+              backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
+              base: "border-[#292f46] bg-[#19172c] dark:bg-[#19172c] text-[#a8b0d3] rounded-3xl customScrollBar",
+              header: "border-b-[1px] border-[#292f46]",
+              footer: "border-t-[1px] border-[#292f46]",
+              closeButton: "hover:bg-white/5 active:bg-white/10",
+            }}
+            onClose={
+              isEventSubmitting
+                ? () => {}
+                : () => {
+                  setGeneralInstructionsRead(() => false);
+                  setCurrentEvent(() => null);
+                  const params = new URL(location.href).searchParams;
+                  params.delete('event')
+                  window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);
+                }
+            }
+          >
           <ModalContent>
             <ModalBody
               className="flex flex-col gap-3 overflow-auto"
@@ -510,7 +510,7 @@ export default function Events() {
       <Modal
         size={'lg'}
         isOpen={isOpen}
-        scrollBehavior="inside"
+        scrollBehavior="outside"
         onClose={isEventSubmitting ? () => {} : () => {onClose(); setGeneralInstructionsRead(() => false)}}
       >
         <ModalContent>
