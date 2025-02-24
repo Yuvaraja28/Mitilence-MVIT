@@ -39,14 +39,25 @@ export default function Organizers() {
   const onScanCallback = async (result: IDetectedBarcode[]) => {
     setScanPaused(() => true)
     console.log("Scanning...")
-    const userData = await getUser(result[0].rawValue);
-    const paymentData = await getPayment(result[0].rawValue);
-    setUserData({
-      user: userData,
-      payments: paymentData
-    })
-    setScanPaused(() => false)
-    setScannerOpened(() => false)
+    try {
+      const userData = await getUser(result[0].rawValue);
+      var paymentData = { id: "", mitilence: {}, events: {} };
+      try {
+        paymentData = await getPayment(result[0].rawValue);
+      } catch { }
+      setUserData({
+        user: userData,
+        payments: paymentData
+      })
+      setScanPaused(() => false)
+      setScannerOpened(() => false)
+    } catch {
+      return addToast({
+        title: "Warn!",
+        description: "User has not yet created the account.",
+        color: "warning"
+      })
+    }
   }
 
   async function searchUser(event: React.FormEvent<HTMLFormElement>) {
