@@ -27,7 +27,8 @@ export default function OrganizerDashboard() {
   const [currentEvent, setCurrentEvent] = React.useState<string | null>()
   const [scanPaused, setScanPaused] = React.useState(false)
 
-  const onScanCallback = async (result: IDetectedBarcode[]) => {
+  const onScanCallback = async (result: IDetectedBarcode[] | any) => {
+    console.log(result, currentEvent)
     if (currentEvent == null) return;
     setScanPaused(() => true)
     console.log("Scanning...")
@@ -145,6 +146,7 @@ export default function OrganizerDashboard() {
           <EventParticipants
             setPopupUser={setPopupUser}
             setCurrentEvent={setCurrentEvent}
+            checkInCallback={(userId) => onScanCallback([{ rawValue: userId }])}
           >
             <Button
               size="lg"

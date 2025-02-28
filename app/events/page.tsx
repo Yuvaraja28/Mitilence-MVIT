@@ -452,15 +452,12 @@ export default function Events() {
                     </div>
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
                       <Building2 color="#000000" size={25} />
-                      <div className="text-black flex flex-col h-full">
+                      <div className="text-black flex flex-col gap-0.5 h-full">
                         <span className="uppercase font-semibold text-base">
                           Organized By
                         </span>
-                        <span className="font-medium text-base mt-[-5px] uppercase">
-                          {currentEvent?.departmentId}
-                        </span>
-                        <span className="font-medium text-sm mt-[-5px] uppercase">
-                          {currentEvent?.place}
+                        <span className="font-medium text-base mt-[-5px] uppercase leading-[19px]">
+                          {currentEvent?.departmentId} Dept - {currentEvent?.place}
                         </span>
                       </div>
                     </div>
@@ -477,11 +474,11 @@ export default function Events() {
                     </div>
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
                       <ContactRound color="#000000" size={25} />
-                      <div className="text-black flex flex-col h-full">
+                      <div className="text-black flex flex-col gap-0.5 h-full">
                         <span className="uppercase font-semibold text-base">
                           Department Staff
                         </span>
-                        <span className="font-medium text-base mt-[-5px]">
+                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
                           {currentEvent?.facultyOrganizer || "TBA"}
                         </span>
                       </div>

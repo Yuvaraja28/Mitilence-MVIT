@@ -52,8 +52,8 @@ export const DepartmentsVar = [
     "logoUrl": null
   },
   {
-    "id": "robotics",
-    "name": "ROBOTICS",
+    "id": "ra",
+    "name": "RA",
     "order": 8,
     "logoUrl": null
   },

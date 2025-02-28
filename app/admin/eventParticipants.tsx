@@ -18,7 +18,6 @@ import {
   Pagination,
   Selection,
   ChipProps,
-  SortDescriptor,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -55,14 +54,14 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const INITIAL_VISIBLE_COLUMNS = columns.map(c => c.uid);
 
-export default function EventParticipants({ setPopupUser, children, setCurrentEvent }: { setPopupUser: (param: PopUserProps) => void, setCurrentEvent?: (param: string) => void, children?: React.ReactNode }) {
+export default function EventParticipants({ setPopupUser, children, setCurrentEvent, checkInCallback }: { setPopupUser: (param: PopUserProps) => void, setCurrentEvent?: (param: string) => void, checkInCallback?: (userId: string) => void, children?: React.ReactNode }) {
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events;
   const firestoreDB = firebaseContext?.firestoreDB;
   const eventsObject = firebaseContext?.eventsObject;
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
 
-  const filteredEvents = React.useMemo(() => (events?.filter(e => (e.departmentId == fireCustomClaims?.departmentId)) || []), [events, fireCustomClaims]);
+  const filteredEvents = React.useMemo(() => [...(events?.filter(e => (e.departmentId == fireCustomClaims?.departmentId)) || []), { name: 'Food', id: 'food', departmentId: fireCustomClaims?.departmentId } as Events], [events, fireCustomClaims]);
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedEvent, setSelectedEvent] = React.useState<string | null>(null);
@@ -255,6 +254,20 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
                 >
                   View Profile
                 </DropdownItem>
+                {(checkInCallback != null) ?
+                  <DropdownItem
+                    key="checkIn"
+                    onPress={() => checkInCallback(user.id)}
+                  >
+                    <button
+                      type="submit"
+                    >
+                      Check In
+                    </button>
+                  </DropdownItem>
+                  :
+                  <></>
+                }
               </DropdownMenu>
             </Dropdown>
           </div>
