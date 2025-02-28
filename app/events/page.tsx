@@ -76,7 +76,7 @@ export default function Events() {
   const fireUserData = firebaseContext?.fireUserData;
   const departments = firebaseContext?.departments || [];
   const eventsObject = firebaseContext?.eventsObject || {};
-  const registeredEventsSet = firebaseContext?.registeredEventsSet || new Set();
+  // const checkedInEventsSet = firebaseContext?.checkedInEventsSet || new Set();
   const eventPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
   const [isEventSubmitting, setIsEventSubmitting] = React.useState<boolean>(false);
   const [generalInstructionsRead, setGeneralInstructionsRead] = React.useState(false);
@@ -268,18 +268,18 @@ export default function Events() {
                 <Button
                   size="lg"
                   onPress={onOpen}
-                  // disabled={registeredEventsSet.has(currentEvent?.id || '')}
+                  // disabled={checkedInEventsSet.has(currentEvent?.id || '')}
                   // isDisabled={
-                  //   !registeredEventsSet.has(currentEvent?.id || '') &&
+                  //   !checkedInEventsSet.has(currentEvent?.id || '') &&
                   //   (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                   // }
                   className={`bg-purpleAccent text-white text-xl font-medium rounded-xl mt-1 w-fit`}
-                    // ${!registeredEventsSet.has(currentEvent?.id || '') &&
+                    // ${!checkedInEventsSet.has(currentEvent?.id || '') &&
                     // (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                     //   ? "bg-red-500"
                     //   : "bg-purpleAccent"}
                 >
-                  {/* {!registeredEventsSet.has(currentEvent?.id || '') &&
+                  {/* {!checkedInEventsSet.has(currentEvent?.id || '') &&
                   (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                     ? "Registrations Closed" */}
                     Register Now for {currentDepartment?.id.toUpperCase()} Events
@@ -314,7 +314,7 @@ export default function Events() {
                         inView
                         delay={0 + (idx+1) * 0.05}
                       >
-                        {/* {(registeredEventsSet?.has(event.id)) &&
+                        {/* {(checkedInEventsSet?.has(event.id)) &&
                           <button
                             className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-base font-medium w-fit !px-4 !py-1.5 capitalize"
                           >
@@ -457,7 +457,10 @@ export default function Events() {
                           Organized By
                         </span>
                         <span className="font-medium text-base mt-[-5px] uppercase">
-                          {currentEvent?.departmentId} Dept
+                          {currentEvent?.departmentId}
+                        </span>
+                        <span className="font-medium text-sm mt-[-5px] uppercase">
+                          {currentEvent?.place}
                         </span>
                       </div>
                     </div>

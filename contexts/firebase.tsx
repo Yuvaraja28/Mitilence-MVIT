@@ -44,7 +44,7 @@ interface FirebaseContextProps {
   departments: Department[];
   administrationMembers: AdministrationMember[];
   eventPayments: EventUserPayments | null;
-  registeredEventsSet: Set<string>;
+  checkedInEventsSet: Set<string>;
   LoginGoogle: (redirect?: boolean) => void;
   LogoutGoogle: () => void;
 }
@@ -66,7 +66,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   const [events, setEvents] = React.useState<Events[] | null>(null)
   const [eventPayments, setEventPayments] = React.useState<EventUserPayments | null>(null)
   const [administrationMembers, setAdministrationMembers] = React.useState<AdministrationMember[]>([]);
-  const registeredEventsSet = React.useMemo(() => new Set(Object.keys(eventPayments?.events || {})), [eventPayments])
+  const checkedInEventsSet = React.useMemo(() => new Set(Object.keys(eventPayments?.events || {})), [eventPayments])
   const eventsObject = React.useMemo(() => events ? events.reduce<EventsObjectType>((acc, event) => {
     acc[event.id as string] = event;
     return acc;
@@ -160,7 +160,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   return (
     <FirebaseContext.Provider value={{ 
       fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB, fireCustomClaims,
-      faqs, events, eventsObject, departments, administrationMembers, eventPayments, registeredEventsSet,
+      faqs, events, eventsObject, departments, administrationMembers, eventPayments, checkedInEventsSet,
       LoginGoogle, LogoutGoogle
      }}>
       {children}

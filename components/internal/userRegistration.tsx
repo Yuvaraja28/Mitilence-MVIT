@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import "@/app/admin/style.css"
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { doc, setDoc } from "firebase/firestore";
