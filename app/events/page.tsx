@@ -35,39 +35,6 @@ const eventCategories = [
   { id: 'expo', name: 'Expo', order: 4 },
 ]
 
-// import { getEvent } from "@/Firestore/events";
-// type Params = Promise<{ event: string }> 
-// export async function generateMetadata({ params }: { params: Params }) {
-//   const eventData = await getEvent((await params).event)
-//   console.log(eventData);
-//   const eventDate = new Date(eventData.startTime).toLocaleDateString('en-us', { month: 'short', year: 'numeric', day: '2-digit' });
-//   const startTime = new Date(eventData.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-//   const endTime = new Date(eventData.endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-//   return {
-//     title: `${eventData.name} • ${eventData.departmentId.toUpperCase()}`,
-//     description: `Join us at the Mitilence event in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}`,
-//     icons: {
-//       icon: eventData.logoUrl,
-//       apple: eventData.logoUrl
-//     },
-//     openGraph: {
-//       type: "website",
-//       title: `${eventData.name} • ${eventData.departmentId.toUpperCase()}`,
-//       description: `Join us at the Mitilence event in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}`,
-//       siteName: "Mitilence • MVIT",
-//       images: [{
-//         url: eventData.logoUrl,
-//       }],
-//     },
-//     twitter: {
-//       card: `Join us at the Mitilence event in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}.`,
-//       images: eventData.logoUrl,
-//       creator: 'Yuvaraja'
-//     }
-//   }
-// }
-
 export default function Events() {
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events;
@@ -167,7 +134,7 @@ export default function Events() {
       className="flex flex-col items-center text-white w-full"
     >
       <HeaderSection
-        bannerName={currentEventCategory?.name || "Events"}
+        bannerName={(currentEventCategory?.name || "Events") + (currentDepartment?.name ? ` - ${currentDepartment?.name}` : '')}
         bannerImg={TechnicalEventsImg}
       />
       {((events == null) || (filteredEvents == null)) ?
@@ -397,7 +364,7 @@ export default function Events() {
                         <Link
                           target="_blank"
                           className="bg-[#25D366] rounded-[8px] text-white p-1.5"
-                          href={`https://api.whatsapp.com/send/?text=Check%20out%20this%20great%20event%20happening%20in%20MVIT:%0A${window.location.origin}/events?event=${currentEvent.id}`}
+                          href={`https://api.whatsapp.com/send/?text=Check%20out%20this%20great%20event%20happening%20in%20MVIT:%0A${window.location.origin}/e/${currentEvent.id}`}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -414,7 +381,7 @@ export default function Events() {
                           isIconOnly
                           className="bg-white/5"
                           onPress={() =>
-                            navigator?.clipboard.writeText(`${window.location.origin}/events?event=${currentEvent.id}`)
+                            navigator?.clipboard.writeText(`${window.location.origin}/e/${currentEvent.id}`)
                           }
                         >
                           <Link2 color="#FFFFFF" size={20} />
