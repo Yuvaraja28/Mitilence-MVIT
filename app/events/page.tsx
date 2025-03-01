@@ -390,8 +390,8 @@ export default function Events() {
                     </Popover>
                   </BlurFade>
                 </div>
-                <div className="w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2 select-none">
-                  <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full">
+                <div className="h-fit w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2.5 select-none">
+                  <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full pt-1">
                     Event Details
                   </span>
                   <div className="flex flex-col gap-2">
@@ -432,10 +432,10 @@ export default function Events() {
                       <UsersRound color="#000000" size={25} />
                       <div className="text-black flex flex-col h-full">
                         <span className="uppercase font-semibold text-base">
-                          Participants
+                          Participant(s)
                         </span>
                         <span className="font-medium text-base mt-[-5px]">
-                          {currentEvent?.teamSize} Members
+                          {currentEvent?.teamSize}
                         </span>
                       </div>
                     </div>

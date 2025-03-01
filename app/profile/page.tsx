@@ -176,7 +176,7 @@ export default function Profile() {
           </ModalContent>
         </Modal>
       }
-      {userUpdate &&
+      {(userUpdate && !(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0)) &&
         <UserRegistration
           update={true}
         />

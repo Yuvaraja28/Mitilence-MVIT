@@ -39,7 +39,7 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
     >
       {((!onlyShowData) && (fireCustomClaims != null)) &&
         <div
-          className="flex flex-row gap-1.5 flex-wrap self-end"
+          className="flex flex-row gap-1.5 flex-wrap self-end justify-end"
         >
           {fireCustomClaims?.roles?.map(role =>
             <Link
@@ -50,15 +50,17 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
               {role}
             </Link>
           )}
-          <Button
-            color="primary"
-            onPress={() => setUserUpdate(true)}
-            startContent={<UserRoundPen size={20} />}
-            isDisabled={(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0)}
-            className="flex flex-row gap-2 text-base font-medium bg-blue-500 text-white px-4 py-1.5 rounded-[10px]"
-          >
-            Update
-          </Button>
+          {(fireCustomClaims != null) &&
+            <Button
+              color="primary"
+              onPress={() => setUserUpdate(true)}
+              startContent={<UserRoundPen size={20} />}
+              isDisabled={(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0)}
+              className="flex flex-row gap-2 text-base font-medium bg-blue-500 text-white px-4 py-1.5 rounded-[10px]"
+            >
+              Update
+            </Button>
+          }
         </div>
       }
       <div
