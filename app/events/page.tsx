@@ -477,7 +477,7 @@ export default function Events() {
       <Modal
         size={'lg'}
         isOpen={isOpen}
-        scrollBehavior="outside"
+        scrollBehavior="normal"
         onClose={isEventSubmitting ? () => {} : () => {onClose(); setGeneralInstructionsRead(() => false)}}
       >
         <ModalContent>

@@ -146,7 +146,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
         );
       case "enrollNo":
         return (
-          <div className="flex flex-col max-w-[3em]" title={departmentParticipants[user.id]?.enrollNo}>
+          <div className="flex flex-col min-w-[5em]" title={departmentParticipants[user.id]?.enrollNo}>
             <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
           </div>
         );

@@ -208,9 +208,9 @@ export default function OrganizerDashboard() {
                 className="flex flex-col items-center gap-1"
               >
                 <span
-                  className="text-3xl font-semibold text-center text-purpleAccent"
+                  className="text-3xl font-semibold text-center text-purpleAccent capitalize"
                 >
-                  {eventsObject?.[currentEvent].name}
+                  {eventsObject?.[currentEvent]?.name || currentEvent}
                 </span>
               </div>
             </ModalBody>

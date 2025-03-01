@@ -1,17 +1,18 @@
 'use client';
 import React from "react";
+import "@/app/admin/style.css"
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
+import { getUser } from "@/Firestore/users";
+import { getPayment } from "@/Firestore/payments";
 import { useFirebase } from "@/contexts/firebase";
-import { QrCodeIcon, Search, VerifiedIcon } from "lucide-react";
 import { Select, SelectItem } from "@heroui/select";
 import { CircularLoader } from "@/components/internal/Loaders";
+import { QrCodeIcon, Search, VerifiedIcon } from "lucide-react";
 import { UserProfile } from "@/components/internal/userProfile";
 import { boundingBox, IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
-import { getUser } from "@/Firestore/users";
-import { getPayment } from "@/Firestore/payments";
 
 interface SearchedEventUser {
   user: EventUser;
@@ -274,7 +275,7 @@ export default function Organizers() {
       <Modal
         size={'md'}
         isOpen={isOpen}
-        scrollBehavior="outside"
+        scrollBehavior="normal"
         onOpenChange={isMakingPayment ? () => {} : onOpenChange}
       >
         <ModalContent>

@@ -9,6 +9,7 @@ import { CustomClaims } from "@/contexts/firebase";
 import { QrCodeIcon, UserRoundPen } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Modal, ModalBody, ModalContent, useDisclosure } from "@heroui/modal";
+import React from "react";
 
 interface ProfileProps {
   fireUserDoc: EventUser | null | undefined;
@@ -32,6 +33,10 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
     { name: "Account Creation", param: "createdTime", type: "date" },
     { name: "Last Updated", param: "updatedTime", type: "date" },
   ];
+
+  React.useEffect(() => {
+    if (isOpen) onClose();
+  }, [paidDepartments])
 
   return (
     <div
