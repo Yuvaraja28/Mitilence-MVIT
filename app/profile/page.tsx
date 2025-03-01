@@ -1,6 +1,5 @@
 'use client';
 import React from "react";
-import Link from "next/link";
 import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
 import { useFirebase } from "@/contexts/firebase";
@@ -68,9 +67,9 @@ export default function Profile() {
                     className="flex flex-col px-1 gap-0.5"
                   >
                     <span
-                      className="text-xl font-medium"
+                      className="text-xl font-medium capitalize"
                     >
-                      {eventsObject[registerEve[0]]?.name}
+                      {eventsObject[registerEve[0]]?.name || registerEve[0]}
                     </span>
                     <span
                       className="text-base font-normal uppercase"
@@ -95,15 +94,17 @@ export default function Profile() {
                   </div>
                   <Button
                     isIconOnly
-                    onPress={() => setCurrentEvent(registerEve[0])}
+                    onPress={eventsObject[registerEve[0]]?.name ? () => setCurrentEvent(registerEve[0]) : () => {}}
                     className="bg-white/5 text-white border border-white/20"
                   >
                     <FileText size={20} />
                   </Button>
                 </div>
-                <Image
-                  src={eventsObject[registerEve[0]]?.logoUrl}
-                />
+                {(eventsObject[registerEve[0]]?.logoUrl) &&
+                  <Image
+                    src={eventsObject[registerEve[0]]?.logoUrl}
+                  />
+                  }
               </div>
             )}
           </div>
