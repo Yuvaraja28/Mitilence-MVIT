@@ -24,23 +24,28 @@ export default function OrganizerDashboard() {
 
   const [popupUser, setPopupUser] = React.useState<PopUserProps | null>()
   const [currentTab, setCurrentTab] = React.useState('Event Participants')
-  const [currentEvent, setCurrentEvent] = React.useState<string | null>()
+  const [checkInModal, setCheckInModal] = React.useState(false)
+  const [selectedEvent, setSelectedEvent] = React.useState<string | null>(null);
   const [scanPaused, setScanPaused] = React.useState(false)
 
   const onScanCallback = async (result: IDetectedBarcode[] | any) => {
-    console.log(result, currentEvent)
-    if (currentEvent == null) return;
+    if (!checkInModal) return;
     setScanPaused(() => true)
     console.log("Scanning...")
-    const paymentData = await getPayment(result[0].rawValue);
-    console.log(paymentData.mitilence?.[fireCustomClaims?.departmentId || ''])
+    await checkInRequest(result[0].rawValue, selectedEvent)
+    setScanPaused(() => false)
+  }
+
+  const checkInRequest = async (userId: string, selectedEvent: string | null) => {
+    if (selectedEvent == null) return;
+    const paymentData = await getPayment(userId);
     if (!(paymentData.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false)) {
       addToast({
         title: "Not Paid Amount",
         description: `Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
         color: "warning"
       })
-    } else if (paymentData.events?.[currentEvent]?.checkedInStatus) {
+    } else if (paymentData.events?.[selectedEvent]?.checkedInStatus) {
       addToast({
         title: "Duplicate Checkin",
         description: "Participant already Checked in for this Event",
@@ -53,8 +58,8 @@ export default function OrganizerDashboard() {
           "Authorization": `Bearer ${fireUserData?.accessToken}`
         },
         body: JSON.stringify({
-          eventId: currentEvent,
-          userId: result[0].rawValue
+          eventId: selectedEvent,
+          userId: userId
         })
       })
       const checkinData = await checkinResp.json();
@@ -74,7 +79,6 @@ export default function OrganizerDashboard() {
         })
       }
     }
-    setScanPaused(() => false)
   }
 
   if ((fireUserDoc == null) || (fireUserData == null)) {
@@ -145,8 +149,14 @@ export default function OrganizerDashboard() {
         <>
           <EventParticipants
             setPopupUser={setPopupUser}
-            setCurrentEvent={setCurrentEvent}
-            checkInCallback={(userId) => onScanCallback([{ rawValue: userId }])}
+            selectedEvent={selectedEvent}
+            setSelectedEvent={setSelectedEvent}
+            setCheckInModal={setCheckInModal}
+            checkInCallback={(userId) => {
+              if (confirm("Do you want to check in this participant?")) {
+                checkInRequest(userId, selectedEvent)
+              }
+            }}
           >
             <Button
               size="lg"
@@ -178,13 +188,13 @@ export default function OrganizerDashboard() {
           }
         </>
       }
-      {(currentEvent != null) &&
+      {((checkInModal) && (selectedEvent != null)) &&
         <Modal
           size={'md'}
           isOpen={true}
           placement="center"
           scrollBehavior="outside"
-          onClose={() => setCurrentEvent(null)}
+          onClose={() => setCheckInModal(false)}
         >
           <ModalContent>
             <ModalBody
@@ -210,7 +220,7 @@ export default function OrganizerDashboard() {
                 <span
                   className="text-3xl font-semibold text-center text-purpleAccent capitalize"
                 >
-                  {eventsObject?.[currentEvent]?.name || currentEvent}
+                  {eventsObject?.[selectedEvent]?.name || selectedEvent}
                 </span>
               </div>
             </ModalBody>

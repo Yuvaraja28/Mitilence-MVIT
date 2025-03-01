@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
       eventId: userJson.eventId,
       checkedInBy: decodedToken.uid,
       checkedInByName: decodedToken.name,
+      departmentId: decodedToken.departmentId,
       checkedInTime: new Date().toISOString(),
       checkedInStatus: true
     }

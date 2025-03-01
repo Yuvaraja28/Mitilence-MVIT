@@ -50,7 +50,7 @@ export default function parsePayments(
         checkedInByName: paymentData.events[curr]?.checkedInByName || "",
         checkedInTime: parseTimestamp(paymentData.events[curr]?.checkedInTime),
         checkedInStatus: Boolean(paymentData.events[curr]?.checkedInStatus), // Ensures true/false
-        registeredTime: parseTimestamp(paymentData.events[curr]?.registeredTime),
+        // registeredTime: parseTimestamp(paymentData.events[curr]?.registeredTime),
       },
     }),
     {}

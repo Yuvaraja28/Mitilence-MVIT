@@ -20,6 +20,7 @@ export default function AdminDashboard() {
 
   const [currentTab, setCurrentTab] = React.useState('All Participants')
   const [popupUser, setPopupUser] = React.useState<PopUserProps | null>()
+  const [selectedEvent, setSelectedEvent] = React.useState<string | null>(null);
     
   if ((fireUserDoc == null) || (fireUserData == null)) {
     return (
@@ -92,6 +93,8 @@ export default function AdminDashboard() {
       :
         <EventParticipants
           setPopupUser={setPopupUser}
+          selectedEvent={selectedEvent}
+          setSelectedEvent={setSelectedEvent}
         />
       }
       {(popupUser != null) &&

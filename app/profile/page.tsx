@@ -104,7 +104,7 @@ export default function Profile() {
                   <Image
                     src={eventsObject[registerEve[0]]?.logoUrl}
                   />
-                  }
+                }
               </div>
             )}
           </div>

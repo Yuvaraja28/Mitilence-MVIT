@@ -54,7 +54,16 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const INITIAL_VISIBLE_COLUMNS = columns.map(c => c.uid);
 
-export default function EventParticipants({ setPopupUser, children, setCurrentEvent, checkInCallback }: { setPopupUser: (param: PopUserProps) => void, setCurrentEvent?: (param: string) => void, checkInCallback?: (userId: string) => void, children?: React.ReactNode }) {
+interface EventProps {
+  setPopupUser: (param: PopUserProps) => void;
+  selectedEvent: string | null;
+  setSelectedEvent: (param: string) => void;
+  checkInCallback?: (userId: string) => void;
+  setCheckInModal?: (value: boolean) => void;
+  children?: React.ReactNode
+}
+
+export default function EventParticipants({ setPopupUser, children, selectedEvent, setSelectedEvent, setCheckInModal, checkInCallback }: EventProps) {
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events;
   const firestoreDB = firebaseContext?.firestoreDB;
@@ -64,7 +73,6 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
   const filteredEvents = React.useMemo(() => [...(events?.filter(e => (e.departmentId == fireCustomClaims?.departmentId)) || []), { name: 'Food', id: 'food', departmentId: fireCustomClaims?.departmentId } as Events], [events, fireCustomClaims]);
 
   const [filterValue, setFilterValue] = React.useState("");
-  const [selectedEvent, setSelectedEvent] = React.useState<string | null>(null);
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
   const [departmentParticipants, setDepartmentParticipants] = React.useState<Record<string, EventUser>>({});
   const [departmentPaymentParticipants, setDepartmentPaymentParticipants] = React.useState<Record<string, EventUserPayments>>({});
@@ -254,16 +262,12 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
                 >
                   View Profile
                 </DropdownItem>
-                {(checkInCallback != null) ?
+                {((checkInCallback != null) && (!(departmentPaymentParticipants[user.id].events[selectedEvent || '']?.checkedInStatus || false))) ?
                   <DropdownItem
                     key="checkIn"
                     onPress={() => checkInCallback(user.id)}
                   >
-                    <button
-                      type="submit"
-                    >
-                      Check In
-                    </button>
+                    Check In
                   </DropdownItem>
                   :
                   <></>
@@ -318,7 +322,7 @@ export default function EventParticipants({ setPopupUser, children, setCurrentEv
               onValueChange={onSearchChange}
             />
             <form
-              onSubmit={(e) => {e.preventDefault(); if ((setCurrentEvent != null) && (selectedEvent != null)) { setCurrentEvent(String(selectedEvent)) }}}
+              onSubmit={(e) => {e.preventDefault(); if ((setCheckInModal != null) && (selectedEvent != null)) { setCheckInModal(true) }}}
               className="flex flex-col lg:flex-row gap-2 w-full"
             >
               <Select
