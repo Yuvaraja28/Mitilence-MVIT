@@ -91,9 +91,9 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
   const headerColumns = columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 
   React.useEffect(() => {
-    if (events == null) return;
-    setSelectedEvent(events[0].id)
-  }, [events])
+    if (filteredEvents == null) return;
+    setSelectedEvent(filteredEvents[0].id)
+  }, [filteredEvents, currentDepartment])
   
   const filteredItems = () => {
     let filteredUsers = [...Object.values(departmentParticipants)];
