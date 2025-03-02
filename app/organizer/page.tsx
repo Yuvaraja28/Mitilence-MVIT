@@ -156,6 +156,7 @@ export default function OrganizerDashboard() {
             selectedEvent={selectedEvent}
             setSelectedEvent={setSelectedEvent}
             setCheckInModal={setCheckInModal}
+            currentDepartment={fireCustomClaims?.departmentId || null}
             checkInCallback={(userId) => {
               if (confirm("Do you want to check in this participant?")) {
                 checkInRequest(userId, selectedEvent)
