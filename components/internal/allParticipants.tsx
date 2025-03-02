@@ -126,13 +126,13 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
       case "enrollNo":
         return (
           <div className="flex flex-col min-w-[5em]" title={departmentParticipants[user.id]?.enrollNo}>
-            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
+            <p className="text-black text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
           </div>
         );
       case "registerTime":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
+            <p className="text-black text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
           </div>
         );
       case "payment":
@@ -195,7 +195,13 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
           </div>
         );
       default:
-        return cellValue;
+        return (
+          <span
+            className="text-black"
+          >
+            {cellValue}
+          </span>
+        );
     }
   };
 

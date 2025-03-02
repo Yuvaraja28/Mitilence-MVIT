@@ -149,31 +149,31 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
       case "createdTime":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-base capitalize">{parseDateTimeShort(departmentParticipants[user.id]?.createdTime)}</p>
+            <p className="text-black text-bold text-base capitalize">{parseDateTimeShort(departmentParticipants[user.id]?.createdTime)}</p>
           </div>
         );
       case "enrollNo":
         return (
           <div className="flex flex-col min-w-[5em]" title={departmentParticipants[user.id]?.enrollNo}>
-            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
+            <p className="text-black text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
           </div>
         );
       case "college":
         return (
           <div className="flex flex-col max-w-[8em]" title={departmentParticipants[user.id]?.college}>
-            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.college}</p>
+            <p className="text-black text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.college}</p>
           </div>
         );
       case "updatedTime":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-base capitalize">{(departmentParticipants[user.id]?.updatedTime == null) ? '' : parseDateTimeShort(departmentParticipants[user.id]?.updatedTime || '')}</p>
+            <p className="text-black text-bold text-base capitalize">{(departmentParticipants[user.id]?.updatedTime == null) ? '' : parseDateTimeShort(departmentParticipants[user.id]?.updatedTime || '')}</p>
           </div>
         );
       case "registerTime":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
+            <p className="text-black text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
           </div>
         );
       case "checkedIn":
@@ -277,8 +277,14 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
           </div>
         );
       default:
-        return cellValue;
-    }
+        return (
+          <span
+            className="text-black"
+          >
+            {cellValue}
+          </span>
+        );
+      }
   }, [selectedEvent, departmentParticipants, departmentPaymentParticipants]);
 
   const onRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
