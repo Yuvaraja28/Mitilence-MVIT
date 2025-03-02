@@ -457,7 +457,7 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
       
       Object.values(paymentData.events).forEach((event) => {
         if (event.eventId !== selectedEvent) return; // 🔹 Filter by selected event ID
-        const eventName = eventsObject?.[event.eventId].name || "Uncategorized";
+        const eventName = eventsObject?.[event.eventId]?.name || event.eventId;
         
         if (event?.checkedInStatus) {
           eventSheetData.push({
