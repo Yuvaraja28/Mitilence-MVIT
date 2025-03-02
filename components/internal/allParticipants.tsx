@@ -390,11 +390,11 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
           "Email": user.emailId,
           "Phone": user.phoneNo,
           "College": user.college,
-          "Participant Type": paymentInfo.participantType || "N/A",
+          "Participant Type": paymentInfo?.participantType || "N/A",
           "Payment Verified By": paymentInfo?.paymentVerifiedByName || "N/A",
           "Registered Time": parseDateTimeShort(paymentInfo?.registeredTime),
           "Payment Time": paymentInfo?.paymentTime
-            ? parseDateTimeShort(paymentInfo.paymentTime)
+            ? parseDateTimeShort(paymentInfo?.paymentTime)
             : "N/A",
           "Department": user.department,
           "Gender": user.gender,
@@ -424,7 +424,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
       if (!user) return;
   
       Object.values(paymentData.events).forEach((event) => {
-        const eventName = eventsObject?.[event.eventId].name || "Uncategorized";
+        const eventName = eventsObject?.[event.eventId]?.name || event.eventId;
   
         if (!eventGroups[eventName]) {
           eventGroups[eventName] = [];
