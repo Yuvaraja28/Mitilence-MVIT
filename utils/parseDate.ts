@@ -25,3 +25,19 @@ export function parseDateTimeShort(date: string) {
     second: '2-digit'
   });
 }
+
+export function parseDateOnly(date: string) {
+  return new Date(date).toLocaleDateString('en-us', {
+    month: 'short',
+    year: 'numeric',
+    day: '2-digit'
+  })
+}
+
+export function parseTimeOnly(date: string) {
+  return new Date(date).toLocaleTimeString('en-us', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  })
+}

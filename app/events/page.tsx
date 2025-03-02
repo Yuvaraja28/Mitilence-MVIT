@@ -16,6 +16,7 @@ import CrossVelocity from "@/components/internal/crossVelocity";
 import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
 import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, UsersRound } from "lucide-react";
 import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
+import { parseDateOnly, parseTimeOnly } from "@/utils/parseDate";
 
 const Markdown = dynamic(() => import("react-markdown"), { ssr: false });
 
@@ -364,7 +365,7 @@ export default function Events() {
                         <Link
                           target="_blank"
                           className="bg-[#25D366] rounded-[8px] text-white p-1.5"
-                          href={`https://api.whatsapp.com/send/?text=Check%20out%20this%20great%20event%20happening%20in%20MVIT:%0A${window.location.origin}/e/${currentEvent.id}`}
+                          href={`https://api.whatsapp.com/send/?text=${encodeURIComponent(`Join us at the *Mitilence event* for *${currentEvent.name}* happening in *${currentEvent?.departmentId?.toUpperCase()} Dept - ${currentEvent.place.toUpperCase()}* on *${parseDateOnly(currentEvent.startTime)}* from *${parseTimeOnly(currentEvent.startTime)}* to *${parseTimeOnly(currentEvent.endTime)}*.\n*Team size:* ${currentEvent.teamSize}`)}%0A${window.location.origin}/e/${currentEvent.id}`}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
