@@ -13,54 +13,54 @@ export const DepartmentsVar = [
     "id": "cse",
     "name": "CSE",
     "order": 1,
-    "logoUrl": "https://ucarecdn.com/279b2c26-6171-4436-9ed6-9a2e1ed2b104/-/preview/1000x1000/"
+    "logoUrl": "https://ucarecdn.com/998ec39f-2f23-4611-bb91-6293e520c9b5/-/preview/612x408/"
   },
   {
     "id": "it",
     "name": "IT",
     "order": 2,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/79055c4c-d801-42cc-b070-d24592045ec8/-/preview/612x344/"
   },
   {
     "id": "aiml",
     "name": "AIML",
     "order": 3,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/7bc812d9-0950-4765-9042-b2f1725c396d/-/preview/612x344/"
   },
   {
     "id": "ece",
     "name": "ECE",
     "order": 4,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/1fd58334-116d-4c1b-bb1d-f6a0c77915bf/-/preview/768x432/"
   },
   {
     "id": "eee",
     "name": "EEE",
     "order": 5,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/ce6c2286-0c8d-4452-8665-1dc01c7ae34d/-/preview/612x408/"
   },
   {
     "id": "mech",
     "name": "MECH",
     "order": 6,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/35efb0e7-6502-4b1f-ae20-c8b2fb90ce24/-/preview/612x408/"
   },
   {
     "id": "icb",
     "name": "ICB",
     "order": 7,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/3675f8bf-cbea-4f21-94ec-b855db79f046/-/preview/612x344/"
   },
   {
     "id": "ra",
     "name": "RA",
     "order": 8,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/6e5c54b9-5211-4480-a08f-b8c0b0cd03dc/-/preview/612x344/"
   },
   {
     "id": "ft",
     "name": "FT",
     "order": 9,
-    "logoUrl": null
+    "logoUrl": "https://ucarecdn.com/9d6ddad0-d909-4599-a7b7-5522499b648c/-/preview/612x410/"
   }
 ]

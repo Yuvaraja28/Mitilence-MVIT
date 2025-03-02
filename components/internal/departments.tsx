@@ -17,26 +17,30 @@ export function Departments({ departments }: { departments: Department[] }) {
       >
         Departments
       </span>
-      <div className="flex flex-row flex-wrap items-center justify-center gap-10 w-full px-6 lg:px-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 items-center justify-center gap-8 w-full px-6 lg:px-8">
         {departments.map((dep, idx) => (
           <Link
             key={dep.id}
             href={`/events?department=${dep.id}`}
+            className="h-full w-full"
           >
             <BlurFade
               inView
-              className="group"
+              className="group h-full w-h-full"
               delay={0.1 + (idx+1) * 0.05}
             >
               <span
-                className="absolute z-30 top-5 left-[-20px] -skew-x-6 bg-white text-black text-xl font-semibold rounded-[5px] px-4 py-0.5 uppercase border-2 border-gray-300 shadow-xl drop-shadow-xl"
+                className="absolute z-30 top-4 left-[-12px] -skew-x-6 bg-white text-black text-xl font-semibold rounded-[8px] px-3 py-0.5 uppercase shadow-xl drop-shadow-xl"
               >
                 {dep.name}
               </span>
               <Image
                 alt={dep.id}
+                classNames={{
+                  wrapper: '!w-full !h-full'
+                }}
                 src={dep?.logoUrl || EventsFallbackImg}
-                className="h-60 w-60 object-cover border-3 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
+                className="!w-full !h-full object-cover border-2 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
               />
               <div className="absolute z-30 bottom-3 right-3 bg-white text-black p-1 rounded-[10px] transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:scale-115">
                 <ArrowUpRight size={22} />
