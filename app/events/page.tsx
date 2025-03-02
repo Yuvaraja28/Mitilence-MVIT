@@ -396,7 +396,9 @@ export default function Events() {
                   </span>
                   <div className="flex flex-col gap-2">
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <CalendarDays color="#000000" size={25} />
+                      <span>
+                        <CalendarDays color="#000000" size={25} />
+                      </span>
                       <div className="text-black flex flex-col h-full">
                         <span className="uppercase font-semibold text-base">
                           {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleDateString(
@@ -418,7 +420,9 @@ export default function Events() {
                       </div>
                     </div>
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <Building2 color="#000000" size={25} />
+                      <span>
+                        <Building2 color="#000000" size={25} />
+                      </span>
                       <div className="text-black flex flex-col gap-0.5 h-full">
                         <span className="uppercase font-semibold text-base">
                           Organized By
@@ -429,7 +433,9 @@ export default function Events() {
                       </div>
                     </div>
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3 w-full">
-                      <UsersRound color="#000000" size={25} />
+                      <span>
+                        <UsersRound color="#000000" size={25} />
+                      </span>
                       <div className="text-black flex flex-col h-full">
                         <span className="uppercase font-semibold text-base">
                           Participant(s)
@@ -440,7 +446,9 @@ export default function Events() {
                       </div>
                     </div>
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <ContactRound color="#000000" size={25} />
+                      <span>
+                        <ContactRound color="#000000" size={25} />
+                      </span>
                       <div className="text-black flex flex-col gap-0.5 h-full">
                         <span className="uppercase font-semibold text-base">
                           Department Staff
@@ -451,7 +459,9 @@ export default function Events() {
                       </div>
                     </div>
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <ContactRound color="#000000" size={25} />
+                      <span>
+                        <ContactRound color="#000000" size={25} />
+                      </span>
                       <div className="text-black flex flex-col gap-0.5 h-full">
                         <span className="uppercase font-semibold text-base">
                           Student Coordinator

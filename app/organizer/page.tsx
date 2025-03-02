@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
 import { useFirebase } from "@/contexts/firebase";
-import EventParticipants from "../admin/eventParticipants";
+import EventParticipants from "../../components/internal/eventParticipants";
 import { CircularLoader } from "@/components/internal/Loaders";
 import { UserProfile } from "@/components/internal/userProfile";
 import { Tabs, Tab, Modal, ModalContent, ModalBody, Button, addToast } from "@heroui/react";
@@ -91,6 +91,10 @@ export default function OrganizerDashboard() {
     )
   }
 
+  if (!fireCustomClaims?.roles?.includes("organizer")) {
+    return window.location.replace('/profile')
+  }
+  
   return (
     <div
       className="flex flex-col items-center gap-6 w-full px-6 lg:px-16 pt-28 lg:pt-22 py-8 min-h-[100vh]"

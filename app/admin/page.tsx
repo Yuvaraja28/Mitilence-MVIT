@@ -1,8 +1,8 @@
 'use client';
 import React from "react";
-import AllParticipants from "./allParticipants";
+import AllParticipants from "../../components/internal/allParticipants";
 import { useFirebase } from "@/contexts/firebase";
-import EventParticipants from "./eventParticipants";
+import EventParticipants from "../../components/internal/eventParticipants";
 import { UserProfile } from "@/components/internal/userProfile";
 import { Tabs, Tab, Modal, ModalContent, ModalBody } from "@heroui/react";
 import { CircularLoader } from "@/components/internal/Loaders";
@@ -30,6 +30,10 @@ export default function AdminDashboard() {
         <CircularLoader />
       </div>
     )
+  }
+
+  if (!fireCustomClaims?.roles?.includes("admin")) {
+    return window.location.replace('/profile')
   }
 
   return (
@@ -89,6 +93,7 @@ export default function AdminDashboard() {
       {(currentTab == 'All Participants') ?
         <AllParticipants
           setPopupUser={setPopupUser}
+          currentDepartment={fireCustomClaims?.departmentId}
         />
       :
         <EventParticipants

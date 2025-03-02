@@ -147,6 +147,10 @@ export default function Organizers() {
     )
   }
 
+  if (!fireCustomClaims?.roles?.includes("paymentDesk")) {
+    return window.location.replace('/profile')
+  }
+
   return (
     <div
       className="flex flex-col gap-6 w-full px-6 lg:px-16 pt-28 lg:pt-22 py-8 min-h-[100vh] text-white"

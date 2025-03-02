@@ -20,7 +20,9 @@ import {
   ChipProps,
   Popover,
   PopoverTrigger,
-  PopoverContent
+  PopoverContent,
+  Select,
+  SelectItem
 } from "@heroui/react";
 import ExcelJS from "exceljs";
 import { ChevronDownIcon, Download, SearchIcon } from "lucide-react";
@@ -31,14 +33,16 @@ import parseEventUser from "@/parsers/user";
 import parsePayments from "@/parsers/payments";
 import { DefaultMemberImg } from "@/variables";
 import downloadBlob from "@/utils/downloadBlob";
-import { PopUserProps } from "./page";
+import { PopUserProps } from "../../app/admin/page";
 
 export const columns = [
   { name: "NAME", uid: "name" },
   { name: "ENROLL NO", uid: "enrollNo" },
   { name: "PHONE", uid: "phoneNo" },
+  { name: "COLLEGE", uid: "college" },
   { name: "GENDER", uid: "gender" },
   { name: "REGISTER TIME", uid: "registerTime" },
+  { name: "CHECKED IN", uid: "checkedIn" },
   { name: "PAYMENT", uid: "payment" },
   { name: "ACTIONS", uid: "actions" },
 ];
@@ -50,11 +54,23 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const INITIAL_VISIBLE_COLUMNS = columns.map(c => c.uid);
 
-export default function AllParticipants({ setPopupUser }: { setPopupUser: (param: PopUserProps) => void }) {
+interface EventProps {
+  setPopupUser: (param: PopUserProps) => void;
+  selectedEvent: string | null;
+  setSelectedEvent: (param: string) => void;
+  checkInCallback?: (userId: string) => void;
+  setCheckInModal?: (value: boolean) => void;
+  children?: React.ReactNode
+}
+
+export default function EventParticipants({ setPopupUser, children, selectedEvent, setSelectedEvent, setCheckInModal, checkInCallback }: EventProps) {
   const firebaseContext = useFirebase();
+  const events = firebaseContext?.events;
   const firestoreDB = firebaseContext?.firestoreDB;
   const eventsObject = firebaseContext?.eventsObject;
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
+
+  const filteredEvents = React.useMemo(() => [...(events?.filter(e => (e.departmentId == fireCustomClaims?.departmentId)) || []), { name: 'Food', id: 'food', departmentId: fireCustomClaims?.departmentId } as Events], [events, fireCustomClaims]);
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
@@ -65,7 +81,7 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
     new Set(INITIAL_VISIBLE_COLUMNS),
   );
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [statusFilter, setStatusFilter] = React.useState<string>("Paid");
+  const [statusFilter, setStatusFilter] = React.useState<string>("All");
 
   const [page, setPage] = React.useState(1);
 
@@ -73,6 +89,11 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
 
   const headerColumns = columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 
+  React.useEffect(() => {
+    if (events == null) return;
+    setSelectedEvent(events[0].id)
+  }, [events])
+  
   const filteredItems = () => {
     let filteredUsers = [...Object.values(departmentParticipants)];
 
@@ -85,8 +106,9 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
         departmentParticipants[user.id]?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
       );
     }
+    filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false));
     if (statusFilter != "All") {
-      filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false) == (statusFilter == 'Paid'));
+      filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus || false) == (statusFilter == 'Checked In'));
     }
     return filteredUsers;
   }
@@ -107,7 +129,7 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
     return first > second ? -1 : 0;
   });
 
-  const renderCell = (user: EventUser, columnKey: React.Key) => {
+  const renderCell = React.useCallback((user: EventUser, columnKey: React.Key) => {
     const cellValue = departmentParticipants[user.id]?.[columnKey as keyof EventUser];
     switch (columnKey) {
       case "name":
@@ -124,10 +146,28 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
             {departmentParticipants[user.id]?.emailId}
           </User>
         );
+      case "createdTime":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-base capitalize">{parseDateTimeShort(departmentParticipants[user.id]?.createdTime)}</p>
+          </div>
+        );
       case "enrollNo":
         return (
           <div className="flex flex-col min-w-[5em]" title={departmentParticipants[user.id]?.enrollNo}>
             <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
+          </div>
+        );
+      case "college":
+        return (
+          <div className="flex flex-col max-w-[8em]" title={departmentParticipants[user.id]?.college}>
+            <p className="text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.college}</p>
+          </div>
+        );
+      case "updatedTime":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-base capitalize">{(departmentParticipants[user.id]?.updatedTime == null) ? '' : parseDateTimeShort(departmentParticipants[user.id]?.updatedTime || '')}</p>
           </div>
         );
       case "registerTime":
@@ -135,6 +175,37 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
           <div className="flex flex-col">
             <p className="text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.registeredTime)}</p>
           </div>
+        );
+      case "checkedIn":
+        return (
+          <Popover placement="top" showArrow>
+            <PopoverTrigger>
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) ? '' : 'Not'} Checked In
+              </Chip>
+            </PopoverTrigger>
+            {(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) &&
+              <PopoverContent>
+                <div
+                  className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
+                >
+                  <span>
+                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentTime)}
+                  </span>
+                  <span>
+                    <b className="text-purpleAccent font-medium">
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].participantType}
+                    </b> Participant
+                  </span>
+                  <span>
+                    Checked In by <b className="text-purpleAccent font-medium">
+                      {departmentPaymentParticipants[user.id]?.events?.[selectedEvent || ''].checkedInByName}
+                    </b>
+                  </span>
+                </div>
+              </PopoverContent>
+            }
+          </Popover>
         );
       case "payment":
         return (
@@ -153,16 +224,16 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
                     Paid for <b className="text-purpleAccent">{departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].departmentId?.toUpperCase()}</b> department event
                   </span>
                   <span>
-                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentTime)}
+                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentTime)}
                   </span>
                   <span>
                     <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.participantType}
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].participantType}
                     </b> Participant
                   </span>
                   <span>
                     Verified by <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentVerifiedByName}
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentVerifiedByName}
                     </b>
                   </span>
                 </div>
@@ -191,6 +262,16 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
                 >
                   View Profile
                 </DropdownItem>
+                {((checkInCallback != null) && (!(departmentPaymentParticipants[user.id].events[selectedEvent || '']?.checkedInStatus || false))) ?
+                  <DropdownItem
+                    key="checkIn"
+                    onPress={() => checkInCallback(user.id)}
+                  >
+                    Check In
+                  </DropdownItem>
+                  :
+                  <></>
+                }
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -198,7 +279,7 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
       default:
         return cellValue;
     }
-  };
+  }, [selectedEvent, departmentParticipants, departmentPaymentParticipants]);
 
   const onRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value));
@@ -223,20 +304,44 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
     return (
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row justify-between gap-3 w-full">
-          <Input
-            isClearable
-            size="lg"
-            variant="bordered"
-            className="w-full sm:max-w-[44%]"
-            placeholder="Search by name or email..."
-            startContent={<SearchIcon />}
-            classNames={{
-              inputWrapper: 'bg-gray-100'
-            }}
-            value={filterValue}
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          />
+        <div
+            className="flex flex-col items-center gap-2 w-full md:max-w-[44%]"
+          >
+            <Input
+              isClearable
+              size="lg"
+              variant="bordered"
+              className="w-full"
+              placeholder="Search by name or email..."
+              startContent={<SearchIcon />}
+              classNames={{
+                inputWrapper: 'bg-gray-100'
+              }}
+              value={filterValue}
+              onClear={() => onClear()}
+              onValueChange={onSearchChange}
+            />
+            <form
+              onSubmit={(e) => {e.preventDefault(); if ((setCheckInModal != null) && (selectedEvent != null)) { setCheckInModal(true) }}}
+              className="flex flex-col lg:flex-row gap-2 w-full"
+            >
+              <Select
+                size="sm"
+                isRequired
+                variant="bordered"
+                className="w-full"
+                label="Select Event"
+                placeholder="Select an Event"
+                selectedKeys={[String(selectedEvent)]}
+                onSelectionChange={(e) => {if (e.currentKey == null) return; setDepartmentPaymentParticipants((prev) => ({...prev})); setSelectedEvent(String(e.currentKey)) }}
+              >
+                {filteredEvents.map((event) => (
+                  <SelectItem key={String(event.id)}>{event.name}</SelectItem>
+                ))}
+              </Select>
+              {children}
+            </form>
+          </div>
           <div className="flex flex-wrap gap-2">
             <Dropdown>
               <DropdownTrigger>
@@ -251,7 +356,7 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
                 selectedKeys={[statusFilter]}
                 onSelectionChange={(e) => setStatusFilter(String(e.currentKey))}
               >
-                {['All', 'Paid', 'Not Paid'].map((status) => (
+                {['All', 'Checked In', 'Not Checked In'].map((status) => (
                   <DropdownItem key={status} className="capitalize">
                     {status}
                   </DropdownItem>
@@ -331,110 +436,31 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
     );
   }
   
-  const generateExcelDatas = async () => {
-    console.log(departmentParticipants, departmentPaymentParticipants);
-  
+  const generateExcelDatas = async () => {  
     if (Object.keys(departmentParticipants).length === 0) {
       console.warn("No user data available to export.");
       return;
     }
   
     const workbook = new ExcelJS.Workbook();
-  
-    // Create Users Sheet
-    const userSheet = workbook.addWorksheet("Users");
-  
-    // Define User Sheet Headers
-    const userHeaders = [
-      "Name",
-      "Enrollment No",
-      "Email",
-      "Phone",
-      "College",
-      "Participant Type",
-      "Payment Verified By",
-      "Payment Time",
-      "Department",
-      "Gender",
-      "Grad Year",
-      "Created Time",
-      "Updated Time",
-      "User ID",
-      "Payment Verified By Id",
-    ];
-  
-    userSheet.columns = userHeaders.map((header) => ({
-      header,
-      key: header,
-      width: 20, // Adjust column width
-    }));
-  
-    // Add User Data
-    const userSheetData: any = [];
-    
-    Object.values(departmentParticipants).forEach((user) => {    
-      const paymentInfo =
-        departmentPaymentParticipants[user?.id]?.mitilence?.[
-        fireCustomClaims?.departmentId || ""
-      ] || {};
-
-      if (paymentInfo.paymentStatus) {
-        userSheetData.push({
-          "Name": user.name,
-          "Enrollment No": user.enrollNo,
-          "Email": user.emailId,
-          "Phone": user.phoneNo,
-          "College": user.college,
-          "Participant Type": paymentInfo.participantType || "N/A",
-          "Payment Verified By": paymentInfo?.paymentVerifiedByName || "N/A",
-          "Registered Time": parseDateTimeShort(paymentInfo?.registeredTime),
-          "Payment Time": paymentInfo?.paymentTime
-            ? parseDateTimeShort(paymentInfo.paymentTime)
-            : "N/A",
-          "Department": user.department,
-          "Gender": user.gender,
-          "Grad Year": user.gradYear,
-          "Created Time": parseDateTimeShort(user.createdTime),
-          "Updated Time": user?.updatedTime
-            ? parseDateTimeShort(user.updatedTime)
-            : "N/A",
-          "User ID": user.id,
-          "Payment Verified By Id": paymentInfo?.paymentVerifiedBy || "N/A",
-        });
-      }
-    });
-  
-    userSheet.addRows(userSheetData);
-  
-    // Apply Bold Styling to Headers
-    userSheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true };
-    });
-  
-    // 🔹 Group events by name
-    const eventGroups: Record<string, any[]> = {};
+    let eventSheetData: any[] = [];
   
     Object.entries(departmentPaymentParticipants).forEach(([userId, paymentData]) => {
       const user = departmentParticipants[userId];
       if (!user) return;
-  
+      
       Object.values(paymentData.events).forEach((event) => {
+        if (event.eventId !== selectedEvent) return; // 🔹 Filter by selected event ID
         const eventName = eventsObject?.[event.eventId].name || "Uncategorized";
-  
-        if (!eventGroups[eventName]) {
-          eventGroups[eventName] = [];
-        }
-  
+        
         if (event?.checkedInStatus) {
-          eventGroups[eventName].push({
-            "Name": user?.name,
+          eventSheetData.push({
+            Name: user?.name,
             "Event Name": eventName,
             "Participant Type": departmentPaymentParticipants[userId]?.mitilence?.[fireCustomClaims?.departmentId || '']?.participantType,
             "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
             "Checked In By": event?.checkedInByName || "N/A",
-            "Checked In Time": event?.checkedInTime
-              ? parseDateTimeShort(event.checkedInTime)
-              : "N/A",
+            "Checked In Time": event?.checkedInTime ? parseDateTimeShort(event.checkedInTime) : "N/A",
             "User ID": user?.id,
             "Checked In By Id": event?.checkedInBy || "N/A",
           });
@@ -442,7 +468,20 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
       });
     });
   
-    // 🔹 Define Event Sheet Headers
+    if (eventSheetData.length === 0) {
+      console.warn("No data found for the selected event.");
+      return;
+    }
+  
+    // 🔹 Create a single sheet for the selected event
+    const sheetName =
+      eventSheetData[0]["Event Name"].length > 31
+        ? eventSheetData[0]["Event Name"].substring(0, 28) + "..."
+        : eventSheetData[0]["Event Name"];
+  
+    const eventSheet = workbook.addWorksheet(sheetName);
+  
+    // 🔹 Define event sheet headers explicitly
     const eventHeaders = [
       "Name",
       "Event Name",
@@ -454,28 +493,21 @@ export default function AllParticipants({ setPopupUser }: { setPopupUser: (param
       "Checked In By Id",
     ];
   
-    // 🔹 Create a separate sheet for each event
-    Object.entries(eventGroups).forEach(([eventName, eventData]) => {
-      const sheetName =
-        eventName.length > 31 ? eventName.substring(0, 28) + "..." : eventName; // Excel limits sheet names to 31 chars
-      const eventSheet = workbook.addWorksheet(sheetName);
+    eventSheet.columns = eventHeaders.map((header) => ({
+      header,
+      key: header,
+      width: 25,
+    }));
   
-      eventSheet.columns = eventHeaders.map((header) => ({
-        header,
-        key: header,
-        width: 25,
-      }));
+    eventSheet.addRows(eventSheetData);
   
-      eventSheet.addRows(eventData);
-  
-      // Apply Bold Styling to Headers
-      eventSheet.getRow(1).eachCell((cell) => {
-        cell.font = { bold: true };
-      });
+    // Apply Bold Styling to Headers
+    eventSheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
     });
   
     // Generate File Name
-    const fileName = `${fireCustomClaims?.departmentId?.toUpperCase()}_mitilence_${new Date()
+    const fileName = `${fireCustomClaims?.departmentId?.toUpperCase()}_${eventsObject?.[selectedEvent || '']?.name}_mitilence_${new Date()
       .toISOString()
       .replace(/[-T:]/g, "")
       .split(".")[0]}.xlsx`;
