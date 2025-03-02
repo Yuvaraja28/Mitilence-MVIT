@@ -55,6 +55,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 const INITIAL_VISIBLE_COLUMNS = columns.map(c => c.uid);
 
 interface EventProps {
+  currentDepartment: string | null;
   setPopupUser: (param: PopUserProps) => void;
   selectedEvent: string | null;
   setSelectedEvent: (param: string) => void;
@@ -63,14 +64,13 @@ interface EventProps {
   children?: React.ReactNode
 }
 
-export default function EventParticipants({ setPopupUser, children, selectedEvent, setSelectedEvent, setCheckInModal, checkInCallback }: EventProps) {
+export default function EventParticipants({ currentDepartment, setPopupUser, children, selectedEvent, setSelectedEvent, setCheckInModal, checkInCallback }: EventProps) {
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events;
   const firestoreDB = firebaseContext?.firestoreDB;
   const eventsObject = firebaseContext?.eventsObject;
-  const fireCustomClaims = firebaseContext?.fireCustomClaims;
 
-  const filteredEvents = React.useMemo(() => [...(events?.filter(e => (e.departmentId == fireCustomClaims?.departmentId)) || []), { name: 'Food', id: 'food', departmentId: fireCustomClaims?.departmentId } as Events], [events, fireCustomClaims]);
+  const filteredEvents = React.useMemo(() => [...(events?.filter(e => (e.departmentId == currentDepartment)) || []), { name: 'Food', id: 'food', departmentId: currentDepartment } as Events], [events, currentDepartment]);
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
@@ -106,7 +106,7 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
         departmentParticipants[user.id]?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
       );
     }
-    filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false));
+    filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentStatus || false));
     if (statusFilter != "All") {
       filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus || false) == (statusFilter == 'Checked In'));
     }
@@ -124,8 +124,8 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
 
   const sortedItems = [...items()];
   sortedItems.sort((a: EventUser, b: EventUser) => {
-    const first = new Date(departmentPaymentParticipants[a.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.registeredTime);
-    const second = new Date(departmentPaymentParticipants[b.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.registeredTime);
+    const first = new Date(departmentPaymentParticipants[a.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
+    const second = new Date(departmentPaymentParticipants[b.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
     return first > second ? -1 : 0;
   });
 
@@ -173,7 +173,7 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
       case "registerTime":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.registeredTime)}</p>
+            <p className="text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
           </div>
         );
       case "checkedIn":
@@ -190,11 +190,11 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
                   className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
                 >
                   <span>
-                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentTime)}
+                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentTime)}
                   </span>
                   <span>
                     <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].participantType}
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].participantType}
                     </b> Participant
                   </span>
                   <span>
@@ -211,29 +211,29 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
         return (
           <Popover placement="top" showArrow>
             <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
-                {(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentStatus) ? '' : 'Not'} Paid
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentStatus) ? '' : 'Not'} Paid
               </Chip>
             </PopoverTrigger>
-            {(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus) &&
+            {(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentStatus) &&
               <PopoverContent>
                 <div
                   className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
                 >
                   <span>
-                    Paid for <b className="text-purpleAccent">{departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].departmentId?.toUpperCase()}</b> department event
+                    Paid for <b className="text-purpleAccent">{departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].departmentId?.toUpperCase()}</b> department event
                   </span>
                   <span>
-                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentTime)}
+                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentTime)}
                   </span>
                   <span>
                     <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].participantType}
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].participantType}
                     </b> Participant
                   </span>
                   <span>
                     Verified by <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[fireCustomClaims?.departmentId || ''].paymentVerifiedByName}
+                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentVerifiedByName}
                     </b>
                   </span>
                 </div>
@@ -457,7 +457,7 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
           eventSheetData.push({
             Name: user?.name,
             "Event Name": eventName,
-            "Participant Type": departmentPaymentParticipants[userId]?.mitilence?.[fireCustomClaims?.departmentId || '']?.participantType,
+            "Participant Type": departmentPaymentParticipants[userId]?.mitilence?.[currentDepartment || '']?.participantType,
             "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
             "Checked In By": event?.checkedInByName || "N/A",
             "Checked In Time": event?.checkedInTime ? parseDateTimeShort(event.checkedInTime) : "N/A",
@@ -507,7 +507,7 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
     });
   
     // Generate File Name
-    const fileName = `${fireCustomClaims?.departmentId?.toUpperCase()}_${eventsObject?.[selectedEvent || '']?.name}_mitilence_${new Date()
+    const fileName = `${currentDepartment?.toUpperCase()}_${eventsObject?.[selectedEvent || '']?.name}_mitilence_${new Date()
       .toISOString()
       .replace(/[-T:]/g, "")
       .split(".")[0]}.xlsx`;
@@ -520,7 +520,7 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
   function listenToPayments(callback: (data: Record<string, EventUserPayments>) => void) {
     if (firestoreDB == null) return () => {};
     const paymentsRef = collection(firestoreDB, "payments");
-    const q = query(paymentsRef, where(`mitilence.${fireCustomClaims?.departmentId}.departmentId`, "==", fireCustomClaims?.departmentId));
+    const q = query(paymentsRef, where(`mitilence.${currentDepartment}.departmentId`, "==", currentDepartment));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const payments = querySnapshot.docs.reduce((obj, doc) => ({...obj, [doc.id]: parsePayments(doc.id, doc.data())}), {});
       callback(payments);
@@ -529,10 +529,10 @@ export default function EventParticipants({ setPopupUser, children, selectedEven
   }
 
   React.useEffect(() => {
-    if (fireCustomClaims?.departmentId == null) return;
+    if (currentDepartment == null) return;
     const unsubscribePayments = listenToPayments(setDepartmentPaymentParticipants)
     return () => unsubscribePayments();
-  }, [fireCustomClaims?.departmentId]);
+  }, [currentDepartment]);
 
   function listenToUsersByIds(
     userIds: string[], 

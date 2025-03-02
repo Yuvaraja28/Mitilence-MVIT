@@ -123,6 +123,7 @@ export default function AdminDashboard() {
           setPopupUser={setPopupUser}
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
+          currentDepartment={currentDepartment?.id || null}
         />
       }
       {(popupUser != null) &&

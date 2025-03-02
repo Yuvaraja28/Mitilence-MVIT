@@ -93,13 +93,14 @@ export default function AdminDashboard() {
       {(currentTab == 'All Participants') ?
         <AllParticipants
           setPopupUser={setPopupUser}
-          currentDepartment={fireCustomClaims?.departmentId}
+          currentDepartment={fireCustomClaims?.departmentId || null}
         />
       :
         <EventParticipants
           setPopupUser={setPopupUser}
           selectedEvent={selectedEvent}
           setSelectedEvent={setSelectedEvent}
+          currentDepartment={fireCustomClaims?.departmentId || null}
         />
       }
       {(popupUser != null) &&
