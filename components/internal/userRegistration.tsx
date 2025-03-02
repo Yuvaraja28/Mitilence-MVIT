@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
-import "@/app/admin/style.css"
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { doc, setDoc } from "firebase/firestore";
 import { useFirebase } from "@/contexts/firebase";
+import "@/components/styles/overideHerouiSelect.css";
 import { Drawer, DrawerContent, Select, SelectItem } from "@heroui/react";
 
 export default function UserRegistration({ update = false }) {

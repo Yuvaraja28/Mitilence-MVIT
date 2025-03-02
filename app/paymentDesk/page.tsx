@@ -1,6 +1,5 @@
 'use client';
 import React from "react";
-import "@/app/admin/style.css"
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
@@ -8,6 +7,7 @@ import { getUser } from "@/Firestore/users";
 import { getPayment } from "@/Firestore/payments";
 import { useFirebase } from "@/contexts/firebase";
 import { Select, SelectItem } from "@heroui/select";
+import "@/components/styles/overideHerouiSelect.css";
 import { CircularLoader } from "@/components/internal/Loaders";
 import { QrCodeIcon, Search, VerifiedIcon } from "lucide-react";
 import { UserProfile } from "@/components/internal/userProfile";
