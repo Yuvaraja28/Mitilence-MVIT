@@ -61,7 +61,7 @@ export const DepartmentsVar = [
     "id": "icb",
     "name": "ICB",
     "order": 7,
-    "staffName": "Mr.V.Kumaraguru",
+    "staffName": "Mr.V.Kumaraguru, AP/CSE(ICB)",
     "staffPhone": "9677693212",
     "logoUrl": "https://ucarecdn.com/3675f8bf-cbea-4f21-94ec-b855db79f046/-/preview/612x344/"
   },
