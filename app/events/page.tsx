@@ -14,7 +14,7 @@ import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
-import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, UsersRound } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, ShieldUser, UsersRound } from "lucide-react";
 import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { parseDateOnly, parseTimeOnly } from "@/utils/parseDate";
 
@@ -60,13 +60,14 @@ export default function Events() {
 
   React.useEffect(() => {
     const searchParams = new URL(location.href).searchParams;
-    const departmentParam = searchParams.get('department');
+    let departmentParam = searchParams.get('department');
     const categoryParam = searchParams.get('category');
     const eventParam = searchParams.get('event');
     if (eventParam) {
       const event = eventsObject[eventParam];
       if (event) {
         setCurrentEvent(() => event);
+        departmentParam = event.departmentId;
       }
     }
     if (departmentParam) {
@@ -192,7 +193,7 @@ export default function Events() {
             ))}
           </Tabs>
           <div
-            className="flex flex-col md:flex-row items-center md:items-start gap-8 w-full p-4 lg:px-14 mt-2 pb-10"
+            className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 w-full p-4 lg:px-14 mt-2 pb-10"
           >
             <Tabs
               size="lg"
@@ -212,7 +213,7 @@ export default function Events() {
                 window.history.pushState(null, '', `${window.location.pathname}?${params.toString()}`);
               }}
               classNames={{
-                tabList: "flex-col gap-2 p-2 border-1.5 border-purpleAccent rounded-2xl bg-[#9648ff0f] w-[18em]",
+                tabList: "grid md:flex grid-cols-2 flex-col gap-2 p-2 border-1.5 border-purpleAccent rounded-2xl bg-[#9648ff0f] w-full md:w-[18em]",
                 cursor: "w-full bg-purpleAccent text-white font-medium text-lg outline-none border-none",
                 tab: "px-5 py-6 font-medium outline-none border-none",
                 tabContent: "group-data-[selected=true]:text-white text-white border-none",
@@ -228,31 +229,48 @@ export default function Events() {
             <div
               className="flex flex-col items-center lg:items-start gap-6 lg:gap-4"
             >
-              {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ? (
-                <span className={`flex items-center justify-center gap-2 ${(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? "bg-[#17C964]" : "bg-yellow-500"} select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 mt-1 w-fit`}>
-                  Registered {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 'and Paid' : 'but not Paid'} {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? <BadgeCheck /> : <BadgeIndianRupee />}
-                </span>
-              ) : (
-                <Button
-                  size="lg"
-                  onPress={onOpen}
-                  // disabled={checkedInEventsSet.has(currentEvent?.id || '')}
-                  // isDisabled={
-                  //   !checkedInEventsSet.has(currentEvent?.id || '') &&
-                  //   (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
-                  // }
-                  className={`bg-purpleAccent text-white text-xl font-medium rounded-xl mt-1 w-fit`}
-                    // ${!checkedInEventsSet.has(currentEvent?.id || '') &&
-                    // (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
-                    //   ? "bg-red-500"
-                    //   : "bg-purpleAccent"}
-                >
-                  {/* {!checkedInEventsSet.has(currentEvent?.id || '') &&
-                  (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
-                    ? "Registrations Closed" */}
-                    Register Now for {currentDepartment?.id.toUpperCase()} Events
-                </Button>
-              )}
+              <div
+                className="flex flex-row gap-3 flex-wrap justify-center"
+              >
+                {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ? (
+                  <span className={`flex items-center justify-center gap-2 ${(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? "bg-[#17C964]" : "bg-yellow-500"} select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 w-fit`}>
+                    {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? <BadgeCheck /> : <BadgeIndianRupee />} Registered {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 'and Paid' : 'but not Paid'}
+                  </span>
+                ) : (
+                  <Button
+                    size="lg"
+                    onPress={onOpen}
+                    // disabled={checkedInEventsSet.has(currentEvent?.id || '')}
+                    // isDisabled={
+                    //   !checkedInEventsSet.has(currentEvent?.id || '') &&
+                    //   (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
+                    // }
+                    className={`bg-purpleAccent text-white text-xl font-medium rounded-xl w-fit`}
+                      // ${!checkedInEventsSet.has(currentEvent?.id || '') &&
+                      // (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
+                      //   ? "bg-red-500"
+                      //   : "bg-purpleAccent"}
+                  >
+                    {/* {!checkedInEventsSet.has(currentEvent?.id || '') &&
+                    (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
+                      ? "Registrations Closed" */}
+                      Register for {currentDepartment?.id.toUpperCase()} Events
+                  </Button>
+                )}
+                <div className="bg-blue-100 rounded-xl flex flex-row items-center py-1 px-5 gap-2.5">
+                  <span>
+                    <ShieldUser color="#000000" size={25} />
+                  </span>
+                  <div className="text-black flex flex-col gap-0.5 h-full">
+                    <span className="uppercase font-semibold text-base">
+                      {currentDepartment?.staffName}
+                    </span>
+                    <a href={`tel:${currentDepartment?.staffPhone}`} target="_blank" className="font-medium text-base mt-[-5px] leading-[19px]">
+                      {currentDepartment?.staffPhone}
+                    </a>
+                  </div>
+                </div>
+              </div>
               {(events?.length == 0) || (filteredEvents?.length == 0) ?
                 <span
                   className="text-xl w-full font-normal text-center md:text-start px-1"

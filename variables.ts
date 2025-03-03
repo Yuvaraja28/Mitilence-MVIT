@@ -13,54 +13,72 @@ export const DepartmentsVar = [
     "id": "cse",
     "name": "CSE",
     "order": 1,
+    "staffName": "Mr.R.Sathish Kumar, AP/CSE",
+    "staffPhone": "8667491392",
     "logoUrl": "https://ucarecdn.com/998ec39f-2f23-4611-bb91-6293e520c9b5/-/preview/612x408/"
   },
   {
     "id": "it",
     "name": "IT",
     "order": 2,
+    "staffName": "Mr.S.Uthayashangar, AP/IT",
+    "staffPhone": "9944410847",
     "logoUrl": "https://ucarecdn.com/79055c4c-d801-42cc-b070-d24592045ec8/-/preview/612x344/"
   },
   {
     "id": "aiml",
     "name": "AIML",
     "order": 3,
+    "staffName": "Mrs.S.K.Sugunedham, AP/AIML",
+    "staffPhone": "9629994853",
     "logoUrl": "https://ucarecdn.com/7bc812d9-0950-4765-9042-b2f1725c396d/-/preview/612x344/"
   },
   {
     "id": "ece",
     "name": "ECE",
     "order": 4,
+    "staffName": "Mr.V.Rajesh, AP/ECE",
+    "staffPhone": "9894184602",
     "logoUrl": "https://ucarecdn.com/1fd58334-116d-4c1b-bb1d-f6a0c77915bf/-/preview/768x432/"
   },
   {
     "id": "eee",
     "name": "EEE",
     "order": 5,
+    "staffName": "Mr.D.Muruganandham, AP/EEE",
+    "staffPhone": "9994382873",
     "logoUrl": "https://ucarecdn.com/ce6c2286-0c8d-4452-8665-1dc01c7ae34d/-/preview/612x408/"
   },
   {
     "id": "mech",
     "name": "MECH",
     "order": 6,
+    "staffName": "Mr.S.Ganesh Kumar, AP/MECH",
+    "staffPhone": "9629429453",
     "logoUrl": "https://ucarecdn.com/35efb0e7-6502-4b1f-ae20-c8b2fb90ce24/-/preview/612x408/"
   },
   {
     "id": "icb",
     "name": "ICB",
     "order": 7,
+    "staffName": "Mr.V.Kumaraguru",
+    "staffPhone": "9677693212",
     "logoUrl": "https://ucarecdn.com/3675f8bf-cbea-4f21-94ec-b855db79f046/-/preview/612x344/"
   },
   {
     "id": "ra",
     "name": "RA",
     "order": 8,
+    "staffName": "Ms.D.Jasmine Susila, AP/RA",
+    "staffPhone": "9159292335",
     "logoUrl": "https://ucarecdn.com/6e5c54b9-5211-4480-a08f-b8c0b0cd03dc/-/preview/612x344/"
   },
   {
     "id": "ft",
     "name": "FT",
     "order": 9,
+    "staffName": "Dr.T.Radhika, AP/FT",
+    "staffPhone": "7708718494",
     "logoUrl": "https://ucarecdn.com/9d6ddad0-d909-4599-a7b7-5522499b648c/-/preview/612x410/"
   }
 ]

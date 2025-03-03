@@ -55,6 +55,8 @@ interface Department {
   readonly id: string;
   name: string;
   order: number;
+  staffName: string;
+  staffPhone: string;
   logoUrl?: string | null;
 }
 

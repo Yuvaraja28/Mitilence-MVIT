@@ -51,7 +51,7 @@ export default function Footer() {
           </span>
         </div>
       </div>
-      <span className="h-[0.5px] w-full bg-gradient-to-l from-white/0 via-white to-white/0" />
+      <span className="h-[1px] w-full bg-gradient-to-l from-white/0 via-white to-white/0" />
       <div
         className='flex flex-row flex-wrap items-center justify-around gap-3 w-full h-full py-2'
       >

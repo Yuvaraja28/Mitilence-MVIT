@@ -191,7 +191,7 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
                   className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
                 >
                   <span>
-                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentTime)}
+                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || ''].checkedInTime)}
                   </span>
                   <span>
                     <b className="text-purpleAccent font-medium">
