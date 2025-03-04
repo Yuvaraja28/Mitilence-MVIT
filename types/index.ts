@@ -71,17 +71,16 @@ interface Events {
   place: string;
   eventCategory: string;
   eventDescription: string;
-  registrationEndTime: string;
-  facultyCoordinatorId: string;
-  studentCoordinatorId: string;
+  registrationEndTime?: string;
+  facultyCoordinatorId?: string;
+  studentCoordinatorId?: string;
   eventType: 'technical' | 'non_technical';
   logoUrl?: string;
   totalSeats?: number;
   seatsLeft?: number;
   entryFee?: number;
   linkRegistration?: string;
-  // eventClosed: boolean;
-  // registrationsClosed: boolean;
+  registrationsClosed?: boolean;
   studentOrganizer?: string;
   facultyOrganizer?: string;
 }

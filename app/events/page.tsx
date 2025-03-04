@@ -435,24 +435,31 @@ export default function Events() {
                       }
                     </BlurFade>
                   </div>
-                  {(currentEvent?.linkRegistration != null) ?
+                  {(currentEvent?.registrationsClosed) ?
                     <Button
                       isDisabled={true}
-                      className={`bg-red-500 text-white text-xl font-medium rounded-2xl uppercase h-[2.8rem]`}
+                      className={`bg-red-500 text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
                     >
                       Registrations Closed
                     </Button>
-                  :
-                    (eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ?
+                  : ((currentEvent?.linkRegistration == null) && (eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus)) ?
                     <span
-                      className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-2xl uppercase h-[2.8rem]"
+                      className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-2xl uppercase h-[3.2rem]"
                     >
                       Registered <BadgeCheck />
                     </span>
+                  : (currentEvent?.linkRegistration) ?
+                    <Link
+                      target="_blank"
+                      href={currentEvent.linkRegistration}
+                      className={`flex items-center justify-center bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
+                    >
+                      Register Now
+                    </Link>                
                   :
                     <Button
                       onPress={onOpen}
-                      className={`bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[2.8rem]`}
+                      className={`bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
                     >
                       Register Now
                     </Button>
