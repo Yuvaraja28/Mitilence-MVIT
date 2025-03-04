@@ -322,9 +322,9 @@ export default function Events() {
                           </>
                           :
                           <div
-                            className="cursor-pointer flex items-center flex-col justify-center gap-1 text-center text-white font-medium w-[15em] h-[15em] bg-[#9748ff09] border-1.5 border-purpleAccent/30 rounded-[20px]"
+                            className="px-3 py-6 cursor-pointer flex items-center flex-col justify-center text-center text-white font-medium w-[15em] h-[15em] bg-[#9748ff09] border-1.5 border-purpleAccent/30 rounded-[20px]"
                           >
-                            <span className="text-2xl leading-7">{event.name}</span>
+                            <span className="text-lg xl:text-2xl leading-7">{event.name}</span>
                             <span className="text-lg font-normal text-white/40">(Image not added)</span>
                             <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
                               <ArrowUpRight size={20} />
@@ -428,9 +428,10 @@ export default function Events() {
                       </BlurFade>
                     :
                       <div
-                        className="flex items-center flex-col justify-center gap-1 text-center text-white text-3xl font-medium h-full w-full bg-[#9748ff09] border-1.5 border-purpleAccent/30 rounded-[20px]"
+                        className="px-3 py-6 cursor-pointer flex items-center flex-col justify-center text-center text-white font-medium w-full h-full bg-[#9748ff09] border-1.5 border-purpleAccent/30 rounded-[20px]"
                       >
-                        {currentEvent.name} <br /> <span className="text-lg font-normal text-white/40">(Image not added)</span>
+                        <span className="text-2xl leading-7">{currentEvent.name}</span>
+                        <span className="text-lg font-normal text-white/40">(Image not added)</span>
                       </div>
                     }
                   </div>
