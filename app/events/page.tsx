@@ -409,88 +409,106 @@ export default function Events() {
                     </Popover>
                   </BlurFade>
                 </div>
-                <div className="h-fit w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2.5 select-none">
-                  <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full pt-1">
-                    Event Details
-                  </span>
-                  <div className="flex flex-col gap-2">
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <span>
-                        <CalendarDays color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col h-full">
-                        <span className="uppercase font-semibold text-base">
-                          {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleDateString(
-                            "en-us",
-                            { day: "2-digit", month: "long", year: "numeric" }
-                          ) : ""}
+                <div
+                  className="flex flex-col gap-1.5"
+                >
+                  <div className="h-fit w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2.5 select-none">
+                    <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full pt-1">
+                      Event Details
+                    </span>
+                    <div className="flex flex-col gap-2">
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                        <span>
+                          <CalendarDays color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px]">
-                          {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleTimeString(
-                            "en-us",
-                            { hour: "2-digit", minute: "2-digit", hour12: true }
-                          ) : ""}{" "}
-                          -{" "}
-                          {currentEvent?.endTime ? new Date(currentEvent?.endTime).toLocaleTimeString(
-                            "en-us",
-                            { hour: "2-digit", minute: "2-digit", hour12: true }
-                          ) : ""}
-                        </span>
+                        <div className="text-black flex flex-col h-full">
+                          <span className="uppercase font-semibold text-base">
+                            {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleDateString(
+                              "en-us",
+                              { day: "2-digit", month: "long", year: "numeric" }
+                            ) : ""}
+                          </span>
+                          <span className="font-medium text-base mt-[-5px]">
+                            {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleTimeString(
+                              "en-us",
+                              { hour: "2-digit", minute: "2-digit", hour12: true }
+                            ) : ""}{" "}
+                            -{" "}
+                            {currentEvent?.endTime ? new Date(currentEvent?.endTime).toLocaleTimeString(
+                              "en-us",
+                              { hour: "2-digit", minute: "2-digit", hour12: true }
+                            ) : ""}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <span>
-                        <Building2 color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col gap-0.5 h-full">
-                        <span className="uppercase font-semibold text-base">
-                          Organized By
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                        <span>
+                          <Building2 color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px] uppercase leading-[19px]">
-                          {currentEvent?.departmentId} Dept - {currentEvent?.place}
-                        </span>
+                        <div className="text-black flex flex-col gap-0.5 h-full">
+                          <span className="uppercase font-semibold text-base">
+                            Organized By
+                          </span>
+                          <span className="font-medium text-base mt-[-5px] uppercase leading-[19px]">
+                            {currentEvent?.departmentId} Dept - {currentEvent?.place}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3 w-full">
-                      <span>
-                        <UsersRound color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col h-full">
-                        <span className="uppercase font-semibold text-base">
-                          Participant(s)
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3 w-full">
+                        <span>
+                          <UsersRound color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px]">
-                          {currentEvent?.teamSize}
-                        </span>
+                        <div className="text-black flex flex-col h-full">
+                          <span className="uppercase font-semibold text-base">
+                            Participant(s)
+                          </span>
+                          <span className="font-medium text-base mt-[-5px]">
+                            {currentEvent?.teamSize}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <span>
-                        <ContactRound color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col gap-0.5 h-full">
-                        <span className="uppercase font-semibold text-base">
-                          Department Staff
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                        <span>
+                          <ContactRound color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
-                          {currentEvent?.facultyOrganizer || "TBA"}
-                        </span>
+                        <div className="text-black flex flex-col gap-0.5 h-full">
+                          <span className="uppercase font-semibold text-base">
+                            Department Staff
+                          </span>
+                          <span className="font-medium text-base mt-[-5px] leading-[19px]">
+                            {currentEvent?.facultyOrganizer || "TBA"}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <span>
-                        <ContactRound color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col gap-0.5 h-full">
-                        <span className="uppercase font-semibold text-base">
-                          Student Coordinator
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                        <span>
+                          <ContactRound color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
-                          {currentEvent?.studentOrganizer || "TBA"}
-                        </span>
+                        <div className="text-black flex flex-col gap-0.5 h-full">
+                          <span className="uppercase font-semibold text-base">
+                            Student Coordinator
+                          </span>
+                          <span className="font-medium text-base mt-[-5px] leading-[19px]">
+                            {currentEvent?.studentOrganizer || "TBA"}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ?
+                    <span
+                      className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-2xl uppercase h-[2.8rem]"
+                    >
+                      Registered <BadgeCheck />
+                    </span>
+                  :
+                    <Button
+                      onPress={onOpen}
+                      className="bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[2.8rem]"
+                    >
+                      Register Now
+                    </Button>
+                  }
                 </div>
               </div>
               <Markdown
