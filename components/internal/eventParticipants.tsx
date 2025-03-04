@@ -92,6 +92,8 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
 
   React.useEffect(() => {
     if (filteredEvents == null) return;
+    setDepartmentParticipants({})
+    setDepartmentPaymentParticipants({})
     setSelectedEvent(filteredEvents[0].id)
   }, [filteredEvents, currentDepartment])
   
