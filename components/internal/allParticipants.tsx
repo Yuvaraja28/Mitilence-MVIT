@@ -503,6 +503,8 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
 
   React.useEffect(() => {
     if (currentDepartment == null) return;
+    setDepartmentParticipants({})
+    setDepartmentPaymentParticipants({})
     const unsubscribePayments = listenToPayments(setDepartmentPaymentParticipants)
     return () => unsubscribePayments();
   }, [currentDepartment]);
