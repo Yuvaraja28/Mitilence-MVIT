@@ -193,7 +193,7 @@ export default function Events() {
             ))}
           </Tabs>
           <div
-            className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 w-full p-4 lg:px-14 mt-2 pb-10"
+            className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 w-full p-4 lg:px-14 mt-0 md:mt-2 pb-10"
           >
             <Tabs
               size="lg"
@@ -215,7 +215,7 @@ export default function Events() {
               classNames={{
                 tabList: "grid md:flex grid-cols-2 flex-col gap-2 p-2 border-1.5 border-purpleAccent rounded-2xl bg-[#9648ff0f] w-full md:w-[18em]",
                 cursor: "w-full bg-purpleAccent text-white font-medium text-lg outline-none border-none",
-                tab: "px-5 py-6 font-medium outline-none border-none",
+                tab: "px-5 py-2 md:py-6 font-medium outline-none border-none",
                 tabContent: "group-data-[selected=true]:text-white text-white border-none",
               }}
             >
@@ -300,23 +300,37 @@ export default function Events() {
                         inView
                         delay={0 + (idx+1) * 0.05}
                       >
-                        {/* {(checkedInEventsSet?.has(event.id)) &&
-                          <button
-                            className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-base font-medium w-fit !px-4 !py-1.5 capitalize"
+                        {(event?.logoUrl) ?
+                          <>
+                            {/* {(checkedInEventsSet?.has(event.id)) &&
+                              <button
+                                className="flex flex-row gap-2 rounded-xl top-2 left-2 drop-shadow-xl shadow-xl absolute z-30 bg-[#17C964] text-black text-base font-medium w-fit !px-4 !py-1.5 capitalize"
+                              >
+                                <BadgeCheck /> Registered
+                              </button>
+                            } */}
+                            <Image
+                              key={idx}
+                              alt={event.name}
+                              fallbackSrc={EventsFallbackImg}
+                              src={event?.logoUrl || EventsFallbackImg}
+                              className="object-cover w-[15em] h-[15em] cursor-pointer"
+                            />
+                            <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
+                              <ArrowUpRight size={20} />
+                            </div>
+                          </>
+                          :
+                          <div
+                            className="cursor-pointer flex items-center flex-col justify-center gap-1 text-center text-white font-medium w-[15em] h-[15em] bg-[#9748ff09] border-1.5 border-purpleAccent/30 rounded-[20px]"
                           >
-                            <BadgeCheck /> Registered
-                          </button>
-                        } */}
-                        <Image
-                          key={idx}
-                          alt={event.name}
-                          fallbackSrc={EventsFallbackImg}
-                          src={event?.logoUrl || EventsFallbackImg}
-                          className="object-cover w-[15em] h-[15em] cursor-pointer"
-                        />
-                        <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
-                          <ArrowUpRight size={20} />
-                        </div>
+                            <span className="text-2xl leading-7">{event.name}</span>
+                            <span className="text-lg font-normal text-white/40">(Image not added)</span>
+                            <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
+                              <ArrowUpRight size={20} />
+                            </div>
+                          </div>
+                        }
                       </BlurFade>
                     </div>
                   )}
@@ -359,143 +373,76 @@ export default function Events() {
             >
               <div className="md:grid md:grid-cols-2 flex flex-col h-fit gap-3">
                 <div
-                  className="flex flex-col gap-1.5"
+                  className="flex flex-col gap-2"
                 >
-                  <BlurFade inView delay={1 * 0.05} className="h-full">
-                    <Image
-                      classNames={{
-                        wrapper: '!h-full'
-                      }}
-                      fallbackSrc={EventsFallbackImg}
-                      src={currentEvent?.logoUrl || EventsFallbackImg}
-                      className="h-full md:h-full object-cover rounded-[20px] border border-gray-800"
-                    />
-                    <Popover placement="left">
-                      <PopoverTrigger>
-                        <Button
-                          isIconOnly
-                          className="absolute top-4 right-4 z-30 bg-boxBlack text-white border border-white/20"
-                        >
-                          <Share2 size={20} />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="flex flex-row p-2 gap-1.5 bg-boxBlack text-white">
-                        <Link
-                          target="_blank"
-                          className="bg-[#25D366] rounded-[8px] text-white p-1.5"
-                          href={`https://api.whatsapp.com/send/?text=${encodeURIComponent(`Join us at the *Mitilence event* for *${currentEvent.name}* happening in *${currentEvent?.departmentId?.toUpperCase()} Dept - ${currentEvent.place.toUpperCase()}* on *${parseDateOnly(currentEvent.startTime)}* from *${parseTimeOnly(currentEvent.startTime)}* to *${parseTimeOnly(currentEvent.endTime)}*.\n*Team size:* ${currentEvent.teamSize}`)}%0A${window.location.origin}/e/${currentEvent.id}`}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path>
-                          </svg>
-                        </Link>
-                        <Button
-                          size="sm"
-                          isIconOnly
-                          className="bg-white/5"
-                          onPress={() =>
-                            navigator?.clipboard.writeText(`${window.location.origin}/e/${currentEvent.id}`)
-                          }
-                        >
-                          <Link2 color="#FFFFFF" size={20} />
-                        </Button>
-                      </PopoverContent>
-                    </Popover>
-                  </BlurFade>
-                </div>
-                <div
-                  className="flex flex-col gap-1.5"
-                >
-                  <div className="h-fit w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2.5 select-none">
-                    <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full pt-1">
-                      Event Details
-                    </span>
-                    <div className="flex flex-col gap-2">
-                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                        <span>
-                          <CalendarDays color="#000000" size={25} />
-                        </span>
-                        <div className="text-black flex flex-col h-full">
-                          <span className="uppercase font-semibold text-base">
-                            {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleDateString(
-                              "en-us",
-                              { day: "2-digit", month: "long", year: "numeric" }
-                            ) : ""}
-                          </span>
-                          <span className="font-medium text-base mt-[-5px]">
-                            {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleTimeString(
-                              "en-us",
-                              { hour: "2-digit", minute: "2-digit", hour12: true }
-                            ) : ""}{" "}
-                            -{" "}
-                            {currentEvent?.endTime ? new Date(currentEvent?.endTime).toLocaleTimeString(
-                              "en-us",
-                              { hour: "2-digit", minute: "2-digit", hour12: true }
-                            ) : ""}
-                          </span>
-                        </div>
+                  <div
+                    className="flex flex-col gap-1.5 h-full"
+                  >
+                    {(currentEvent?.logoUrl) ?
+                      <BlurFade inView delay={1 * 0.05} className="h-full">
+                        <Image
+                          classNames={{
+                            wrapper: '!h-full'
+                          }}
+                          fallbackSrc={EventsFallbackImg}
+                          src={currentEvent?.logoUrl || EventsFallbackImg}
+                          className="h-full md:h-full object-cover rounded-[20px] border border-gray-800"
+                        />
+                        <Popover placement="left">
+                          <PopoverTrigger>
+                            <Button
+                              isIconOnly
+                              className="absolute top-4 right-4 z-30 bg-boxBlack text-white border border-white/20"
+                            >
+                              <Share2 size={20} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="flex flex-row p-2 gap-1.5 bg-boxBlack text-white">
+                            <Link
+                              target="_blank"
+                              className="bg-[#25D366] rounded-[8px] text-white p-1.5"
+                              href={`https://api.whatsapp.com/send/?text=${encodeURIComponent(`Join us at the *Mitilence event* for *${currentEvent.name}* happening in *${currentEvent?.departmentId?.toUpperCase()} Dept - ${currentEvent.place.toUpperCase()}* on *${parseDateOnly(currentEvent.startTime)}* from *${parseTimeOnly(currentEvent.startTime)}* to *${parseTimeOnly(currentEvent.endTime)}*.\n*Team size:* ${currentEvent.teamSize}`)}%0A${window.location.origin}/e/${currentEvent.id}`}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path>
+                              </svg>
+                            </Link>
+                            <Button
+                              size="sm"
+                              isIconOnly
+                              className="bg-white/5"
+                              onPress={() =>
+                                navigator?.clipboard.writeText(`${window.location.origin}/e/${currentEvent.id}`)
+                              }
+                            >
+                              <Link2 color="#FFFFFF" size={20} />
+                            </Button>
+                          </PopoverContent>
+                        </Popover>
+                      </BlurFade>
+                    :
+                      <div
+                        className="flex items-center flex-col justify-center gap-1 text-center text-white text-3xl font-medium h-full w-full bg-[#9748ff09] border-1.5 border-purpleAccent/30 rounded-[20px]"
+                      >
+                        {currentEvent.name} <br /> <span className="text-lg font-normal text-white/40">(Image not added)</span>
                       </div>
-                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                        <span>
-                          <Building2 color="#000000" size={25} />
-                        </span>
-                        <div className="text-black flex flex-col gap-0.5 h-full">
-                          <span className="uppercase font-semibold text-base">
-                            Organized By
-                          </span>
-                          <span className="font-medium text-base mt-[-5px] uppercase leading-[19px]">
-                            {currentEvent?.departmentId} Dept - {currentEvent?.place}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3 w-full">
-                        <span>
-                          <UsersRound color="#000000" size={25} />
-                        </span>
-                        <div className="text-black flex flex-col h-full">
-                          <span className="uppercase font-semibold text-base">
-                            Participant(s)
-                          </span>
-                          <span className="font-medium text-base mt-[-5px]">
-                            {currentEvent?.teamSize}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                        <span>
-                          <ContactRound color="#000000" size={25} />
-                        </span>
-                        <div className="text-black flex flex-col gap-0.5 h-full">
-                          <span className="uppercase font-semibold text-base">
-                            Department Staff
-                          </span>
-                          <span className="font-medium text-base mt-[-5px] leading-[19px]">
-                            {currentEvent?.facultyOrganizer || "TBA"}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                        <span>
-                          <ContactRound color="#000000" size={25} />
-                        </span>
-                        <div className="text-black flex flex-col gap-0.5 h-full">
-                          <span className="uppercase font-semibold text-base">
-                            Student Coordinator
-                          </span>
-                          <span className="font-medium text-base mt-[-5px] leading-[19px]">
-                            {currentEvent?.studentOrganizer || "TBA"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                    }
                   </div>
-                  {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ?
+                  {(currentEvent?.linkRegistration != null) ?
+                    <Button
+                      isDisabled={true}
+                      className={`bg-red-500 text-white text-xl font-medium rounded-2xl uppercase h-[2.8rem]`}
+                    >
+                      Registrations Closed
+                    </Button>
+                  :
+                    (eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ?
                     <span
                       className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-2xl uppercase h-[2.8rem]"
                     >
@@ -504,11 +451,94 @@ export default function Events() {
                   :
                     <Button
                       onPress={onOpen}
-                      className="bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[2.8rem]"
+                      className={`bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[2.8rem]`}
                     >
                       Register Now
                     </Button>
                   }
+                </div>
+                <div className="h-fit w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2.5 select-none">
+                  <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full pt-1">
+                    Event Details
+                  </span>
+                  <div className="flex flex-col gap-2">
+                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                      <span>
+                        <CalendarDays color="#000000" size={25} />
+                      </span>
+                      <div className="text-black flex flex-col h-full">
+                        <span className="uppercase font-semibold text-base">
+                          {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleDateString(
+                            "en-us",
+                            { day: "2-digit", month: "long", year: "numeric" }
+                          ) : ""}
+                        </span>
+                        <span className="font-medium text-base mt-[-5px]">
+                          {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleTimeString(
+                            "en-us",
+                            { hour: "2-digit", minute: "2-digit", hour12: true }
+                          ) : ""}{" "}
+                          -{" "}
+                          {currentEvent?.endTime ? new Date(currentEvent?.endTime).toLocaleTimeString(
+                            "en-us",
+                            { hour: "2-digit", minute: "2-digit", hour12: true }
+                          ) : ""}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                      <span>
+                        <Building2 color="#000000" size={25} />
+                      </span>
+                      <div className="text-black flex flex-col gap-0.5 h-full">
+                        <span className="uppercase font-semibold text-base">
+                          Organized By
+                        </span>
+                        <span className="font-medium text-base mt-[-5px] uppercase leading-[19px]">
+                          {currentEvent?.departmentId} Dept - {currentEvent?.place}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3 w-full">
+                      <span>
+                        <UsersRound color="#000000" size={25} />
+                      </span>
+                      <div className="text-black flex flex-col h-full">
+                        <span className="uppercase font-semibold text-base">
+                          Participant(s)
+                        </span>
+                        <span className="font-medium text-base mt-[-5px]">
+                          {currentEvent?.teamSize}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                      <span>
+                        <ContactRound color="#000000" size={25} />
+                      </span>
+                      <div className="text-black flex flex-col gap-0.5 h-full">
+                        <span className="uppercase font-semibold text-base">
+                          Department Staff
+                        </span>
+                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
+                          {currentEvent?.facultyOrganizer || "TBA"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                      <span>
+                        <ContactRound color="#000000" size={25} />
+                      </span>
+                      <div className="text-black flex flex-col gap-0.5 h-full">
+                        <span className="uppercase font-semibold text-base">
+                          Student Coordinator
+                        </span>
+                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
+                          {currentEvent?.studentOrganizer || "TBA"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <Markdown
