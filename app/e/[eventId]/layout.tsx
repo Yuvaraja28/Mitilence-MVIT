@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: { params: Params }) {
       title: `${eventData.name} • ${eventData.departmentId.toUpperCase()}`,
       description: `Join us at the Mitilence event for ${eventData.name} happening in ${eventData?.departmentId?.toUpperCase()} Dept - in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}`,
       icons: {
-        icon: eventData.logoUrl,
-        apple: eventData.logoUrl
+        icon: eventData?.logoUrl || '',
+        apple: eventData?.logoUrl || ''
       },
       openGraph: {
         type: "website",
@@ -23,12 +23,12 @@ export async function generateMetadata({ params }: { params: Params }) {
         description: `Join us at the Mitilence event for ${eventData.name} happening in ${eventData?.departmentId?.toUpperCase()} Dept - in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}`,
         siteName: "Mitilence • MVIT",
         images: [{
-          url: eventData.logoUrl,
+          url: eventData?.logoUrl || '',
         }],
       },
       twitter: {
         card: `Join us at the Mitilence event for ${eventData.name} happening in ${eventData?.departmentId?.toUpperCase()} Dept - in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}.`,
-        images: eventData.logoUrl,
+        images: eventData?.logoUrl || '',
         creator: 'Yuvaraja'
       }
     }
