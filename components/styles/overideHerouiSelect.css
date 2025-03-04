@@ -1,6 +1,13 @@
 ul {
   color: black;
   list-style-type: none; /* Default bullet points */
+  padding-left: 0;
+}
+
+ol {
+  color: black;
+  list-style-type: none; /* Default bullet points */
+  padding-left: 0;
 }
 
 li {

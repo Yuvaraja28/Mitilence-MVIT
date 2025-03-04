@@ -551,7 +551,7 @@ export default function Events() {
               </div>
               <Markdown
                 remarkPlugins={[remarkGfm]}
-                className={"bg-[#9648ff1c] rounded-3xl border border-purpleAccent/50 w-full py-6 px-5 flex flex-col gap-5 text-xl select-none"}
+                className={"bg-[#9648ff1c] !text-white rounded-3xl border border-purpleAccent/50 w-full py-6 px-5 flex flex-col gap-5 text-xl select-none"}
               >
                 {currentEvent?.eventDescription || ""}
               </Markdown>
