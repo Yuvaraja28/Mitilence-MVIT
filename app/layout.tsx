@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { ToastProvider } from "@heroui/toast";
 import { HeroUIProvider } from "@heroui/system";
+import { Analytics } from "@vercel/analytics/react";
 import { FirebaseProvider } from "@/contexts/firebase";
 import StickyHeader from "@/components/internal/stickyHeader";
 
@@ -45,6 +46,7 @@ export default function RootLayout({
               }}
             /> 
           </div>
+          <Analytics />
           <FirebaseProvider>
             <StickyHeader />
             {children}

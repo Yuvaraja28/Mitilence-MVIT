@@ -11,6 +11,7 @@ import { Departments } from "@/components/internal/departments";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { AboutSection } from "@/components/internal/aboutSection";
 import { MembersDisplay } from "@/components/internal/membersDisplay";
+import Sponsors from "@/components/internal/Sponsors";
 
 export default function Home() {
   const firebaseContext = useFirebase();
@@ -34,6 +35,9 @@ export default function Home() {
       <MembersDisplay
         title="administration"
         members={administrationMembers}
+      />
+      <Sponsors
+        data={[]}
       />
       <FAQAccordian
         faqs={faqs}
