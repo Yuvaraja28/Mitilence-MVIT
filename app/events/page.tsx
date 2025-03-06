@@ -1,10 +1,12 @@
 'use client';
-import "./styles.css";
 import React from "react";
 import Link from "next/link";
 import remarkGfm from "remark-gfm";
 import dynamic from "next/dynamic";
 import { Button } from "@heroui/button";
+import { logEvent } from "firebase/analytics";
+import { fireAnalytics } from "@/lib/firebase";
+import "@/components/styles/markdownStyles.css";
 import confettiPopUp from "@/animations/confetti";
 import Footer from "@/components/internal/footer";
 import { useFirebase } from "@/contexts/firebase";
@@ -173,6 +175,10 @@ export default function Events() {
               if (currentDepartment?.id == null) return;
               const selectedDepartment = departments.find(dep => dep.id === index);
               setCurrentDepartment(() => selectedDepartment);
+              logEvent(fireAnalytics, "button_click", {
+                name: `${currentDepartment.id?.toUpperCase()}-DEPT`,
+                description: `${currentDepartment.id?.toUpperCase()} Department Clicked in Events Page`,
+              });
               const params = new URLSearchParams(window.location.search);
               if (selectedDepartment) { params.set('department', selectedDepartment.id) }
               else { params.delete('department') }
@@ -513,7 +519,7 @@ export default function Events() {
                       </span>
                       <div className="text-black flex flex-col h-full">
                         <span className="uppercase font-semibold text-base">
-                          Participant(s)
+                          Team Size
                         </span>
                         <span className="font-medium text-base mt-[-5px]">
                           {currentEvent?.teamSize}
@@ -550,6 +556,17 @@ export default function Events() {
                 </div>
               </div>
               <Markdown
+                components={{
+                  ul(props) {
+                    return <ul {...props} className="!text-white !list-disc !ml-[0.75rem]"></ul>
+                  },
+                  ol(props) {
+                    return <ol {...props} className="!text-white !list-disc !ml-[0.75rem]"></ol>
+                  },
+                  li(props) {
+                    return <li {...props} className="!text-white !list-disc !ml-[0.75rem]"></li>
+                  }
+                }}
                 remarkPlugins={[remarkGfm]}
                 className={"bg-[#9648ff1c] !text-white rounded-3xl border border-purpleAccent/50 w-full py-6 px-5 flex flex-col gap-5 text-xl select-none"}
               >

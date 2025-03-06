@@ -4,6 +4,7 @@ import { ToastProvider } from "@heroui/toast";
 import { HeroUIProvider } from "@heroui/system";
 import { Analytics } from "@vercel/analytics/react";
 import { FirebaseProvider } from "@/contexts/firebase";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import StickyHeader from "@/components/internal/stickyHeader";
 
 export const metadata: Metadata = {
@@ -47,6 +48,7 @@ export default function RootLayout({
             /> 
           </div>
           <Analytics />
+          <SpeedInsights />
           <FirebaseProvider>
             <StickyHeader />
             {children}

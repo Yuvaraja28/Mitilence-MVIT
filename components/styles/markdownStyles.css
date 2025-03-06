@@ -1,19 +1,3 @@
-ol {
-  color: white; /* White text */
-  list-style-type: disc; /* Default bullet points */
-  padding-left: 1.25rem; /* Equivalent to pl-5 in Tailwind CSS */
-}
-
-ul {
-  color: white; /* White text */
-  list-style-type: disc; /* Default bullet points */
-  padding-left: 1.25rem; /* Equivalent to pl-5 in Tailwind CSS */
-}
-
-li {
-  color: white; /* Ensure all list items are white */
-}
-
 /* Default styles for headings */
 h1, h2, h3, h4, h5, h6 {
   color: white; /* Adjust color as needed */
@@ -23,6 +7,10 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   color: white;
+}
+
+strong {
+  font-weight: 600;
 }
 
 /* Specific styles per heading */

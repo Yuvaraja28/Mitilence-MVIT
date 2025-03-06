@@ -1,15 +1,15 @@
 ul {
-  color: black;
-  list-style-type: none; /* Default bullet points */
-  padding-left: 0;
+  color: black !important;
+  list-style-type: none !important; /* Default bullet points */
+  padding-left: 0 !important;
 }
 
 ol {
-  color: black;
-  list-style-type: none; /* Default bullet points */
-  padding-left: 0;
+  color: black !important;
+  list-style-type: none !important; /* Default bullet points */
+  padding-left: 0 !important;
 }
 
 li {
-  color: black;
+  color: black !important;
 }

@@ -354,9 +354,25 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
           <div className="flex flex-wrap gap-2">
             <Dropdown>
               <DropdownTrigger>
-                <Button endContent={<ChevronDownIcon className="text-base" />} variant="bordered" className="border-blue-500 text-blue-500 font-medium text-base">
-                  Status
-                </Button>
+                <Button
+                  variant="bordered"
+                  startContent={
+                    <div
+                      className="flex flex-col items-start"
+                    >
+                      <span>
+                        Status
+                      </span>
+                      <span
+                        className="text-[14px] text-black/80 mt-[-8px]"
+                      >
+                        {statusFilter}
+                      </span>
+                    </div>
+                  }
+                  endContent={<ChevronDownIcon className="text-base" />}
+                  className="border-blue-500 text-blue-500 font-medium text-base"
+                />
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
