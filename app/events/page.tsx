@@ -176,8 +176,8 @@ export default function Events() {
               const selectedDepartment = departments.find(dep => dep.id === index);
               setCurrentDepartment(() => selectedDepartment);
               logEvent(fireAnalytics, "button_click", {
-                name: `${currentDepartment.id?.toUpperCase()}-DEPT`,
-                description: `${currentDepartment.id?.toUpperCase()} Department Clicked in Events Page`,
+                name: `${currentDepartment.id?.toUpperCase()} - Department Switched`,
+                description: `${currentDepartment.id?.toUpperCase()} Department Page Switched`,
               });
               const params = new URLSearchParams(window.location.search);
               if (selectedDepartment) { params.set('department', selectedDepartment.id) }
@@ -245,7 +245,13 @@ export default function Events() {
                 ) : (
                   <Button
                     size="lg"
-                    onPress={onOpen}
+                    onPress={() => {
+                      onOpen();
+                      logEvent(fireAnalytics, "button_click", {
+                        name: `${currentDepartment?.id?.toUpperCase()} - Register`,
+                        description: `${currentDepartment?.id?.toUpperCase()} Register Button Clicked`,
+                      });            
+                    }}
                     // disabled={checkedInEventsSet.has(currentEvent?.id || '')}
                     // isDisabled={
                     //   !checkedInEventsSet.has(currentEvent?.id || '') &&
@@ -295,6 +301,10 @@ export default function Events() {
                         const selectedEvent = eventsObject[event.id];
                         if (selectedEvent) {
                           setCurrentEvent(() => selectedEvent);
+                          logEvent(fireAnalytics, "button_click", {
+                            name: `${selectedEvent?.id} - Opened`,
+                            description: `${selectedEvent?.id} - ${selectedEvent?.name} - ${selectedEvent?.departmentId?.toUpperCase()} - Event Popup Opened`,
+                          });
                         }
                         const params = new URL(location.href).searchParams;
                         if (selectedEvent) { params.set('event', selectedEvent.id) }
@@ -464,7 +474,13 @@ export default function Events() {
                     </Link>                
                   :
                     <Button
-                      onPress={onOpen}
+                      onPress={() => {
+                        onOpen();
+                        logEvent(fireAnalytics, "button_click", {
+                          name: `${currentDepartment?.id?.toUpperCase()} - Register`,
+                          description: `${currentDepartment?.id?.toUpperCase()} Register Button Clicked`,
+                        });            
+                      }}
                       className={`bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
                     >
                       Register Now
