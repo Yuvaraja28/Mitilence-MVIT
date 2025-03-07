@@ -38,7 +38,15 @@ export default function OrganizerDashboard() {
 
   const checkInRequest = async (userId: string, selectedEvent: string | null) => {
     if (selectedEvent == null) return;
-    const paymentData = await getPayment(userId);
+    try {
+      var paymentData = await getPayment(userId);
+    } catch {
+      return addToast({
+        title: "Not Paid Amount",
+        description: `Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
+        color: "warning"
+      }) 
+    }
     if (!(paymentData.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false)) {
       addToast({
         title: "Not Paid Amount",
