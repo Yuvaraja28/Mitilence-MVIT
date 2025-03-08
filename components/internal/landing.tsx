@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { AnimatedGradientText } from '../magicui/animated-gradient-text';
-import { DeveloperImg, MitilenceVideo, StarImg } from '@/variables';
+import { DeveloperImg, MitilenceGFormsQR, MitilenceVideo, MitilenceWebsiteQR, StarImg } from '@/variables';
 
 export default function Landing() {
   return (
@@ -26,7 +26,7 @@ export default function Landing() {
         className="flex flex-col items-center lg:justify-normal h-full w-full mt-[20vh] xl:mt-[30vh]"
       >
         <AnimatedGradientText
-          className='z-10 bg-white text-sm md:text-lg rounded-full -translate-y-8 md:-translate-y-4'
+          className='z-10 bg-white text-[3.5vw] sm:text-sm md:text-lg rounded-full -translate-y-8 md:-translate-y-4'
         >
           🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
           <span
@@ -64,6 +64,11 @@ export default function Landing() {
         loading='lazy'
         src={StarImg}
         className='absolute lg:top-[70vh] top-[28em] ml-[-10px] lg:ml-0 lg:bottom-0 left-0 z-10 h-[8.5em] lg:h-[15em]'
+      />
+      <img
+        loading='lazy'
+        src={(new Date("2025-03-14T00:00:00") > new Date()) ? MitilenceGFormsQR : MitilenceWebsiteQR}
+        className='absolute lg:top-[80vh] top-[31em] right-5 z-10 h-[5em] lg:h-[8em] rounded-[12px]'
       />
     </div>
   )

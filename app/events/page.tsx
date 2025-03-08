@@ -15,7 +15,7 @@ import { GoogleMap } from "@/components/internal/googleMap";
 import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
-import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
+import { EventsFallbackImg, MitilenceGFormsLink, TechnicalEventsImg } from "@/variables";
 import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, ShieldUser, UsersRound } from "lucide-react";
 import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent, addToast } from "@heroui/react";
 import { parseDateOnly, parseTimeOnly } from "@/utils/parseDate";
@@ -264,7 +264,7 @@ export default function Events() {
                     //   !checkedInEventsSet.has(currentEvent?.id || '') &&
                     //   (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                     // }
-                    className={`bg-purpleAccent text-white text-xl font-medium rounded-xl w-fit`}
+                    className={`bg-purpleAccent text-white text-lg font-medium rounded-xl w-fit`}
                       // ${!checkedInEventsSet.has(currentEvent?.id || '') &&
                       // (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                       //   ? "bg-red-500"
@@ -273,7 +273,7 @@ export default function Events() {
                     {/* {!checkedInEventsSet.has(currentEvent?.id || '') &&
                     (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                       ? "Registrations Closed" */}
-                      Register for {currentDepartment?.id.toUpperCase()} Events
+                      {(new Date("2025-03-14T00:00:00") > new Date()) ? 'General Instructions for' : 'Register for'} {currentDepartment?.id.toUpperCase()} Events
                   </Button>
                 )}
                 <div className="bg-blue-100 rounded-xl flex flex-row items-center py-1 px-5 gap-2.5">
@@ -471,10 +471,10 @@ export default function Events() {
                     >
                       Registered <BadgeCheck />
                     </span>
-                  : (currentEvent?.linkRegistration) ?
+                  : ((currentEvent?.linkRegistration) || (new Date("2025-03-14T00:00:00") > new Date())) ?
                     <Link
                       target="_blank"
-                      href={currentEvent.linkRegistration}
+                      href={MitilenceGFormsLink}
                       className={`flex items-center justify-center bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
                     >
                       Register Now
@@ -706,19 +706,21 @@ export default function Events() {
               }
             </ModalBody>
             <ModalFooter>
-              <Button
-                isLoading={isEventSubmitting}
-                type={generalInstructionsRead ? 'submit' : 'button'}
-                onPress={generalInstructionsRead ? () => {} : () => {
-                  if ((fireUserData == null) && (LoginGoogle != null)) {
-                    return LoginGoogle(false);
-                  };
-                  setGeneralInstructionsRead(() => true)
-                }}
-                className='bg-purpleAccent text-white font-medium text-lg mb-4'
-              >
-                Register Now
-              </Button>
+              {!(new Date("2025-03-14T00:00:00") > new Date()) &&
+                <Button
+                  isLoading={isEventSubmitting}
+                  type={generalInstructionsRead ? 'submit' : 'button'}
+                  onPress={generalInstructionsRead ? () => {} : () => {
+                    if ((fireUserData == null) && (LoginGoogle != null)) {
+                      return LoginGoogle(false);
+                    };
+                    setGeneralInstructionsRead(() => true)
+                  }}
+                  className='bg-purpleAccent text-white font-medium text-lg mb-4'
+                >
+                  Register Now
+                </Button>
+              }
             </ModalFooter>
           </form>
         </ModalContent>

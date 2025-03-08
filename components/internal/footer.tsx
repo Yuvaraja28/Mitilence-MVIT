@@ -5,20 +5,31 @@ import Link from 'next/link';
 
 const technicalPhoneNumbers = ["8778171244"];
 const phoneNumbers = ["9443474846", "0413-2643007"];
+const convenor = {
+  name: 'Dr. P. Sivakumar',
+  dept: 'IT',
+  role: 'Professor & HOD'
+}
 const developers = [
   {
     name: 'Yuvaraja Murali',
+    dept: 'CSE',
     role: 'Developed',
+    batch: '2022 - 2026',
     link: 'https://1he.dev'
   },
   {
     name: 'Nivetha Kumar',
+    dept: 'IT',
     role: 'Designed',
+    batch: '2022 - 2026',
     link: 'https://www.instagram.com/_.nive_designs'
   },
   {
     name: 'Harish Mohan',
+    dept: 'CSE',
     role: 'Maintained',
+    batch: '2022 - 2026',
     link: 'https://hari.1he.dev'
   },
 ]
@@ -51,6 +62,29 @@ export default function Footer() {
           </span>
         </div>
       </div>
+      <div
+        className='flex flex-col flex-wrap items-center text-xl text-center mt-[-10px] mb-[10px]'
+      >
+        <b className='text-[24px] underline uppercase mb-1'>
+          Convenor
+        </b>
+        <div
+          className='text-center items-center'
+        >
+          <span
+            className='font-semibold text-purple-500 uppercase'
+          >
+            {convenor.name}
+          </span> - <span>
+            {convenor.role}
+          </span>
+        </div>
+        <span
+          className='mt-[-2px]'
+        >
+          Department of <b>{convenor.dept}</b>
+        </span>
+      </div>
       <span className="h-[1px] w-full bg-gradient-to-l from-white/0 via-white to-white/0" />
       <div
         className='flex flex-row flex-wrap items-center justify-around gap-3 w-full h-full py-2'
@@ -58,11 +92,22 @@ export default function Footer() {
         {developers.map(dev => 
           <div
             key={dev.name}
-            className='flex flex-row items-center gap-2 font-normal text-lg text-center'
+            className='flex flex-col items-center font-normal text-lg text-center'
           >
-            <Gem color='#A855F7' />
-            <span>
-              {dev.role} by <Link href={dev.link} target='_blank' className='font-semibold uppercase'>{dev.name}</Link>
+            <span
+              className='flex flex-row flex-wrap justify-center items-center text-center gap-1.5'
+            >
+              <Gem color='#A855F7' size={20} /> {dev.role} by <Link href={dev.link} target='_blank' className='font-semibold uppercase text-purple-500'>{dev.name}</Link>
+            </span>
+            <span
+              className='mt-[-5px]'
+            >
+              Department of <b>{dev.dept}</b>
+            </span>
+            <span
+              className='mt-[-5px]'
+            >
+              <b className='font-medium'>{dev.batch}</b> Batch
             </span>
           </div>
         )}

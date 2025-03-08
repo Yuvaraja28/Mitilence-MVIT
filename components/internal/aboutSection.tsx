@@ -18,7 +18,7 @@ export function AboutSection() {
         <span
           className="text-xl font-normal text-justify lg:pl-4"
         >
-          MITILENCE is the annual national-level technical symposium hosted by Manakula Vinayagar Institute of Technology (MVIT) in Puducherry. This prestigious event serves as a dynamic platform for students across India to showcase their technical acumen, engage in innovative problem-solving, and collaborate with peers from diverse engineering disciplines. By participating in MITILENCE, students not only enhance their technical competencies but also develop essential soft skills such as leadership, communication, and teamwork. The symposium embodies MVIT's commitment to nurturing well-rounded professionals equipped to meet the challenges of the ever-evolving technological landscape. Experience the spirit of innovation and excellence at MITILENCE, where the technologists of tomorrow converge today.
+          MITILENCE - The National Level Technical Symposium is a premier event at Manakula Vinayagar Institute of Technology, featuring a dynamic mix of technical and non-technical competitions. This event serves as a platform for students to showcase their skills in coding, design, innovation, and problem-solving while also engaging in fun and creative activities. Mitilence fosters learning, teamwork, and excitement for all participants
         </span>
       </div>
       <Image

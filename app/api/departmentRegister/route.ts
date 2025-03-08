@@ -26,6 +26,10 @@ export async function POST(req: NextRequest) {
   }
   
   try {
+    if (new Date("2025-03-14T00:00:00") > new Date()) {
+      throw "On-spot Registrations are only available"
+    }
+  
     const departmentData = await req.json();
     if (departmentData?.departmentId == null) throw "Department Id not passed";
 

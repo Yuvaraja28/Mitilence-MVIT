@@ -23,15 +23,13 @@ export function MembersDisplay({ title, members }: { title: string, members: Adm
             delay={0.1 + (idx+1) * 0.05}
           >
             <div
-              className="flex flex-col w-min absolute z-30 bottom-5 left-[-20px] -skew-x-6 bg-white text-black text-xl font-semibold rounded-[10px] px-4 py-0.5 pt-1.5 border-2 border-gray-300 shadow-xl drop-shadow-xl"
+              className="flex flex-col w-full absolute z-30 bottom-3 left-[-20px] -skew-x-6 bg-white text-black text-md font-semibold rounded-[10px] px-3 py-1.5 border-2 border-gray-300 shadow-xl drop-shadow-xl leading-[17px] gap-0.5"
             >
-              <span
-                className="leading-[22px]"
-              >
+              <span>
                 {memb.name}
               </span>
               <span
-                className="text-purpleAccent text-xl mt-[-2px]"
+                className="text-purpleAccent"
               >
                 {memb.role}
               </span>
@@ -43,7 +41,7 @@ export function MembersDisplay({ title, members }: { title: string, members: Adm
               classNames={{
                 wrapper: 'bg-contain bg-no-repeat'
               }}
-              className="h-72 w-72 object-cover border-3 border-white/30 group-hover:border-white rounded-2xl transition-border duration-300"
+              className="h-56 w-56 object-cover border-3 border-white/30 group-hover:border-white rounded-2xl transition-border duration-300"
             />
           </BlurFade>
         ))}
