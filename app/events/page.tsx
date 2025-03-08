@@ -17,7 +17,7 @@ import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { EventsFallbackImg, TechnicalEventsImg } from "@/variables";
 import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, ShieldUser, UsersRound } from "lucide-react";
-import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
+import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent, addToast } from "@heroui/react";
 import { parseDateOnly, parseTimeOnly } from "@/utils/parseDate";
 
 const Markdown = dynamic(() => import("react-markdown"), { ssr: false });
@@ -106,7 +106,7 @@ export default function Events() {
     event.preventDefault();
     if (currentDepartment?.id == null) return;
     setIsEventSubmitting(() => true);
-    fetch("/api/departmentRegister", {
+    const registerResp = await fetch("/api/departmentRegister", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${fireUserData?.accessToken}`
@@ -115,11 +115,18 @@ export default function Events() {
         departmentId: currentDepartment.id
       })
     })
-      .then(() => {
-        onClose()
-        confettiPopUp()
+    const registerData = await registerResp.json();
+    if (registerResp.status == 401) {
+      onClose()
+      confettiPopUp()  
+    } else if (registerResp.status != 200) {
+      addToast({
+        title: "Warn!",
+        description: registerData?.error || ':<',
+        color: "warning"
       })
-      .finally(() => setIsEventSubmitting(() => false))
+    }
+    setIsEventSubmitting(() => false)
   }
   
   const filteredEvents = React.useMemo(() => (
@@ -356,7 +363,7 @@ export default function Events() {
           </div>
         </>
       }
-      {(currentEvent != null) &&
+      {((!(fireUserDoc == null && fireUserData != null)) && (currentEvent != null)) &&
         <Modal
           isOpen={true}
           size={"3xl"}

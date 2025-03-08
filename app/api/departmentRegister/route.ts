@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as admin from 'firebase-admin';
-import parseEvents from '@/parsers/event';
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -29,6 +28,12 @@ export async function POST(req: NextRequest) {
   try {
     const departmentData = await req.json();
     if (departmentData?.departmentId == null) throw "Department Id not passed";
+
+    const userDoc = db.collection('users').doc(userId);
+    const userData = (await userDoc.get()).data();
+
+    if (userData == null) throw "User onboarding has not been done";
+
     const userPaymentDoc = db.collection('payments').doc(userId);
     const userPaymentData = (await userPaymentDoc.get()).data() || {};
 
@@ -65,6 +70,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Department registration successfully' }, { status: 200 });
   } catch (error) {
     console.log(error)
-    return NextResponse.json({ error: 'Invalid department data' }, { status: 400 });
+    return NextResponse.json({ error: (typeof error === 'string') ? error : 'Invalid department data' }, { status: 400 });
   }
 }
