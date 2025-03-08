@@ -474,7 +474,7 @@ export default function Events() {
                   : ((currentEvent?.linkRegistration) || (new Date("2025-03-14T00:00:00") > new Date())) ?
                     <Link
                       target="_blank"
-                      href={MitilenceGFormsLink}
+                      href={currentEvent?.linkRegistration || MitilenceGFormsLink}
                       className={`flex items-center justify-center bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
                     >
                       Register Now

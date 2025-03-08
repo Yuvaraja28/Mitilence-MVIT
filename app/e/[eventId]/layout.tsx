@@ -9,13 +9,17 @@ export async function generateMetadata({ params }: { params: Params }) {
     const eventDate = parseDateOnly(eventData.startTime)
     const startTime = parseTimeOnly(eventData.startTime)
     const endTime = parseTimeOnly(eventData.endTime)
+    let eventData_logoUrl = eventData?.logoUrl
+    if (eventData_logoUrl) {
+      eventData_logoUrl = eventData_logoUrl.split('/-/')[0] + '/-/preview/250x250/'
+    }
 
     return {
       title: `${eventData.name} • ${eventData.departmentId.toUpperCase()}`,
       description: `Join us at the Mitilence event for ${eventData.name} happening in ${eventData?.departmentId?.toUpperCase()} Dept - in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}`,
       icons: {
-        icon: eventData?.logoUrl || '',
-        apple: eventData?.logoUrl || ''
+        icon: eventData_logoUrl || '',
+        apple: eventData_logoUrl || ''
       },
       openGraph: {
         type: "website",
@@ -23,12 +27,12 @@ export async function generateMetadata({ params }: { params: Params }) {
         description: `Join us at the Mitilence event for ${eventData.name} happening in ${eventData?.departmentId?.toUpperCase()} Dept - in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}`,
         siteName: "Mitilence • MVIT",
         images: [{
-          url: eventData?.logoUrl || '',
+          url: eventData_logoUrl || '',
         }],
       },
       twitter: {
         card: `Join us at the Mitilence event for ${eventData.name} happening in ${eventData?.departmentId?.toUpperCase()} Dept - in ${eventData.place.toUpperCase()} on ${eventDate} from ${startTime} to ${endTime}. Team size: ${eventData.teamSize}.`,
-        images: eventData?.logoUrl || '',
+        images: eventData_logoUrl || '',
         creator: 'Yuvaraja'
       }
     }
