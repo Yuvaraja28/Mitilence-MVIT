@@ -43,7 +43,7 @@ export const DepartmentsVar = [
     "order": 4,
     "staffName": "Mr.V.Rajesh, AP/ECE",
     "staffPhone": "9894184602",
-    "logoUrl": "https://ucarecdn.com/1fd58334-116d-4c1b-bb1d-f6a0c77915bf/-/preview/768x432/"
+    "logoUrl": "https://ucarecdn.com/17673498-d4a5-4cbc-a3db-59802d64c9f5/-/preview/1000x750/"
   },
   {
     "id": "eee",
@@ -59,7 +59,7 @@ export const DepartmentsVar = [
     "order": 6,
     "staffName": "Mr.S.Ganesh Kumar, AP/MECH",
     "staffPhone": "9629429453",
-    "logoUrl": "https://ucarecdn.com/35efb0e7-6502-4b1f-ae20-c8b2fb90ce24/-/preview/612x408/"
+    "logoUrl": "https://ucarecdn.com/841200d4-9f99-4aff-89ac-46cdad3a8d2a/-/preview/772x1000/"
   },
   {
     "id": "icb",
@@ -67,7 +67,7 @@ export const DepartmentsVar = [
     "order": 7,
     "staffName": "Mr.V.Kumaraguru, AP/CSE(ICB)",
     "staffPhone": "9677693212",
-    "logoUrl": "https://ucarecdn.com/3675f8bf-cbea-4f21-94ec-b855db79f046/-/preview/612x344/"
+    "logoUrl": "https://ucarecdn.com/b4f9574a-fee0-4ea2-8489-2a3be2ccac21/-/preview/1000x709/"
   },
   {
     "id": "ra",
