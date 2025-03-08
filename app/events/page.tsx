@@ -499,30 +499,32 @@ export default function Events() {
                     Event Details
                   </span>
                   <div className="flex flex-col gap-2">
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <span>
-                        <CalendarDays color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col h-full">
-                        <span className="uppercase font-semibold text-base">
-                          {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleDateString(
-                            "en-us",
-                            { day: "2-digit", month: "long", year: "numeric" }
-                          ) : ""}
+                    {(currentEvent?.startTime && currentEvent?.endTime) &&
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                        <span>
+                          <CalendarDays color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px]">
-                          {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleTimeString(
-                            "en-us",
-                            { hour: "2-digit", minute: "2-digit", hour12: true }
-                          ) : ""}{" "}
-                          -{" "}
-                          {currentEvent?.endTime ? new Date(currentEvent?.endTime).toLocaleTimeString(
-                            "en-us",
-                            { hour: "2-digit", minute: "2-digit", hour12: true }
-                          ) : ""}
-                        </span>
+                        <div className="text-black flex flex-col h-full">
+                          <span className="uppercase font-semibold text-base">
+                            {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleDateString(
+                              "en-us",
+                              { day: "2-digit", month: "long", year: "numeric" }
+                            ) : ""}
+                          </span>
+                          <span className="font-medium text-base mt-[-5px]">
+                            {currentEvent?.startTime ? new Date(currentEvent?.startTime).toLocaleTimeString(
+                              "en-us",
+                              { hour: "2-digit", minute: "2-digit", hour12: true }
+                            ) : ""}{" "}
+                            {currentEvent?.endTime && " - "}
+                            {currentEvent?.endTime ? new Date(currentEvent?.endTime).toLocaleTimeString(
+                              "en-us",
+                              { hour: "2-digit", minute: "2-digit", hour12: true }
+                            ) : ""}
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    }
                     <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
                       <span>
                         <Building2 color="#000000" size={25} />
@@ -549,32 +551,36 @@ export default function Events() {
                         </span>
                       </div>
                     </div>
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <span>
-                        <ContactRound color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col gap-0.5 h-full">
-                        <span className="uppercase font-semibold text-base">
-                          Department Staff
+                    {(currentEvent?.facultyOrganizer) &&
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                        <span>
+                          <ContactRound color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
-                          {currentEvent?.facultyOrganizer || "TBA"}
-                        </span>
+                        <div className="text-black flex flex-col gap-0.5 h-full">
+                          <span className="uppercase font-semibold text-base">
+                            Department Staff
+                          </span>
+                          <span className="font-medium text-base mt-[-5px] leading-[19px]">
+                            {currentEvent?.facultyOrganizer || "TBA"}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
-                      <span>
-                        <ContactRound color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col gap-0.5 h-full">
-                        <span className="uppercase font-semibold text-base">
-                          Student Coordinator
+                    }
+                    {(currentEvent?.studentOrganizer) &&
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
+                        <span>
+                          <ContactRound color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px] leading-[19px]">
-                          {currentEvent?.studentOrganizer || "TBA"}
-                        </span>
+                        <div className="text-black flex flex-col gap-0.5 h-full">
+                          <span className="uppercase font-semibold text-base">
+                            Student Coordinator
+                          </span>
+                          <span className="font-medium text-base mt-[-5px] leading-[19px]">
+                            {currentEvent?.studentOrganizer || "TBA"}
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    }
                   </div>
                 </div>
               </div>

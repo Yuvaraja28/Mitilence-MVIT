@@ -12,7 +12,7 @@ export default function Sponsors({ data }: SponsorsProps) {
     >
       <span
         style={{ textShadow: 'rgba(255, 255, 255, 0.3) 10px 8px 0' }}
-        className="text-[28px] lg:text-5xl text-center font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
+        className="text-[42px] leading-[3.42rem] lg:text-5xl text-center font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
       >
         Sponsors
       </span>

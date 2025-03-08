@@ -12,6 +12,8 @@ import CrossVelocity from "@/components/internal/crossVelocity";
 import { AboutSection } from "@/components/internal/aboutSection";
 import { MembersDisplay } from "@/components/internal/membersDisplay";
 import Sponsors from "@/components/internal/Sponsors";
+import { OrganizersDisplay } from "@/components/internal/organizersDisplay";
+import { FacultyCoordinatorsImg } from "@/variables";
 
 export default function Home() {
   const firebaseContext = useFirebase();
@@ -33,8 +35,12 @@ export default function Home() {
         departments={departments}
       />
       <MembersDisplay
-        title="administration"
+        title="Management"
         members={administrationMembers}
+      />
+      <OrganizersDisplay
+        title="Faculty"
+        image={FacultyCoordinatorsImg}
       />
       <Sponsors
         data={[]}

@@ -5,6 +5,7 @@ export const TechnicalEventsImg = "https://ucarecdn.com/962da46a-a928-4d1b-86a7-
 export const DefaultMemberImg = "https://ucarecdn.com/f09162b5-f14a-44c9-8a36-58cc7fb27d98/-/preview/500x500/"
 export const MVITImg = "https://ucarecdn.com/b43468a3-ef20-4eed-8b28-7eb3fbcb2a2c/-/preview/443x97/"
 export const MVITLogoImg = "https://ucarecdn.com/8ef2db20-fd0e-47b5-84a2-58d40bae70bb/-/preview/526x625/"
+export const FacultyCoordinatorsImg = "https://ucarecdn.com/4e9977fd-04aa-4e41-9b29-b57dec2ab11f/-/preview/1000x666/"
 export const EventsFallbackImg = "https://ucarecdn.com/02f10002-1976-4726-9d94-b89e9b1ac98e/-/preview/1000x667/"
 export const MitilenceGFormsLink = "https://forms.gle/AUFFLcaAxNyK54eE8"
 export const MitilenceGFormsQR = "https://ucarecdn.com/b09cb64f-68d9-4092-84c6-394bea340e47/-/preview/1000x1000/"
