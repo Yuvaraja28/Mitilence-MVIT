@@ -116,9 +116,9 @@ export default function Events() {
       })
     })
     const registerData = await registerResp.json();
-    if (registerResp.status == 401) {
+    if (registerResp.ok) {
       onClose()
-      confettiPopUp()  
+      confettiPopUp()
     } else if (registerResp.status != 200) {
       addToast({
         title: "Warn!",
