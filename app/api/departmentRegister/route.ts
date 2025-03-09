@@ -25,11 +25,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid Token Passed' }, { status: 401 });
   }
   
-  try {
-    if (new Date("2025-03-09T23:23:23") > new Date()) {
-      throw "On-spot Registrations are only available"
-    }
-  
+  try {  
     const departmentData = await req.json();
     if (departmentData?.departmentId == null) throw "Department Id not passed";
 
