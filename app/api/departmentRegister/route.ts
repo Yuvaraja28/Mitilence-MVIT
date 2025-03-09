@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   }
   
   try {
-    if (new Date("2025-03-14T00:00:00") > new Date()) {
+    if (new Date("2025-03-09T23:23:23") > new Date()) {
       throw "On-spot Registrations are only available"
     }
   

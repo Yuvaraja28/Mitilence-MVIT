@@ -277,7 +277,7 @@ export default function Events() {
                     {/* {!checkedInEventsSet.has(currentEvent?.id || '') &&
                     (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                       ? "Registrations Closed" */}
-                      {(new Date("2025-03-14T00:00:00") > new Date()) ? 'General Instructions for' : 'Register for'} {currentDepartment?.id.toUpperCase()} Events
+                      {(new Date("2025-03-09T23:23:23") > new Date()) ? 'General Instructions for' : 'Register for'} {currentDepartment?.id.toUpperCase()} Events
                   </Button>
                 )}
                 <div className="bg-blue-100 rounded-xl flex flex-row items-center py-1 px-5 gap-2.5">
@@ -708,9 +708,10 @@ export default function Events() {
               }
             </ModalBody>
             <ModalFooter>
-              {(currentEvent == null) ?
+              {/* {(currentEvent == null) ?
                 <></>
-              : ((currentEvent?.linkRegistration) || (new Date("2025-03-14T00:00:00") > new Date())) ?
+              :  */}
+              {((currentEvent?.linkRegistration) || (new Date("2025-03-09T23:23:23") > new Date())) ?
                 <Link
                   target="_blank"
                   href={currentEvent?.linkRegistration || MitilenceGFormsLink}
@@ -748,6 +749,7 @@ export default function Events() {
             Department Poster
           </span>
           <Image
+            isBlurred
             className="h-full md:h-[62vh]"
             src={currentDepartment.logoUrl}
           />
