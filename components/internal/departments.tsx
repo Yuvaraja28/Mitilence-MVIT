@@ -22,11 +22,11 @@ export function Departments({ departments }: { departments: Department[] }) {
           <Link
             key={dep.id}
             href={`/events?department=${dep.id}`}
-            className="h-64 w-96"
+            className="h-full w-full sm:h-64 sm:w-96"
           >
             <BlurFade
               inView
-              className="group h-64 w-96"
+              className="group h-full w-full sm:h-64 sm:w-96"
               delay={0.1 + (idx+1) * 0.05}
             >
               <span
@@ -37,10 +37,10 @@ export function Departments({ departments }: { departments: Department[] }) {
               <Image
                 alt={dep.id}
                 classNames={{
-                  wrapper: '!h-64 !w-96'
+                  wrapper: 'h-full w-full sm:!h-64 sm:!w-96'
                 }}
                 src={dep?.logoUrl || EventsFallbackImg}
-                className="!h-64 !w-96 object-cover border-2 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
+                className="h-full w-full sm:!h-64 sm:!w-96 object-cover border-2 border-gray-800 group-hover:border-white rounded-2xl transition-border duration-300"
               />
               <div className="absolute z-30 bottom-3 right-3 bg-white text-black p-1 rounded-[10px] transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:scale-115">
                 <ArrowUpRight size={22} />

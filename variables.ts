@@ -51,7 +51,7 @@ export const DepartmentsVar = [
     "order": 5,
     "staffName": "Mr.D.Muruganandham, AP/EEE",
     "staffPhone": "9994382873",
-    "logoUrl": "https://ucarecdn.com/ce6c2286-0c8d-4452-8665-1dc01c7ae34d/-/preview/612x408/"
+    "logoUrl": "https://ucarecdn.com/e4510f78-2a55-49b0-8d62-65c97754123f/-/preview/1000x665/"
   },
   {
     "id": "mech",
