@@ -475,14 +475,6 @@ export default function Events() {
                     >
                       Registered <BadgeCheck />
                     </span>
-                  : ((currentEvent?.linkRegistration) || (new Date("2025-03-14T00:00:00") > new Date())) ?
-                    <Link
-                      target="_blank"
-                      href={currentEvent?.linkRegistration || MitilenceGFormsLink}
-                      className={`flex items-center justify-center bg-purpleAccent text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
-                    >
-                      Register Now
-                    </Link>                
                   :
                     <Button
                       onPress={() => {
@@ -716,7 +708,17 @@ export default function Events() {
               }
             </ModalBody>
             <ModalFooter>
-              {!(new Date("2025-03-14T00:00:00") > new Date()) &&
+              {(currentEvent == null) ?
+                <></>
+              : ((currentEvent?.linkRegistration) || (new Date("2025-03-14T00:00:00") > new Date())) ?
+                <Link
+                  target="_blank"
+                  href={currentEvent?.linkRegistration || MitilenceGFormsLink}
+                  className={`flex items-center justify-center bg-purpleAccent text-white text-lg px-5 py-1.5 font-medium rounded-[15px] mb-4`}
+                >
+                  Register Now
+                </Link>
+                :
                 <Button
                   isLoading={isEventSubmitting}
                   type={generalInstructionsRead ? 'submit' : 'button'}
@@ -735,6 +737,22 @@ export default function Events() {
           </form>
         </ModalContent>
       </Modal>
+      {(currentDepartment?.logoUrl != null) &&
+        <div
+          className="flex flex-col gap-5 md:gap-10 items-center justify-center mt-5 w-[90%]"
+        >
+          <span
+            style={{ textShadow: 'rgba(255, 255, 255, 0.3) 10px 12px 0' }}
+            className="text-[42px] leading-[3.42rem] lg:text-5xl text-center font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
+          >
+            Department Poster
+          </span>
+          <Image
+            className="h-full md:h-[62vh]"
+            src={currentDepartment.logoUrl}
+          />
+        </div>
+      }
       <CrossVelocity>
         REGISTER NOW
       </CrossVelocity>

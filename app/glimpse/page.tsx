@@ -80,7 +80,7 @@ export default function Glimpse() {
       >
         <span
           style={{ textShadow: 'rgba(255, 255, 255, 0.3) 10px 15px 2px' }}
-          className="text-[42px] lg:text-5xl text-center font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
+          className="text-[42px] leading-[3.42rem] lg:text-5xl text-center font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
         >
           Glimpse of Mitilence
         </span>
