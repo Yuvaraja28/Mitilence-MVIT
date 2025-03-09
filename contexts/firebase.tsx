@@ -5,13 +5,13 @@ import parseEvents from '@/parsers/event';
 import { FirebaseApp } from 'firebase/app';
 import { getUser } from '@/Firestore/users';
 import parseEventUser from '@/parsers/user';
-import { DepartmentsVar } from '@/variables';
 import parsePayments from '@/parsers/payments';
 import React, { createContext, useContext } from 'react';
 import { Database, getDatabase } from 'firebase/database';
 import { getAdministrationMembers } from '@/Firestore/administration';
 import { collection, doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
 import { Auth, getAuth, GoogleAuthProvider, onAuthStateChanged, ParsedToken, signInWithPopup, signOut, User } from 'firebase/auth';
+import { getDepartments } from '@/Firestore/departments';
 
 type EventsObjectType = {
   [key: string]: Events;
@@ -61,9 +61,9 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   const [fireAuth, setFireAuth] = React.useState<ReturnType<typeof getAuth> | null>(null);
   const [fireCustomClaims, setFireCustomClaims] = React.useState<CustomClaims | null>(null)
   
-  const departments = DepartmentsVar as Department[];
   const [faqs, setFaqs] = React.useState<FAQ[] | null>([])
   const [events, setEvents] = React.useState<Events[] | null>(null)
+  const [departments, setDepartments] = React.useState<Department[]>([]);
   const [eventPayments, setEventPayments] = React.useState<EventUserPayments | null>(null)
   const [administrationMembers, setAdministrationMembers] = React.useState<AdministrationMember[]>([]);
   const checkedInEventsSet = React.useMemo(() => new Set(Object.keys(eventPayments?.events || {})), [eventPayments])
@@ -100,6 +100,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
       .then(data => setFaqs(() => data))
     getAdministrationMembers()
       .then(data => setAdministrationMembers(() => data))
+    getDepartments()
+      .then(data => setDepartments(() => data))
       
     const eventsCollectionRef = collection(getFirestore(fireApp), 'events');
     const unsubscribeEvents = onSnapshot(eventsCollectionRef, (snapshot) => {

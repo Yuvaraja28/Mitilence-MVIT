@@ -74,7 +74,11 @@ export default function Events() {
     }
     if (departmentParam) {
       const department = departments.find(dept => dept.id === departmentParam);
-      setCurrentDepartment(() => department);
+      if (department == undefined) {
+        setCurrentDepartment(() => departments[0]);
+      } else {
+        setCurrentDepartment(() => department);
+      }
     } else {
       setCurrentDepartment(() => departments[0]);
     }
