@@ -186,7 +186,7 @@ export default function Events() {
               if (currentDepartment?.id == null) return;
               const selectedDepartment = departments.find(dep => dep.id === index);
               setCurrentDepartment(() => selectedDepartment);
-              logEvent(fireAnalytics, "button_click", {
+              logEvent(fireAnalytics, `${currentDepartment.id?.toUpperCase()}-DEPT`, {
                 name: `${currentDepartment.id?.toUpperCase()} - Department Switched`,
                 description: `${currentDepartment.id?.toUpperCase()} Department Page Switched`,
               });
@@ -258,7 +258,7 @@ export default function Events() {
                     size="lg"
                     onPress={() => {
                       onOpen();
-                      logEvent(fireAnalytics, "button_click", {
+                      logEvent(fireAnalytics, `${currentDepartment?.id?.toUpperCase()}-DEPT REGISTER`, {
                         name: `${currentDepartment?.id?.toUpperCase()} - Register`,
                         description: `${currentDepartment?.id?.toUpperCase()} Register Button Clicked`,
                       });            
@@ -312,7 +312,7 @@ export default function Events() {
                         const selectedEvent = eventsObject[event.id];
                         if (selectedEvent) {
                           setCurrentEvent(() => selectedEvent);
-                          logEvent(fireAnalytics, "button_click", {
+                          logEvent(fireAnalytics, `${currentDepartment?.id?.toUpperCase()}-DEPT - ${selectedEvent?.id}`, {
                             name: `${selectedEvent?.id} - Opened`,
                             description: `${selectedEvent?.id} - ${selectedEvent?.name} - ${selectedEvent?.departmentId?.toUpperCase()} - Event Popup Opened`,
                           });
@@ -479,7 +479,7 @@ export default function Events() {
                     <Button
                       onPress={() => {
                         onOpen();
-                        logEvent(fireAnalytics, "button_click", {
+                        logEvent(fireAnalytics, `${currentDepartment?.id?.toUpperCase()}-DEPT REGISTER`, {
                           name: `${currentDepartment?.id?.toUpperCase()} - Register`,
                           description: `${currentDepartment?.id?.toUpperCase()} Register Button Clicked`,
                         });            
