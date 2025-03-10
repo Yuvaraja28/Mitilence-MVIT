@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     // if ((eventDBData?.eventClosed || false) || (eventDBData?.registrationsClosed || false)) {
     //   return NextResponse.json({ error: 'Department Registrations closed' }, { status: 403 });
     // }
-    
+
     if ((userPaymentData?.mitilence?.[departmentData.departmentId] || {})?.registrationStatus) {
       return NextResponse.json({ error: 'Department Registration already done' }, { status: 403 });
     }
@@ -68,8 +68,8 @@ export async function POST(req: NextRequest) {
     
     await userPaymentDoc.set(departmentUserPayment, { merge: true });
     return NextResponse.json({ message: 'Department registration successfully' }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
-    return NextResponse.json({ error: (typeof error === 'string') ? error : 'Invalid department data' }, { status: 400 });
+    return NextResponse.json({ error: (error?.details === 'Quota exceeded.') ? "Registrations are temporarly on-hold, will be back soon..." : (typeof error === 'string') ? error : 'Invalid department data' }, { status: 400 });
   }
 }
