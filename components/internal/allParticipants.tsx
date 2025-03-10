@@ -37,6 +37,7 @@ export const columns = [
   { name: "NAME", uid: "name" },
   { name: "ENROLL NO", uid: "enrollNo" },
   { name: "PHONE", uid: "phoneNo" },
+  { name: "COLLEGE", uid: "college" },
   { name: "GENDER", uid: "gender" },
   { name: "REGISTER TIME", uid: "registerTime" },
   { name: "PAYMENT", uid: "payment" },
@@ -122,6 +123,12 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
           >
             {departmentParticipants[user.id]?.emailId}
           </User>
+        );
+      case "college":
+        return (
+          <div className="flex flex-col max-w-[8em]" title={departmentParticipants[user.id]?.college}>
+            <p className="text-black text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.college}</p>
+          </div>
         );
       case "enrollNo":
         return (
