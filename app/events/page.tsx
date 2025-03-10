@@ -525,11 +525,13 @@ export default function Events() {
                       Register Now
                     </Button>
                   }
-                  <span
-                    className="text-base text-center px-4 leading-5"
-                  >
-                    (Paper Presentation registrations are done separately through Google Forms)
-                  </span>
+                  {(currentEvent.eventCategory == 'presentation') &&
+                    <span
+                      className="text-base text-center px-4 leading-5"
+                    >
+                      (Paper Presentation registrations are done separately through Google Forms)
+                    </span>
+                  }
                 </div>
                 <div className="h-fit w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2.5 select-none">
                   <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full pt-1">
