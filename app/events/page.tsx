@@ -17,7 +17,7 @@ import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { EventsFallbackImg, MitilenceGFormsLink, TechnicalEventsImg } from "@/variables";
 import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, ShieldUser, UsersRound } from "lucide-react";
-import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent, addToast } from "@heroui/react";
+import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent, addToast, Alert } from "@heroui/react";
 import { parseDateOnly, parseTimeOnly } from "@/utils/parseDate";
 
 const Markdown = dynamic(() => import("react-markdown"), { ssr: false });
@@ -41,11 +41,11 @@ const eventCategories = [
 export default function Events() {
   const firebaseContext = useFirebase();
   const events = firebaseContext?.events;
-  const LoginGoogle = firebaseContext?.LoginGoogle;
   const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
   const departments = firebaseContext?.departments || [];
   const eventsObject = firebaseContext?.eventsObject || {};
+  const LoginGoogle = firebaseContext?.LoginGoogle || (() => {});
   // const checkedInEventsSet = firebaseContext?.checkedInEventsSet || new Set();
   const eventPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
   const [isEventSubmitting, setIsEventSubmitting] = React.useState<boolean>(false);
@@ -59,6 +59,11 @@ export default function Events() {
   const [currentEventCategory, setCurrentEventCategory] = React.useState<EventCategory>(eventCategories[0]);
   
   const {isOpen, onOpen, onClose} = useDisclosure();
+
+  React.useEffect(() => {
+    if (!(fireUserDoc == null && fireUserData != null)) {
+    }
+  }, [fireUserDoc, fireUserData])
 
   React.useEffect(() => {
     const searchParams = new URL(location.href).searchParams;
@@ -123,6 +128,19 @@ export default function Events() {
     if (registerResp.ok) {
       onClose()
       confettiPopUp()
+      addToast({
+        title: "Success",
+        icon: <span>🎉</span>,
+        description: "Registration successful. We look forward to seeing you on the morning of 14th March at MVIT",
+        color: 'success',
+        variant: 'bordered',
+        classNames: {
+          base: "bg-white",
+          icon: "h-8 text-2xl",
+          title: 'text-md font-semibold',
+          description: 'font-medium'
+        }
+      })
     } else if (registerResp.status != 200) {
       addToast({
         title: "Warn!",
@@ -160,6 +178,24 @@ export default function Events() {
           </div>
         :
         <>
+          {(fireUserDoc == null && fireUserData == null) &&
+            <div
+              className="fixed bottom-5 px-4 z-50 w-full md:w-[50%]"
+            >
+              <Alert
+                radius="lg"
+                color="primary"
+                className="font-medium text-base shadow-lg shadow-blue-400 !py-2"
+              >
+                <div
+                  className="block"
+                >
+                  <span onClick={() => LoginGoogle(false)} className="underline cursor-pointer mr-1.5">Log in</span>
+                  <span>to complete your profile and speed up Mitilence event registration at MVIT.</span>
+                </div>
+              </Alert>
+            </div>
+          }
           <div
             className="bg-white rounded-full w-[90%] lg:mt-[-2em] lg:w-[60%] overflow-auto flex flex-row items-center gap-2 px-1 lg:px-2 mb-6"
           >
@@ -489,6 +525,11 @@ export default function Events() {
                       Register Now
                     </Button>
                   }
+                  <span
+                    className="text-base text-center px-4 leading-5"
+                  >
+                    (Paper Presentation registrations are done separately through Google Forms)
+                  </span>
                 </div>
                 <div className="h-fit w-full bg-[#9648ff1c] border-1.5 border-purpleAccent/50 py-3 px-2.5 rounded-3xl shadow-xl flex flex-col justify-between gap-2.5 select-none">
                   <span className="flex items-center justify-center uppercase font-semibold text-2xl text-center h-full pt-1">
@@ -658,7 +699,7 @@ export default function Events() {
                     variant={"bordered"}
                     name={`Decleration`}
                     label={`Decleration`}
-                    pattern={"REGISTER"}
+                    pattern="\s*REGISTER\s*"
                     errorMessage={`type REGISTER and click the register button`}
                     placeholder={`type REGISTER and click the register button`}
                   />
