@@ -8,6 +8,5 @@ export const MVITLogoImg = "https://ucarecdn.com/8ef2db20-fd0e-47b5-84a2-58d40ba
 export const FacultyCoordinatorsImg = "https://ucarecdn.com/4e9977fd-04aa-4e41-9b29-b57dec2ab11f/-/preview/1000x666/"
 export const EventsFallbackImg = "https://ucarecdn.com/02f10002-1976-4726-9d94-b89e9b1ac98e/-/preview/1000x667/"
 export const MitilenceGFormsLink = "https://forms.gle/AUFFLcaAxNyK54eE8"
-export const MitilenceGFormsQR = "https://ucarecdn.com/b09cb64f-68d9-4092-84c6-394bea340e47/-/preview/1000x1000/"
 export const MitilenceWebsiteQR = "https://ucarecdn.com/f5150e68-ca61-4179-94fb-43faa2a64f2c/-/preview/1000x1000/"
 export const MitilenceVideo = "/videos/mitilence.mp4"

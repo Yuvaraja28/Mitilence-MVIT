@@ -18,9 +18,10 @@ interface ProfileProps {
   setUserUpdate?: (param: boolean) => void;
   onlyShowData?: boolean;
   classNames?: string;
+  callback?: () => void
 }
 
-export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: boolean) => {}, fireCustomClaims = null, onlyShowData = false, classNames = "" }: ProfileProps) {
+export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: boolean) => {}, fireCustomClaims = null, onlyShowData = false, classNames = "", callback = () => {} }: ProfileProps) {
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   const Fields = [
@@ -97,6 +98,7 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
             }}
             fallbackSrc={DefaultMemberImg}
             className="object-cover bg-contain"
+            onClick={callback}
           />
           <Button
             onPress={onOpen}

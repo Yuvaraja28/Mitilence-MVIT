@@ -45,8 +45,8 @@ export async function POST(req: NextRequest) {
       user: userData,
       payments: paymentData
     }, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
-    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    return NextResponse.json({ error: (error?.details === 'Quota exceeded.') ? "Contact tehnical team 8778171244" : 'User not found' }, { status: 404 });
   }
 }

@@ -126,6 +126,11 @@ interface EventUserPayments {
   }
 }
 
+interface Feedback {
+  comments: string;
+  [props: string]: number | string;
+}
+
 // Sub Types
 type SocialHandle = {
   [key: string]: {

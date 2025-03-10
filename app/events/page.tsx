@@ -48,6 +48,7 @@ export default function Events() {
   const LoginGoogle = firebaseContext?.LoginGoogle || (() => {});
   // const checkedInEventsSet = firebaseContext?.checkedInEventsSet || new Set();
   const eventPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
+
   const [isEventSubmitting, setIsEventSubmitting] = React.useState<boolean>(false);
   const [generalInstructionsRead, setGeneralInstructionsRead] = React.useState(false);
   // const [studentOrganizer, setStudentOrganizer] = React.useState<EventCoordinator | null>(null);
@@ -131,14 +132,14 @@ export default function Events() {
       addToast({
         title: "Success",
         icon: <span>🎉</span>,
-        description: "Registration successful. We look forward to seeing you on the morning of 14th March at MVIT",
-        color: 'success',
+        description: "Registration successful. We look forward to seeing you on the morning of 14th March at MVIT\n(Note: Amount should be paid in the college)",
+        color: 'primary',
         variant: 'bordered',
         classNames: {
           base: "bg-white",
           icon: "h-8 text-2xl",
           title: 'text-md font-semibold',
-          description: 'font-medium'
+          description: 'font-medium whitespace-pre-wrap'
         }
       })
     } else if (registerResp.status != 200) {
@@ -377,6 +378,9 @@ export default function Events() {
                               alt={event.name}
                               fallbackSrc={EventsFallbackImg}
                               src={event?.logoUrl || EventsFallbackImg}
+                              classNames={{
+                                wrapper: '!h-full !w-full'
+                              }}
                               className="object-cover w-[15em] h-[15em] cursor-pointer"
                             />
                             <div className="absolute z-30 bottom-3 right-3 bg-white text-black shadow-2xl drop-shadow-2xl p-2 rounded-xl transform transition-transform duration-300 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105">
@@ -482,11 +486,11 @@ export default function Events() {
                       {(currentEvent?.logoUrl) ?
                         <Image
                           classNames={{
-                            wrapper: '!h-full'
+                            wrapper: '!h-full !w-full !max-h-full !max-w-full',
                           }}
                           fallbackSrc={EventsFallbackImg}
                           src={currentEvent?.logoUrl || EventsFallbackImg}
-                          className="h-full md:h-full object-cover rounded-[20px] border border-gray-800"
+                          className="!h-full !w-full object-cover rounded-[20px] border border-gray-800"
                         />
                         :
                         <div
@@ -682,8 +686,8 @@ export default function Events() {
                     size="lg"
                     isRequired={true}
                     variant={"bordered"}
-                    name={`Department`}
-                    label={`Department`}
+                    name={`Event Department`}
+                    label={`Event Department`}
                     disabled={true}
                     value={currentDepartment?.name?.toUpperCase() || ''}
                   />

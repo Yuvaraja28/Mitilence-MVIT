@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { AnimatedGradientText } from '../magicui/animated-gradient-text';
-import { DeveloperImg, MitilenceGFormsQR, MitilenceVideo, MitilenceWebsiteQR, StarImg } from '@/variables';
+import { DeveloperImg, MitilenceVideo, MitilenceWebsiteQR, StarImg } from '@/variables';
 
 export default function Landing() {
   return (
@@ -67,7 +67,7 @@ export default function Landing() {
       />
       <img
         loading='lazy'
-        src={(new Date("2025-03-09T23:23:23") > new Date()) ? MitilenceGFormsQR : MitilenceWebsiteQR}
+        src={MitilenceWebsiteQR}
         className='absolute top-[31em] lg:top-[77vh] right-5 z-10 h-[5em] lg:h-[10em] rounded-[12px]'
       />
     </div>

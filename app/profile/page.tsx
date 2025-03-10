@@ -8,15 +8,18 @@ import UserRegistration from "@/components/internal/userRegistration";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { BadgeCheck, Building2, CalendarDays, CircleDashed, Clock8, FileText, Navigation } from "lucide-react";
+import FeedbackFormModal from "@/components/internal/feedbackModal";
 
 export default function Profile() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
+  const userFeedback = firebaseContext?.userFeedback;
   const eventsObject = firebaseContext?.eventsObject || {};
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
   const eventPayments: EventUserPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
 
   const [userUpdate, setUserUpdate] = React.useState(false)
+  const [easterFeedback, setEasterFeedback] = React.useState(0)
   const [currentEvent, setCurrentEvent] = React.useState<string | null>(null)
 
   const checkedInEvents = React.useMemo(() => Object.entries(eventPayments?.events || {}).filter(events => events[1].checkedInStatus), [eventPayments?.events])
@@ -34,6 +37,7 @@ export default function Profile() {
           setUserUpdate={setUserUpdate}
           paidDepartments={paidDepartments}
           fireCustomClaims={fireCustomClaims}
+          callback={() => setEasterFeedback((i) => i+1)}
         />
         <span
           className="flex flex-row justify-between items-center gap-4 bg-white rounded-2xl px-8 py-4 text-xl font-medium"
@@ -176,6 +180,12 @@ export default function Profile() {
             </ModalBody>
           </ModalContent>
         </Modal>
+      }
+      {(userFeedback == null) &&
+        <FeedbackFormModal
+          formOpened={easterFeedback >= 5}
+          setFormClose={() => setEasterFeedback(0)}
+        />
       }
       {(userUpdate && !(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0)) &&
         <UserRegistration

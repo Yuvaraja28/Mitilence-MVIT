@@ -42,6 +42,7 @@ interface FirebaseContextProps {
   events: Events[] | null;
   eventsObject: EventsObjectType;
   departments: Department[];
+  userFeedback: Feedback | null;
   administrationMembers: AdministrationMember[];
   eventPayments: EventUserPayments | null;
   checkedInEventsSet: Set<string>;
@@ -64,6 +65,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   const [faqs, setFaqs] = React.useState<FAQ[] | null>([])
   const [events, setEvents] = React.useState<Events[] | null>(null)
   const [departments, setDepartments] = React.useState<Department[]>([]);
+  const [userFeedback, setUserFeedBack] = React.useState<Feedback | null>(null);
   const [eventPayments, setEventPayments] = React.useState<EventUserPayments | null>(null)
   const [administrationMembers, setAdministrationMembers] = React.useState<AdministrationMember[]>([]);
   const checkedInEventsSet = React.useMemo(() => new Set(Object.keys(eventPayments?.events || {})), [eventPayments])
@@ -126,13 +128,27 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
           setEventPayments(null);
         }
       });
+      const feedbackDocRef = doc(getFirestore(fireApp), `feedbacks/${fireUserData.uid}`);
+      var unsubscribeFeedback = onSnapshot(feedbackDocRef, (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          if (data == null) return;
+          setUserFeedBack({
+            comments: data?.comments || "",
+            ...data,
+          })
+        } else {
+          setUserFeedBack(null);
+        }
+      });
     }
     
     return () => {
       unsubscribeEvents();
       if (fireUserData) {
         unsubscribeUser();     
-        unsubscribePayment()   ;
+        unsubscribePayment();
+        unsubscribeFeedback();
       }
     };
   }, [fireUserData]);
@@ -162,7 +178,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
   return (
     <FirebaseContext.Provider value={{ 
       fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB, fireCustomClaims,
-      faqs, events, eventsObject, departments, administrationMembers, eventPayments, checkedInEventsSet,
+      faqs, events, eventsObject, departments, userFeedback, administrationMembers, eventPayments, checkedInEventsSet,
       LoginGoogle, LogoutGoogle
      }}>
       {children}
