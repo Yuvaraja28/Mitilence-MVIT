@@ -322,6 +322,7 @@ export default function Organizers() {
                   size="md"
                   radius="lg"
                   isRequired={true}
+                  unselectable="off"
                   variant={"bordered"}
                   label="Participant Type"
                   placeholder="Select the Participant Type"

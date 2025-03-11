@@ -95,6 +95,7 @@ export default function UserRegistration({ update = false }) {
                 key={field.param}
                 name={field.param}
                 required={true}
+                unselectable="off"
                 placeholder="Select your Gender"
                 className="w-full mt-1 text-black"
                 errorMessage="You must select your gender"
