@@ -193,7 +193,7 @@ const FeedbackFormModal = ({ formOpened, setFormClose }: { formOpened: boolean, 
           className="bg-white rounded-3xl shadow-sm shadow-white max-w-2xl mx-auto px-3 py-5 w-full"
         >
           <ModalBody>
-            <h2 className="text-2xl font-semibold mb-3">Last, Tell us how you really feel about Mitilence!</h2>
+            <h2 className="text-black text-2xl font-semibold mb-3">Last, Tell us how you really feel about Mitilence!</h2>
             <p className="text-gray-600 text-base mb-6">
               We'd love to hear about your experience! Please select the emoji that best reflects your mood at the event's conclusion. Your feedback will help us enhance next year's event and make it even better. Let's wrap up with a smile!
             </p>

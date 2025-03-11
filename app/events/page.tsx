@@ -581,19 +581,21 @@ export default function Events() {
                         </span>
                       </div>
                     </div>
-                    <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3 w-full">
-                      <span>
-                        <UsersRound color="#000000" size={25} />
-                      </span>
-                      <div className="text-black flex flex-col h-full">
-                        <span className="uppercase font-semibold text-base">
-                          Team Size
+                    {(currentEvent?.teamSize) &&
+                      <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3 w-full">
+                        <span>
+                          <UsersRound color="#000000" size={25} />
                         </span>
-                        <span className="font-medium text-base mt-[-5px]">
-                          {currentEvent?.teamSize}
-                        </span>
+                        <div className="text-black flex flex-col h-full">
+                          <span className="uppercase font-semibold text-base">
+                            Team Size
+                          </span>
+                          <span className="font-medium text-base mt-[-5px]">
+                            {currentEvent?.teamSize}
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    }
                     {(currentEvent?.facultyOrganizer) &&
                       <div className="bg-[#ebe4ff] rounded-2xl flex flex-row items-center py-1.5 px-5 gap-3">
                         <span>
