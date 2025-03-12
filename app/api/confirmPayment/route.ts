@@ -56,8 +56,12 @@ export async function POST(req: NextRequest) {
       paymentDataUpdate['registrationStatus'] = true
     }
 
+    const userDoc = await db.collection('users').doc(userJson?.userId).get()
+    const userData = parseEventUser(userDoc.id, userDoc.data() || {});
+
     const eventUserPayment = {
       ...userPaymentData,
+      user: userData,
       mitilence: {
         ...(userPaymentData?.mitilence || {}),
         [String(decodedToken.departmentId)]: { ...paymentDataUpdate },
@@ -65,8 +69,6 @@ export async function POST(req: NextRequest) {
     };
     await userPaymentDocRef.set(eventUserPayment, { merge: true });
 
-    const userDoc = await db.collection('users').doc(userJson?.userId).get()
-    const userData = parseEventUser(userDoc.id, userDoc.data() || {}, false);
     const paymentDoc = await db.collection('payments').doc(userJson?.userId).get()
     const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {});
     return NextResponse.json({

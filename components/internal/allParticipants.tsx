@@ -23,15 +23,13 @@ import {
   PopoverContent
 } from "@heroui/react";
 import ExcelJS from "exceljs";
-import { ChevronDownIcon, Download, SearchIcon } from "lucide-react";
-import { parseDateTimeShort } from "@/utils/parseDate";
-import { collection, documentId, onSnapshot, query, where } from "firebase/firestore";
-import { useFirebase } from "@/contexts/firebase";
-import parseEventUser from "@/parsers/user";
 import parsePayments from "@/parsers/payments";
 import { DefaultMemberImg } from "@/variables";
 import downloadBlob from "@/utils/downloadBlob";
-import { PopUserProps } from "../../app/admin/page";
+import { useFirebase } from "@/contexts/firebase";
+import { parseDateTimeShort } from "@/utils/parseDate";
+import { ChevronDownIcon, Download, SearchIcon } from "lucide-react";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 export const columns = [
   { name: "NAME", uid: "name" },
@@ -51,14 +49,13 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const INITIAL_VISIBLE_COLUMNS = columns.map(c => c.uid);
 
-export default function AllParticipants({ currentDepartment, setPopupUser }: { currentDepartment: string | null, setPopupUser: (param: PopUserProps) => void }) {
+export default function AllParticipants({ currentDepartment, setPopupUser }: { currentDepartment: string | null, setPopupUser: (param: EventUserPayments) => void }) {
   const firebaseContext = useFirebase();
   const firestoreDB = firebaseContext?.firestoreDB;
   const eventsObject = firebaseContext?.eventsObject;
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
-  const [departmentParticipants, setDepartmentParticipants] = React.useState<Record<string, EventUser>>({});
   const [departmentPaymentParticipants, setDepartmentPaymentParticipants] = React.useState<Record<string, EventUserPayments>>({});
 
   const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
@@ -74,15 +71,15 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
   const headerColumns = columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 
   const filteredItems = () => {
-    let filteredUsers = [...Object.values(departmentParticipants)];
+    let filteredUsers = [...Object.values(departmentPaymentParticipants)];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        departmentParticipants[user.id]?.name?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentParticipants[user.id]?.emailId?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentParticipants[user.id]?.college?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentParticipants[user.id]?.phoneNo?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentParticipants[user.id]?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
+        departmentPaymentParticipants[user.id]?.user?.name?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        departmentPaymentParticipants[user.id]?.user?.emailId?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        departmentPaymentParticipants[user.id]?.user?.college?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        departmentPaymentParticipants[user.id]?.user?.phoneNo?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        departmentPaymentParticipants[user.id]?.user?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
       );
     }
     if (statusFilter != "All") {
@@ -91,7 +88,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
     return filteredUsers;
   }
 
-  const pages = Math.ceil(filteredItems.length / rowsPerPage);
+  const pages = Math.ceil(Object.keys(departmentPaymentParticipants)?.length / rowsPerPage);
 
   const items = () => {
     const start = (page - 1) * rowsPerPage;
@@ -101,39 +98,39 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
   }
 
   const sortedItems = [...items()];
-  sortedItems.sort((a: EventUser, b: EventUser) => {
+  sortedItems.sort((a: EventUserPayments, b: EventUserPayments) => {
     const first = new Date(departmentPaymentParticipants[a.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
     const second = new Date(departmentPaymentParticipants[b.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
     return first > second ? -1 : 0;
   });
 
-  const renderCell = (user: EventUser, columnKey: React.Key) => {
-    const cellValue = departmentParticipants[user.id]?.[columnKey as keyof EventUser];
+  const renderCell = (user: EventUserPayments, columnKey: React.Key) => {
+    const cellValue = departmentPaymentParticipants[user.id]?.user?.[columnKey as keyof EventUser];
     switch (columnKey) {
       case "name":
         return (
           <User
             name={cellValue}
-            description={departmentParticipants[user.id]?.emailId}
-            avatarProps={{radius: "lg", src: departmentParticipants[user.id]?.imageUrl, fallback: DefaultMemberImg, size: "md"}}
+            description={departmentPaymentParticipants[user.id]?.user?.emailId}
+            avatarProps={{radius: "lg", src: departmentPaymentParticipants[user.id]?.user?.imageUrl, fallback: DefaultMemberImg, size: "md"}}
             classNames={{
               name: "text-lg font-medium",
               description: "text-base font-normal"
             }}
           >
-            {departmentParticipants[user.id]?.emailId}
+            {departmentPaymentParticipants[user.id]?.user?.emailId}
           </User>
         );
       case "college":
         return (
-          <div className="flex flex-col max-w-[8em]" title={departmentParticipants[user.id]?.college}>
-            <p className="text-black text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.college}</p>
+          <div className="flex flex-col max-w-[8em]" title={departmentPaymentParticipants[user.id]?.user?.college}>
+            <p className="text-black text-bold text-base capitalize truncate">{departmentPaymentParticipants[user.id]?.user?.college}</p>
           </div>
         );
       case "enrollNo":
         return (
-          <div className="flex flex-col min-w-[5em]" title={departmentParticipants[user.id]?.enrollNo}>
-            <p className="text-black text-bold text-base capitalize truncate">{departmentParticipants[user.id]?.enrollNo}</p>
+          <div className="flex flex-col min-w-[5em]" title={departmentPaymentParticipants[user.id]?.user?.enrollNo}>
+            <p className="text-black text-bold text-base capitalize truncate">{departmentPaymentParticipants[user.id]?.user?.enrollNo}</p>
           </div>
         );
       case "registerTime":
@@ -189,10 +186,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
                 <DropdownItem
                   key="profile"
                   onPress={() => {
-                    setPopupUser({
-                      user: user,
-                      payment: departmentPaymentParticipants[user.id]
-                    })
+                    setPopupUser(departmentPaymentParticipants[user.id])
                   }}
                 >
                   View Profile
@@ -364,9 +358,9 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
   }
   
   const generateExcelDatas = async () => {
-    console.log(departmentParticipants, departmentPaymentParticipants);
+    console.log(departmentPaymentParticipants, departmentPaymentParticipants?.user);
   
-    if (Object.keys(departmentParticipants).length === 0) {
+    if (Object.keys(departmentPaymentParticipants).length === 0) {
       console.warn("No user data available to export.");
       return;
     }
@@ -404,7 +398,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
     // Add User Data
     const userSheetData: any = [];
     
-    Object.values(departmentParticipants).forEach((user) => {    
+    Object.values(departmentPaymentParticipants).forEach((user) => {    
       const paymentInfo =
         departmentPaymentParticipants[user?.id]?.mitilence?.[
         currentDepartment || ""
@@ -412,25 +406,25 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
 
       if (paymentInfo.paymentStatus) {
         userSheetData.push({
-          "Name": user.name,
-          "Enrollment No": user.enrollNo,
-          "Email": user.emailId,
-          "Phone": user.phoneNo,
-          "College": user.college,
+          "Name": user?.user?.name,
+          "Enrollment No": user?.user?.enrollNo,
+          "Email": user?.user?.emailId,
+          "Phone": user?.user?.phoneNo,
+          "College": user?.user?.college,
           "Participant Type": paymentInfo?.participantType || "N/A",
           "Payment Verified By": paymentInfo?.paymentVerifiedByName || "N/A",
           "Registered Time": parseDateTimeShort(paymentInfo?.registeredTime),
           "Payment Time": paymentInfo?.paymentTime
             ? parseDateTimeShort(paymentInfo?.paymentTime)
             : "N/A",
-          "Department": user.department,
-          "Gender": user.gender,
-          "Grad Year": user.gradYear,
-          "Created Time": parseDateTimeShort(user.createdTime),
-          "Updated Time": user?.updatedTime
-            ? parseDateTimeShort(user.updatedTime)
+          "Department": user?.user?.department,
+          "Gender": user?.user?.gender,
+          "Grad Year": user?.user?.gradYear,
+          "Created Time": parseDateTimeShort(user?.user?.createdTime),
+          "Updated Time": user?.user?.updatedTime
+            ? parseDateTimeShort(user?.user?.updatedTime)
             : "N/A",
-          "User ID": user.id,
+          "User ID": user?.user?.id,
           "Payment Verified By Id": paymentInfo?.paymentVerifiedBy || "N/A",
         });
       }
@@ -447,7 +441,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
     const eventGroups: Record<string, any[]> = {};
   
     Object.entries(departmentPaymentParticipants).forEach(([userId, paymentData]) => {
-      const user = departmentParticipants[userId];
+      const user = departmentPaymentParticipants[userId]?.user;
       if (!user) return;
   
       Object.values(paymentData.events).forEach((event) => {
@@ -530,80 +524,11 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
 
   React.useEffect(() => {
     if (currentDepartment == null) return;
-    setDepartmentParticipants({})
     setDepartmentPaymentParticipants({})
     const unsubscribePayments = listenToPayments(setDepartmentPaymentParticipants)
     return () => unsubscribePayments();
   }, [currentDepartment]);
-
-  function listenToUsersByIds(
-    userIds: string[], 
-    callback: (users: Record<string, any>, removedUserIds: string[]) => void
-  ) {
-    if (userIds.length === 0 || firestoreDB == null) return () => {}; 
   
-    // Firestore allows a max of 10 elements in "in" query, so split into chunks
-    const chunks: string[][] = [];
-    for (let i = 0; i < userIds.length; i += 10) {
-      chunks.push(userIds.slice(i, i + 10));
-    }
-  
-    let unsubscribers: (() => void)[] = [];
-    let knownUserIds = new Set(userIds); // Track known user IDs
-  
-    chunks.forEach((chunk) => {
-      const usersRef = collection(firestoreDB, "users");
-      const q = query(usersRef, where(documentId(), "in", chunk));
-  
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const usersObject: Record<string, any> = {};
-        const fetchedUserIds = new Set<string>(); // Track users in snapshot
-  
-        querySnapshot.docs.forEach(doc => {
-          usersObject[doc.id] = parseEventUser(doc.id, doc.data());
-          fetchedUserIds.add(doc.id);
-        });
-  
-        // Find removed users (present in knownUserIds but not in fetchedUserIds)
-        const removedUserIds = [...knownUserIds].filter(id => !fetchedUserIds.has(id));
-  
-        // Update known user list
-        knownUserIds = fetchedUserIds;
-  
-        callback(usersObject, removedUserIds);
-      });
-  
-      unsubscribers.push(unsubscribe);
-    });
-  
-    return () => unsubscribers.forEach(unsub => unsub());
-  }
-  
-  React.useEffect(() => {
-    if (Object.keys(departmentPaymentParticipants).length === 0) return;
-  
-    const unsubscribeListenToUsers = listenToUsersByIds(
-      Object.keys(departmentPaymentParticipants), 
-      (updatedUsers, removedUserIds) => {
-        console.log("Updated Users:", updatedUsers);
-        console.log("Removed Users:", removedUserIds);
-  
-        setDepartmentParticipants((prevUsers) => {
-          // Remove users who have been deleted
-          const filteredUsers = { ...prevUsers };
-          removedUserIds.forEach(userId => delete filteredUsers[userId]);
-  
-          return {
-            ...filteredUsers,
-            ...updatedUsers, // Merge updated users
-          };
-        });
-      }
-    );
-  
-    return () => unsubscribeListenToUsers();
-  }, [firestoreDB, departmentPaymentParticipants]);
-
   return (
     <Table
       isHeaderSticky

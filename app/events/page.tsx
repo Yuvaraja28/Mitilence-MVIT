@@ -707,7 +707,7 @@ export default function Events() {
                     variant={"bordered"}
                     name={`Decleration`}
                     label={`Decleration`}
-                    pattern="\s*REGISTER\s*"
+                    pattern="^\s*(?:r|R)(?:e|E)(?:g|G)(?:i|I)(?:s|S)(?:t|T)(?:e|E)(?:r|R)\s*$"
                     errorMessage={`type REGISTER and click the register button`}
                     placeholder={`type REGISTER and click the register button`}
                   />

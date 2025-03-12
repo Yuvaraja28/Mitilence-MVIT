@@ -1,3 +1,5 @@
+import parseEventUser from "./user";
+
 export default function parsePayments(
   id: string,
   paymentData: any
@@ -56,5 +58,7 @@ export default function parsePayments(
     {}
   );
 
-  return { id, mitilence, events };
+  const user = parseEventUser(id, paymentData?.user);
+
+  return { id, mitilence, events, user };
 }

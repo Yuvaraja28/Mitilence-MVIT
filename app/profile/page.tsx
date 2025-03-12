@@ -25,6 +25,14 @@ export default function Profile() {
   const checkedInEvents = React.useMemo(() => Object.entries(eventPayments?.events || {}).filter(events => events[1].checkedInStatus), [eventPayments?.events])
   const paidDepartments = React.useMemo(() => Object.entries(eventPayments?.mitilence || {}), [eventPayments?.mitilence])
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (fireUserDoc == null) {
+        window.location.replace('/');
+      }
+    }, 6000)
+  }, [fireUserDoc])
+
   return (
     <div
       className="flex flex-col items-center justify-center gap-2 w-full pt-28 lg:pt-22 py-8 min-h-[100vh]"
@@ -183,7 +191,7 @@ export default function Profile() {
       }
       {(userFeedback == null) &&
         <FeedbackFormModal
-          formOpened={easterFeedback >= 5}
+          formOpened={easterFeedback >= 3}
           setFormClose={() => setEasterFeedback(0)}
         />
       }

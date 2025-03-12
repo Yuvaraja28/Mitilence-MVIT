@@ -32,14 +32,20 @@ export async function POST(req: NextRequest) {
 
   try {
     const eventData = await req.json();
-    if (eventData?.emailId == null) throw "Email Id not passed";
-    const userRecord = await admin.auth().getUserByEmail(eventData?.emailId);
-    const userDoc = await db.collection('users').doc(userRecord.uid).get()
-    const userData = parseEventUser(userDoc.id, userDoc.data() || {}, false);
+    var userId = null;
+    if ((eventData?.emailId == null) && (eventData?.userId == null)) throw "Email Id or User Id not passed";
+    if (eventData?.emailId != null) {
+      const userRecord = await admin.auth().getUserByEmail(eventData?.emailId);
+      userId = userRecord.uid
+    } else if (eventData?.userId != null) {
+      userId = eventData?.userId
+    }
+    const userDoc = await db.collection('users').doc(userId).get()
+    const userData = parseEventUser(userDoc.id, userDoc.data() || {});
     if (userData?.name == null) {
       return NextResponse.json({ error: 'User not done onboarding process' }, { status: 403 });
     }
-    const paymentDoc = await db.collection('payments').doc(userRecord.uid).get()
+    const paymentDoc = await db.collection('payments').doc(userId).get()
     const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {});
     return NextResponse.json({
       user: userData,

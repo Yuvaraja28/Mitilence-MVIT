@@ -7,11 +7,6 @@ import { UserProfile } from "@/components/internal/userProfile";
 import { Tabs, Tab, Modal, ModalContent, ModalBody } from "@heroui/react";
 import { CircularLoader } from "@/components/internal/Loaders";
 
-export type PopUserProps = {
-  user: EventUser;
-  payment: EventUserPayments;
-}
-
 export default function AdminDashboard() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
@@ -19,7 +14,7 @@ export default function AdminDashboard() {
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
 
   const [currentTab, setCurrentTab] = React.useState('All Participants')
-  const [popupUser, setPopupUser] = React.useState<PopUserProps | null>()
+  const [popupUser, setPopupUser] = React.useState<EventUserPayments | null>()
   const [selectedEvent, setSelectedEvent] = React.useState<string | null>(null);
     
   if ((fireUserDoc == null) || (fireUserData == null)) {
@@ -113,8 +108,8 @@ export default function AdminDashboard() {
           <ModalContent>
             <ModalBody>
               <UserProfile
-                fireUserDoc={popupUser.user}
-                paidDepartments={Object.entries(popupUser?.payment?.mitilence || {})}
+                fireUserDoc={popupUser?.user}
+                paidDepartments={Object.entries(popupUser?.mitilence || {})}
                 classNames="!px-2 !py-8"
                 onlyShowData={true}
               />

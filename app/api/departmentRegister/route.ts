@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
 
     const departmentUserPayment = {
       ...userPaymentData,
+      user: userData,
       mitilence: {
         ...(userPaymentData?.mitilence || {}),
         [String(departmentData.departmentId)]: {

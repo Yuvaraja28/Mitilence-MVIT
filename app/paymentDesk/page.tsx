@@ -40,40 +40,21 @@ export default function Organizers() {
   const onScanCallback = async (result: IDetectedBarcode[]) => {
     setScanPaused(() => true)
     console.log("Scanning...")
-    try {
-      const userData = await getUser(result[0].rawValue);
-      var paymentData = { id: "", mitilence: {}, events: {} };
-      try {
-        paymentData = await getPayment(result[0].rawValue);
-      } catch { }
-      setUserData({
-        user: userData,
-        payments: paymentData
-      })
-      setScanPaused(() => false)
-      setScannerOpened(() => false)
-    } catch {
-      return addToast({
-        title: "Warn!",
-        description: "User has not yet created the account.",
-        color: "warning"
-      })
-    }
+    searchUser({ userId: result[0].rawValue })
+    setScanPaused(() => false)
+    setScannerOpened(() => false)
   }
 
-  async function searchUser(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function searchUser(searchForm: any) {
     setUserData(() => null);
     setIsEventSubmitting(() => true);
     try {
-      const userResp = await fetch("/api/getUserEmail", {
+      const userResp = await fetch("/api/getUser", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${fireUserData?.accessToken}`
         },
-        body: JSON.stringify({
-          emailId: currentSearch
-        })
+        body: JSON.stringify(searchForm)
       })
       const userData = await userResp.json();
       if ((userResp.status == 401) && (LogoutGoogle != null)) {
@@ -190,7 +171,7 @@ export default function Organizers() {
           className="flex flex-col lg:flex-row items-center sm:items-start gap-3"
         >
           <form
-            onSubmit={searchUser}
+            onSubmit={(event) => {event.preventDefault(); searchUser({ emailId: currentSearch })}}
             className="bg-white rounded-3xl overflow-auto w-full md:w-[35em] flex flex-row items-center gap-1.5 px-1 lg:px-2"
           >
             <input
@@ -357,7 +338,7 @@ export default function Organizers() {
                   variant={"bordered"}
                   name={`Confirmation`}
                   label={`Confirmation`}
-                  pattern={"CONFIRM"}
+                  pattern="^\s*(?:c|C)(?:o|O)(?:n|N)(?:f|F)(?:i|I)(?:r|R)(?:m|M)\s*$"
                   errorMessage={`type CONFIRM and click the confirm payment button`}
                   placeholder={`type CONFIRM and click the confirm payment button`}
                 />

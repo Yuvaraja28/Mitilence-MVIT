@@ -123,7 +123,8 @@ interface EventUserPayments {
   },
   events: {
     [eventsId: string]: RegisteredEvent
-  }
+  },
+  user: EventUser;
 }
 
 interface Feedback {
