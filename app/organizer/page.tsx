@@ -9,11 +9,6 @@ import { boundingBox, IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner
 import { QrCodeIcon } from "lucide-react";
 import { getPayment } from "@/Firestore/payments";
 
-export type PopUserProps = {
-  user: EventUser;
-  payment: EventUserPayments;
-}
-
 export default function OrganizerDashboard() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
@@ -22,7 +17,7 @@ export default function OrganizerDashboard() {
   const eventsObject = firebaseContext?.eventsObject;
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
 
-  const [popupUser, setPopupUser] = React.useState<PopUserProps | null>()
+  const [popupUser, setPopupUser] = React.useState<EventUserPayments | null>()
   const [currentTab, setCurrentTab] = React.useState('Event Participants')
   const [checkInModal, setCheckInModal] = React.useState(false)
   const [selectedEvent, setSelectedEvent] = React.useState<string | null>(null);
@@ -190,8 +185,8 @@ export default function OrganizerDashboard() {
               <ModalContent>
                 <ModalBody>
                   <UserProfile
-                    fireUserDoc={popupUser.user}
-                    paidDepartments={Object.entries(popupUser?.payment?.mitilence || {})}
+                    fireUserDoc={popupUser?.user}
+                    paidDepartments={Object.entries(popupUser?.mitilence || {})}
                     classNames="!px-2 !py-8"
                     onlyShowData={true}
                   />
