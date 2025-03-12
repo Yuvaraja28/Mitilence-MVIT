@@ -26,13 +26,16 @@ export default function Profile() {
   const paidDepartments = React.useMemo(() => Object.entries(eventPayments?.mitilence || {}), [eventPayments?.mitilence])
 
   React.useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       if (fireUserDoc == null) {
         window.location.replace('/');
       }
-    }, 6000)
-  }, [fireUserDoc])
-
+    }, 6000);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [fireUserDoc]);
+  
   return (
     <div
       className="flex flex-col items-center justify-center gap-2 w-full pt-28 lg:pt-22 py-8 min-h-[100vh]"
