@@ -694,9 +694,12 @@ export default function Events() {
                     value={currentDepartment?.name?.toUpperCase() || ''}
                   />
                   <ul
-                    className='flex flex-col gap-1'
+                    className='flex flex-col gap-1 mt-0.5'
                   >
-                    <li className="text-[#F31260] text-sm px-1">
+                    <li className="text-black text-sm px-1 list-disc ml-5">
+                      Although the event is team-based, each participant must register separately to ensure proper individual registration.
+                    </li>
+                    <li className="text-black text-sm px-1 list-disc ml-5">
                       I confirm, I have read and understood all instructions and consent to register.
                     </li>
                   </ul>
@@ -737,7 +740,7 @@ export default function Events() {
                         key={price}
                         className='mb-2'
                       >
-                        <span className='bg-purpleAccent text-white w-[20px] px-2 py-1 rounded-[6px] font-medium'>₹ {price}</span> for {(price == 100) ? 'in' : 'ex'}ternal participants
+                        <span className='bg-purpleAccent text-white w-[20px] px-2 py-1 rounded-[6px] font-medium'>₹ {price}</span> for {(price == 100) ? 'in' : 'ex'}ternal participant (per head)
                       </span>
                     )}
                   </div>
