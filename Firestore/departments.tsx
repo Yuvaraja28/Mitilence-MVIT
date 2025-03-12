@@ -14,6 +14,7 @@ export async function getDepartments(): Promise<Department[]> {
       staffName: data.staffName,
       staffPhone: data.staffPhone,
       logoUrl: data.logoUrl,
+      registrationsClosed: data?.registrationsClosed || false,
       order: data.order
     }));
     return departments.sort((a, b) => a.order - b.order);

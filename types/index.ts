@@ -58,6 +58,7 @@ interface Department {
   staffName: string;
   staffPhone: string;
   logoUrl?: string | null;
+  registrationsClosed?: boolean;
 }
 
 // Realtime DB

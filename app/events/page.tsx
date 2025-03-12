@@ -286,11 +286,11 @@ export default function Events() {
               <div
                 className="flex flex-row gap-3 flex-wrap justify-center"
               >
-                {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ? (
+                {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ? 
                   <span className={`flex items-center justify-center gap-2 ${(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? "bg-[#17C964]" : "bg-yellow-500"} select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 w-fit`}>
                     {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? <BadgeCheck /> : <BadgeIndianRupee />} Registered {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 'and Paid' : 'but not Paid'}
                   </span>
-                ) : (
+                : ((currentDepartment?.registrationsClosed) || (new Date("2025-03-14T16:00:00") < new Date())) ?
                   <Button
                     size="lg"
                     onPress={() => {
@@ -300,12 +300,13 @@ export default function Events() {
                         description: `${currentDepartment?.id?.toUpperCase()} Register Button Clicked`,
                       });            
                     }}
+                    isDisabled={true}
                     // disabled={checkedInEventsSet.has(currentEvent?.id || '')}
                     // isDisabled={
                     //   !checkedInEventsSet.has(currentEvent?.id || '') &&
                     //   (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                     // }
-                    className={`bg-purpleAccent text-white text-lg font-medium rounded-xl w-fit`}
+                    className={`bg-red-500 text-white text-lg font-medium rounded-xl w-fit`}
                       // ${!checkedInEventsSet.has(currentEvent?.id || '') &&
                       // (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                       //   ? "bg-red-500"
@@ -313,10 +314,25 @@ export default function Events() {
                   >
                     {/* {!checkedInEventsSet.has(currentEvent?.id || '') &&
                     (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
-                      ? "Registrations Closed" */}
+                    */}
+                    Registrations Closed
+                  </Button>
+              
+                :
+                  <Button
+                    size="lg"
+                    onPress={() => {
+                      onOpen();
+                      logEvent(fireAnalytics, `${currentDepartment?.id?.toUpperCase()}-DEPT REGISTER`, {
+                        name: `${currentDepartment?.id?.toUpperCase()} - Register`,
+                        description: `${currentDepartment?.id?.toUpperCase()} Register Button Clicked`,
+                      });            
+                    }}
+                    className={`bg-purpleAccent text-white text-lg font-medium rounded-xl w-fit`}
+                  >
                       {(new Date("2025-03-09T23:23:23") > new Date()) ? 'General Instructions for' : 'Register for'} {currentDepartment?.id.toUpperCase()} Events
                   </Button>
-                )}
+                }
                 <div className="bg-blue-100 rounded-xl flex flex-row items-center py-1 px-5 gap-2.5">
                   <span>
                     <ShieldUser color="#000000" size={25} />
@@ -502,7 +518,7 @@ export default function Events() {
                       }
                     </BlurFade>
                   </div>
-                  {(currentEvent?.registrationsClosed) ?
+                  {((currentEvent?.registrationsClosed) || (new Date(currentEvent?.endTime || '') < new Date())) ?
                     <Button
                       isDisabled={true}
                       className={`bg-red-500 text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
