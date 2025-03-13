@@ -10,7 +10,7 @@ import React, { createContext, useContext } from 'react';
 import { Database, getDatabase } from 'firebase/database';
 import { getAdministrationMembers } from '@/Firestore/administration';
 import { collection, doc, Firestore, getFirestore, onSnapshot } from 'firebase/firestore';
-import { Auth, getAuth, GoogleAuthProvider, onAuthStateChanged, ParsedToken, signInWithPopup, signOut, User } from 'firebase/auth';
+import { Auth, getAuth, GoogleAuthProvider, onAuthStateChanged, ParsedToken, signInWithEmailAndPassword, signInWithPopup, signOut, User } from 'firebase/auth';
 import { getDepartments } from '@/Firestore/departments';
 
 type EventsObjectType = {
@@ -46,6 +46,7 @@ interface FirebaseContextProps {
   administrationMembers: AdministrationMember[];
   eventPayments: EventUserPayments | null;
   checkedInEventsSet: Set<string>;
+  LoginMail: (email: string, pass: string, redirect?: boolean) => void;
   LoginGoogle: (redirect?: boolean) => void;
   LogoutGoogle: () => void;
 }
@@ -169,6 +170,23 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
     }
   }
 
+  async function LoginMail(email: string, pass: string, redirect = true) {
+    if (fireAuth == null) return;
+    try {
+      const data = await signInWithEmailAndPassword(fireAuth, email, pass);
+      getUser(data?.user.uid)
+        .then(() => {
+          if (redirect) {
+            window.location.href = '/profile';
+          }
+        })
+        .catch(() => {});
+    } catch (e) {
+      console.error(e)
+      throw e;
+    }
+  }
+
   async function LogoutGoogle() {
     if (fireAuth == null) return;
     await signOut(fireAuth);
@@ -179,7 +197,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({ children }) 
     <FirebaseContext.Provider value={{ 
       fireApp, fireAuth, fireUserDoc, fireUserData, realtimeDB, firestoreDB, fireCustomClaims,
       faqs, events, eventsObject, departments, userFeedback, administrationMembers, eventPayments, checkedInEventsSet,
-      LoginGoogle, LogoutGoogle
+      LoginGoogle, LogoutGoogle, LoginMail
      }}>
       {children}
     </FirebaseContext.Provider>
