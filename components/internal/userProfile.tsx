@@ -203,9 +203,19 @@ export function UserProfile({ fireUserDoc, paidDepartments, setUserUpdate = (_: 
                   {fireUserDoc.name}
                 </span>
                 <span
+                  className="text-lg font-medium text-center text-yellow-600 mb-[-5px]"
+                >
+                  {fireUserDoc.enrollNo}
+                </span>
+                <span
                   className="text-lg font-medium text-center text-blue-500"
                 >
                   {fireUserDoc.emailId}
+                </span>
+                <span
+                  className="text-lg font-medium text-center text-orange-600 mb-[-5px]"
+                >
+                  {fireUserDoc.college}
                 </span>
                 <span
                   className="text-lg font-medium text-center text-lime-600"

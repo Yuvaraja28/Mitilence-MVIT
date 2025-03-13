@@ -88,7 +88,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
     return filteredUsers;
   }
 
-  const pages = Math.ceil(Object.keys(departmentPaymentParticipants)?.length / rowsPerPage);
+  const pages = Math.ceil(filteredItems().length / rowsPerPage);
 
   const items = () => {
     const start = (page - 1) * rowsPerPage;
@@ -524,6 +524,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
 
   React.useEffect(() => {
     if (currentDepartment == null) return;
+    setPage(1)
     setDepartmentPaymentParticipants({})
     const unsubscribePayments = listenToPayments(setDepartmentPaymentParticipants)
     return () => unsubscribePayments();

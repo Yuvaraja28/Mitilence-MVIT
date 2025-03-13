@@ -68,7 +68,7 @@ export default function Landing() {
       <img
         loading='lazy'
         src={MitilenceWebsiteQR}
-        className='absolute top-[31em] lg:top-[77vh] right-5 z-10 h-[5em] lg:h-[10em] rounded-[12px]'
+        className='absolute top-[30em] lg:top-[77vh] right-3 lg:right-5 z-10 h-[6em] lg:h-[10em] rounded-[12px]'
       />
     </div>
   )
