@@ -59,9 +59,9 @@ export async function POST(req: NextRequest) {
       },
     };
     await userPaymentDocRef.set(eventUserPayment, { merge: true });
-    return NextResponse.json({ message: "Successfully Checked in this Participant" }, { status: 200 });
+    return NextResponse.json({ message: `${userPaymentData?.user?.name} - Successfully Checked in this Participant` }, { status: 200 });
   } catch (error) {
     console.log(error)
-    return NextResponse.json({ error: 'Invalid event data' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid event data, contact 8778171244' }, { status: 400 });
   }
 }

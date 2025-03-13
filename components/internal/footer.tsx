@@ -1,4 +1,4 @@
-import { MVITLogoImg } from '@/variables';
+import { DevelopmentTeam, MVITLogoImg } from '@/variables';
 import { Image } from '@heroui/image';
 import { Gem, Phone } from 'lucide-react';
 import Link from 'next/link';
@@ -10,29 +10,6 @@ const convenor = {
   dept: 'IT',
   role: 'Professor & HOD'
 }
-const developers = [
-  {
-    name: 'Yuvaraja Murali',
-    dept: 'CSE',
-    role: 'Developed',
-    batch: '2022 - 2026',
-    link: 'https://1he.dev'
-  },
-  {
-    name: 'Nivetha Kumar',
-    dept: 'IT',
-    role: 'Designed',
-    batch: '2022 - 2026',
-    link: 'https://www.instagram.com/_.nive_designs'
-  },
-  {
-    name: 'Harish Mohan',
-    dept: 'CSE',
-    role: 'Maintained',
-    batch: '2022 - 2026',
-    link: 'https://hari.1he.dev'
-  },
-]
 
 export default function Footer() {
   return (
@@ -89,7 +66,7 @@ export default function Footer() {
       <div
         className='flex flex-row flex-wrap items-center justify-around gap-3 w-full h-full py-2'
       >
-        {developers.map(dev => 
+        {DevelopmentTeam.map(dev => 
           <div
             key={dev.name}
             className='flex flex-col items-center font-normal text-lg text-center'
@@ -97,7 +74,7 @@ export default function Footer() {
             <span
               className='flex flex-row flex-wrap justify-center items-center text-center gap-1.5'
             >
-              <Gem color='#A855F7' size={20} /> {dev.role} by <Link href={dev.link} target='_blank' className='font-semibold uppercase text-purple-500'>{dev.name}</Link>
+              <Gem color='#A855F7' size={20} /> {dev.task} by <Link href={dev.link} target='_blank' className='font-semibold uppercase text-purple-500'>{dev.name}</Link>
             </span>
             <span
               className='mt-[-5px]'

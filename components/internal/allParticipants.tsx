@@ -75,15 +75,15 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        departmentPaymentParticipants[user.id]?.user?.name?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.emailId?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.college?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.phoneNo?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
+        user?.user?.name?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.emailId?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.college?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.phoneNo?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
       );
     }
     if (statusFilter != "All") {
-      filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentStatus || false) == (statusFilter == 'Paid'));
+      filteredUsers = filteredUsers.filter((user) => (user?.mitilence?.[currentDepartment || '']?.paymentStatus || false) == (statusFilter == 'Paid'));
     }
     return filteredUsers;
   }
@@ -105,67 +105,67 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
   });
 
   const renderCell = (user: EventUserPayments, columnKey: React.Key) => {
-    const cellValue = departmentPaymentParticipants[user.id]?.user?.[columnKey as keyof EventUser];
+    const cellValue = user?.user?.[columnKey as keyof EventUser];
     switch (columnKey) {
       case "name":
         return (
           <User
             name={cellValue}
-            description={departmentPaymentParticipants[user.id]?.user?.emailId}
-            avatarProps={{radius: "lg", src: departmentPaymentParticipants[user.id]?.user?.imageUrl, fallback: DefaultMemberImg, size: "md"}}
+            description={user?.user?.emailId}
+            avatarProps={{radius: "lg", src: user?.user?.imageUrl, fallback: DefaultMemberImg, size: "md"}}
             classNames={{
               name: "text-lg font-medium",
               description: "text-base font-normal"
             }}
           >
-            {departmentPaymentParticipants[user.id]?.user?.emailId}
+            {user?.user?.emailId}
           </User>
         );
       case "college":
         return (
-          <div className="flex flex-col max-w-[8em]" title={departmentPaymentParticipants[user.id]?.user?.college}>
-            <p className="text-black text-bold text-base capitalize truncate">{departmentPaymentParticipants[user.id]?.user?.college}</p>
+          <div className="flex flex-col max-w-[8em]" title={user?.user?.college}>
+            <p className="text-black text-bold text-base capitalize truncate">{user?.user?.college}</p>
           </div>
         );
       case "enrollNo":
         return (
-          <div className="flex flex-col min-w-[5em]" title={departmentPaymentParticipants[user.id]?.user?.enrollNo}>
-            <p className="text-black text-bold text-base capitalize truncate">{departmentPaymentParticipants[user.id]?.user?.enrollNo}</p>
+          <div className="flex flex-col min-w-[5em]" title={user?.user?.enrollNo}>
+            <p className="text-black text-bold text-base capitalize truncate">{user?.user?.enrollNo}</p>
           </div>
         );
       case "registerTime":
         return (
           <div className="flex flex-col">
-            <p className="text-black text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
+            <p className="text-black text-bold text-base capitalize truncate">{parseDateTimeShort(user?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
           </div>
         );
       case "payment":
         return (
           <Popover placement="top" showArrow>
             <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
-                {(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentStatus) ? '' : 'Not'} Paid
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(user?.mitilence?.[currentDepartment || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(user?.mitilence?.[currentDepartment || ''].paymentStatus) ? '' : 'Not'} Paid
               </Chip>
             </PopoverTrigger>
-            {(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentStatus) &&
+            {(user?.mitilence?.[currentDepartment || '']?.paymentStatus) &&
               <PopoverContent>
                 <div
                   className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
                 >
                   <span>
-                    Paid for <b className="text-purpleAccent">{departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].departmentId?.toUpperCase()}</b> department event
+                    Paid for <b className="text-purpleAccent">{user?.mitilence?.[currentDepartment || ''].departmentId?.toUpperCase()}</b> department event
                   </span>
                   <span>
-                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentTime)}
+                    {parseDateTimeShort(user?.mitilence?.[currentDepartment || '']?.paymentTime)}
                   </span>
                   <span>
                     <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.participantType}
+                      {user?.mitilence?.[currentDepartment || '']?.participantType}
                     </b> Participant
                   </span>
                   <span>
                     Verified by <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentVerifiedByName}
+                      {user?.mitilence?.[currentDepartment || '']?.paymentVerifiedByName}
                     </b>
                   </span>
                 </div>
@@ -186,7 +186,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
                 <DropdownItem
                   key="profile"
                   onPress={() => {
-                    setPopupUser(departmentPaymentParticipants[user.id])
+                    setPopupUser(user)
                   }}
                 >
                   View Profile

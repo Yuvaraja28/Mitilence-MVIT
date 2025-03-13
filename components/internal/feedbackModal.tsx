@@ -67,7 +67,7 @@ const EmojiQuestion: React.FC<EmojiQuestionProps> = ({ question, optional = fals
   );
 };
 
-const FeedbackFormModal = ({ formOpened, setFormClose }: { formOpened: boolean, setFormClose: () => void }) => {
+const FeedbackFormModal = ({ formOpened, disabled, setFormClose }: { formOpened: boolean, disabled: boolean, setFormClose: () => void }) => {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
@@ -224,6 +224,7 @@ const FeedbackFormModal = ({ formOpened, setFormClose }: { formOpened: boolean, 
           <ModalFooter className="flex justify-end gap-4">
             <Button
               type="submit"
+              isDisabled={disabled}
               className="px-6 bg-purple-600 text-white text-lg font-medium rounded-xl hover:bg-purple-700"
             >
               Submit feedback

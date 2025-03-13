@@ -4,7 +4,7 @@ import { Image } from "@heroui/image";
 import { DefaultMemberImg } from "@/variables";
 import { BlurFade } from "../magicui/blur-fade";
 
-export function MembersDisplay({ title, members }: { title: string, members: AdministrationMember[] | TechnicalMember[] }) {
+export function MembersDisplay({ title, members }: { title: string, members: AdministrationMember[] | TechnicalMember[] | any }) {
   return (
     <div
       className="text-white lg:p-10 px-6 py-8 flex flex-col items-center w-full gap-8 lg:gap-14"
@@ -16,14 +16,15 @@ export function MembersDisplay({ title, members }: { title: string, members: Adm
         {title} Team
       </span>
       <div className="flex flex-row flex-wrap items-center justify-center gap-10 w-full px-6 lg:px-16">
-        {members.map((memb, idx) => (
+        {members.map((memb: any, idx: number) => (
           <BlurFade
             inView
             key={idx}
             delay={0.1 + (idx+1) * 0.05}
           >
             <div
-              className="flex flex-col w-full absolute z-30 bottom-3 left-[-20px] -skew-x-6 bg-white text-black text-md font-semibold rounded-[10px] px-3 py-1.5 border-2 border-gray-300 shadow-xl drop-shadow-xl leading-[17px] gap-0.5"
+              onClick={(memb?.link == null) ? () => {} : () => {window.open(memb?.link, "_blank")}}
+              className="flex flex-col w-full absolute z-30 bottom-3 left-[-20px] -skew-x-6 bg-white text-black text-md font-semibold rounded-[10px] px-3 py-1.5 border-2 border-gray-300 shadow-xl drop-shadow-xl leading-[17px] gap-0.5 cursor-pointer"
             >
               <span>
                 {memb.name}

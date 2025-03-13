@@ -62,7 +62,7 @@ export default function Organizers() {
       } else if (userResp.status != 200) {
         return addToast({
           title: "Warn!",
-          description: userData?.error || ':<',
+          description: userData?.error || ':< contact 8778171244',
           color: "warning"
         })
       }
@@ -70,7 +70,7 @@ export default function Organizers() {
     } catch (e) {
       addToast({
         title: "Error Occured!",
-        description: "An unknown error occured",
+        description: "An unknown error occured, contact 8778171244",
         color: "danger"
       })
     } finally {
@@ -100,7 +100,7 @@ export default function Organizers() {
       } else if (userResp.status != 200) {
         return addToast({
           title: "Warn!",
-          description: userResponseData?.error || ':<',
+          description: userResponseData?.error || ':< contact 8778171244',
           color: "warning"
         })
       }
@@ -108,7 +108,7 @@ export default function Organizers() {
     } catch (e) {
       addToast({
         title: "Error Occured!",
-        description: "An unknown error occured",
+        description: "An unknown error occured, contact 8778171244",
         color: "danger"
       })
       console.log(e)

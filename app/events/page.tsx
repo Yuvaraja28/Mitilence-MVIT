@@ -145,7 +145,7 @@ export default function Events() {
     } else if (registerResp.status != 200) {
       addToast({
         title: "Warn!",
-        description: registerData?.error || ':<',
+        description: registerData?.error || ':< contact 8778171244',
         color: "warning"
       })
     }

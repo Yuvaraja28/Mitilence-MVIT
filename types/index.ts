@@ -46,8 +46,6 @@ interface TechnicalMember {
   readonly role: string;
   readonly imageUrl: string;
   readonly order: number;
-  readonly phone?: string;
-  readonly social?: SocialHandle[];
 }
 
 // Firestore DB

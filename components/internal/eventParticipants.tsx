@@ -70,7 +70,9 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
   const firestoreDB = firebaseContext?.firestoreDB;
   const eventsObject = firebaseContext?.eventsObject;
 
-  const filteredEvents = React.useMemo(() => [...(events?.filter(e => (e.departmentId == currentDepartment)) || []), { name: 'Food', id: 'food', departmentId: currentDepartment } as Events], [events, currentDepartment]);
+  const filteredEvents = React.useMemo(() => [...(events?.filter(e => (e.departmentId == currentDepartment)) || []), 
+      // { name: 'Food', id: 'food', departmentId: currentDepartment } as Events
+    ], [events, currentDepartment]);
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
@@ -99,190 +101,165 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        departmentPaymentParticipants[user.id]?.user?.name?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.emailId?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.college?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.phoneNo?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
-        departmentPaymentParticipants[user.id]?.user?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
+        user?.user?.name?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.emailId?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.college?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.phoneNo?.toLowerCase()?.includes(filterValue.toLowerCase()) ||
+        user?.user?.enrollNo?.toLowerCase()?.includes(filterValue.toLowerCase())
       );
     }
-    filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentStatus || false));
+    filteredUsers = filteredUsers.filter((user) => (user?.mitilence?.[currentDepartment || '']?.paymentStatus || false));
     if (statusFilter != "All") {
-      filteredUsers = filteredUsers.filter((user) => (departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus || false) == (statusFilter == 'Checked In'));
+      filteredUsers = filteredUsers.filter((user) => (user?.events?.[selectedEvent || '']?.checkedInStatus || false) == (statusFilter == 'Checked In'));
     }
     return filteredUsers;
   }
 
   const pages = Math.ceil(filteredItems().length / rowsPerPage);
 
-  const items = () => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+  const items = filteredItems().slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage);
 
-    return filteredItems().slice(start, end);
-  }
-
-  const sortedItems = [...items()];
+  const sortedItems = [...items];
   sortedItems.sort((a: EventUserPayments, b: EventUserPayments) => {
     const first = new Date(departmentPaymentParticipants[a.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
     const second = new Date(departmentPaymentParticipants[b.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
     return first > second ? -1 : 0;
   });
 
-  const renderCell = React.useCallback((user: EventUserPayments, columnKey: React.Key) => {
-    const cellValue = departmentPaymentParticipants[user.id]?.user?.[columnKey as keyof EventUser];
+  function renderCheckedIn(user: EventUserPayments) {
+    return (
+      <Popover placement="top" showArrow>
+        <PopoverTrigger>
+          <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(user?.events?.[selectedEvent || '']?.checkedInStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+            {(user?.events?.[selectedEvent || '']?.checkedInStatus) ? '' : 'Not'} Checked In
+          </Chip>
+        </PopoverTrigger>
+        {(user?.events?.[selectedEvent || '']?.checkedInStatus) &&
+          <PopoverContent>
+            <div
+              className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
+            >
+              <span>
+                {parseDateTimeShort(user?.events?.[selectedEvent || ''].checkedInTime)}
+              </span>
+              <span>
+                <b className="text-purpleAccent font-medium">
+                  {user?.mitilence?.[currentDepartment || ''].participantType}
+                </b> Participant
+              </span>
+              <span>
+                Checked In by <b className="text-purpleAccent font-medium">
+                  {user?.events?.[selectedEvent || ''].checkedInByName}
+                </b>
+              </span>
+            </div>
+          </PopoverContent>
+        }
+      </Popover>
+    );
+  }
+
+  type RenderCellProps = {
+    paymentUser: EventUserPayments;
+    columnKey: React.Key;
+  };
+  
+  const RenderCell: React.FC<RenderCellProps> = ({ paymentUser, columnKey }) => {
+    console.log(paymentUser, columnKey)
+    const cellValue = paymentUser?.user?.[columnKey as keyof EventUser];
+  
     switch (columnKey) {
       case "name":
         return (
           <User
             name={cellValue}
-            description={departmentPaymentParticipants[user.id]?.user?.emailId}
-            avatarProps={{radius: "lg", src: departmentPaymentParticipants[user.id]?.user?.imageUrl, fallback: DefaultMemberImg, size: "md"}}
+            description={paymentUser?.user?.emailId}
+            avatarProps={{ radius: "lg", src: paymentUser?.user?.imageUrl, fallback: DefaultMemberImg, size: "md" }}
             classNames={{
               name: "text-lg font-medium",
-              description: "text-base font-normal"
+              description: "text-base font-normal",
             }}
           >
-            {departmentPaymentParticipants[user.id]?.user?.emailId}
+            {paymentUser?.user?.emailId}
           </User>
         );
       case "createdTime":
         return (
           <div className="flex flex-col">
-            <p className="text-black text-bold text-base capitalize">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.user?.createdTime)}</p>
+            <p className="text-black text-bold text-base capitalize">
+              {parseDateTimeShort(paymentUser?.user?.createdTime)}
+            </p>
           </div>
         );
       case "enrollNo":
         return (
-          <div className="flex flex-col min-w-[5em]" title={departmentPaymentParticipants[user.id]?.user?.enrollNo}>
-            <p className="text-black text-bold text-base capitalize truncate">{departmentPaymentParticipants[user.id]?.user?.enrollNo}</p>
+          <div className="flex flex-col min-w-[5em]" title={paymentUser?.user?.enrollNo}>
+            <p className="text-black text-bold text-base capitalize truncate">
+              {paymentUser?.user?.enrollNo}
+            </p>
           </div>
         );
       case "college":
         return (
-          <div className="flex flex-col max-w-[8em]" title={departmentPaymentParticipants[user.id]?.user?.college}>
-            <p className="text-black text-bold text-base capitalize truncate">{departmentPaymentParticipants[user.id]?.user?.college}</p>
+          <div className="flex flex-col max-w-[8em]" title={paymentUser?.user?.college}>
+            <p className="text-black text-bold text-base capitalize truncate">
+              {paymentUser?.user?.college}
+            </p>
           </div>
         );
       case "updatedTime":
         return (
           <div className="flex flex-col">
-            <p className="text-black text-bold text-base capitalize">{(departmentPaymentParticipants[user.id]?.user?.updatedTime == null) ? '' : parseDateTimeShort(departmentPaymentParticipants[user.id]?.user?.updatedTime || '')}</p>
+            <p className="text-black text-bold text-base capitalize">
+              {(paymentUser?.user?.updatedTime == null) ? '' : parseDateTimeShort(paymentUser?.user?.updatedTime || '')}
+            </p>
           </div>
         );
       case "registerTime":
         return (
           <div className="flex flex-col">
-            <p className="text-black text-bold text-base capitalize truncate">{parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.registeredTime)}</p>
+            <p className="text-black text-bold text-base capitalize truncate">
+              {parseDateTimeShort(paymentUser?.mitilence?.[currentDepartment || '']?.registeredTime)}
+            </p>
           </div>
         );
       case "checkedIn":
-        return (
-          <Popover placement="top" showArrow>
-            <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
-                {(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) ? '' : 'Not'} Checked In
-              </Chip>
-            </PopoverTrigger>
-            {(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || '']?.checkedInStatus) &&
-              <PopoverContent>
-                <div
-                  className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
-                >
-                  <span>
-                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.events?.[selectedEvent || ''].checkedInTime)}
-                  </span>
-                  <span>
-                    <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].participantType}
-                    </b> Participant
-                  </span>
-                  <span>
-                    Checked In by <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.events?.[selectedEvent || ''].checkedInByName}
-                    </b>
-                  </span>
-                </div>
-              </PopoverContent>
-            }
-          </Popover>
-        );
+        return renderCheckedIn(paymentUser);  // Assuming `renderCheckedIn` is still used here
       case "payment":
         return (
           <Popover placement="top" showArrow>
             <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
-                {(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentStatus) ? '' : 'Not'} Paid
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(paymentUser?.mitilence?.[currentDepartment || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(paymentUser?.mitilence?.[currentDepartment || ''].paymentStatus) ? '' : 'Not'} Paid
               </Chip>
             </PopoverTrigger>
-            {(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || '']?.paymentStatus) &&
+            {(paymentUser?.mitilence?.[currentDepartment || '']?.paymentStatus) && (
               <PopoverContent>
-                <div
-                  className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1"
-                >
+                <div className="flex flex-col items-center px-2 py-1 text-base font-medium gap-1">
                   <span>
-                    Paid for <b className="text-purpleAccent">{departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].departmentId?.toUpperCase()}</b> department event
+                    Paid for <b className="text-purpleAccent">{paymentUser?.mitilence?.[currentDepartment || ''].departmentId?.toUpperCase()}</b> department event
                   </span>
-                  <span>
-                    {parseDateTimeShort(departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentTime)}
-                  </span>
+                  <span>{parseDateTimeShort(paymentUser?.mitilence?.[currentDepartment || ''].paymentTime)}</span>
                   <span>
                     <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].participantType}
+                      {paymentUser?.mitilence?.[currentDepartment || ''].participantType}
                     </b> Participant
                   </span>
                   <span>
                     Verified by <b className="text-purpleAccent font-medium">
-                      {departmentPaymentParticipants[user.id]?.mitilence?.[currentDepartment || ''].paymentVerifiedByName}
+                      {paymentUser?.mitilence?.[currentDepartment || ''].paymentVerifiedByName}
                     </b>
                   </span>
                 </div>
               </PopoverContent>
-            }
+            )}
           </Popover>
         );
-      case "actions":
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <ChevronDownIcon />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem
-                  key="profile"
-                  onPress={() => {
-                    setPopupUser(departmentPaymentParticipants[user.id])
-                  }}
-                >
-                  View Profile
-                </DropdownItem>
-                {((checkInCallback != null) && (!(departmentPaymentParticipants[user.id].events[selectedEvent || '']?.checkedInStatus || false))) ?
-                  <DropdownItem
-                    key="checkIn"
-                    onPress={() => checkInCallback(user.id)}
-                  >
-                    Check In
-                  </DropdownItem>
-                  :
-                  <></>
-                }
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
       default:
-        return (
-          <span
-            className="text-black"
-          >
-            {cellValue}
-          </span>
-        );
-      }
-  }, [selectedEvent, departmentPaymentParticipants]);
+        return <span className="text-black">{cellValue}</span>;
+    }
+  };
+  
 
   const onRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value));
@@ -303,7 +280,7 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
     setPage(1);
   }
 
-  const topContent = () => {
+  const topContent = React.useCallback(() => {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row justify-between gap-3 w-full">
@@ -429,7 +406,7 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
         </div>
       </div>
     );
-  }
+  }, [selectedEvent, filteredEvents])
 
   const bottomContent = () => {
     return (
@@ -574,12 +551,12 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
-        {(item) => (
+      <TableBody emptyContent={"No users found"}>
+        {sortedItems.map(item => (
           <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+            {(columnKey) => <TableCell> <RenderCell paymentUser={item} columnKey={columnKey} /></TableCell>}
           </TableRow>
-        )}
+        ))}
       </TableBody>
     </Table>
   );

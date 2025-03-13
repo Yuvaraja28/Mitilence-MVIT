@@ -4,7 +4,7 @@ import { useFirebase } from "@/contexts/firebase";
 import EventParticipants from "../../components/internal/eventParticipants";
 import { CircularLoader } from "@/components/internal/Loaders";
 import { UserProfile } from "@/components/internal/userProfile";
-import { Tabs, Tab, Modal, ModalContent, ModalBody, Button, addToast } from "@heroui/react";
+import { Tabs, Tab, Modal, ModalContent, ModalBody, Button, addToast, Spinner } from "@heroui/react";
 import { boundingBox, IDetectedBarcode, Scanner } from '@yudiel/react-qr-scanner';
 import { QrCodeIcon } from "lucide-react";
 import { getPayment } from "@/Firestore/payments";
@@ -37,21 +37,21 @@ export default function OrganizerDashboard() {
       var paymentData = await getPayment(userId);
     } catch {
       return addToast({
-        title: "Not Paid Amount",
-        description: `Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
+        title: "Error Ocured",
+        description: `An unknown Error Occured, contact 8778171244`,
         color: "warning"
       }) 
     }
     if (!(paymentData.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false)) {
       addToast({
         title: "Not Paid Amount",
-        description: `Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
+        description: `${paymentData.user.name} - Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
         color: "warning"
       })
     } else if (paymentData.events?.[selectedEvent]?.checkedInStatus) {
       addToast({
         title: "Duplicate Checkin",
-        description: "Participant already Checked in for this Event",
+        description: `${paymentData.user.name} - Participant already Checked in for this Event`,
         color: "danger"
       })
     } else {
@@ -77,7 +77,7 @@ export default function OrganizerDashboard() {
       } else if (checkinResp.status != 200) {
         addToast({
           title: "Warn!",
-          description: checkinData?.error || ':<',
+          description: checkinData?.error || ':< contact 8778171244',
           color: "warning"
         })
       }
@@ -202,12 +202,20 @@ export default function OrganizerDashboard() {
           isOpen={true}
           placement="center"
           scrollBehavior="outside"
+          hideCloseButton={true}
           onClose={() => setCheckInModal(false)}
         >
           <ModalContent>
             <ModalBody
-              className="flex flex-col justify-center items-center gap-2 py-12"
+              className="flex flex-col justify-center items-center gap-2 py-12 relative"
             >
+              {(scanPaused) &&
+                <div
+                  className="z-50 absolute text-foreground h-full flex items-center"
+                >
+                  <Spinner classNames={{circle1: 'text-blue-500', circle2: 'text-blue-300'}} variant="simple" color="secondary" size="lg" />
+                </div>
+              }
               <Scanner
                 components={{
                   audio: true,
