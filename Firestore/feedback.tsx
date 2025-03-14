@@ -1,5 +1,14 @@
 import { firestoreDB } from "@/lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
+export async function getFeedback(userId: string): Promise<any> {
+  const userDoc = await getDoc(doc(firestoreDB, 'feedbacks', userId));
+  if (userDoc.exists()) {
+    return {...userDoc.data()};
+  } else {
+    return null;
+  }
+}
 
 export async function setFeedback(userId: string, feedback: Feedback): Promise<void> {
   const feedbackRef = doc(firestoreDB, 'feedbacks', userId);

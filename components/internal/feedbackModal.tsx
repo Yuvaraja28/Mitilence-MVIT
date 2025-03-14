@@ -67,7 +67,7 @@ const EmojiQuestion: React.FC<EmojiQuestionProps> = ({ question, optional = fals
   );
 };
 
-const FeedbackFormModal = ({ formOpened, disabled, setFormClose }: { formOpened: boolean, disabled: boolean, setFormClose: () => void }) => {
+const FeedbackFormModal = ({ formOpened, disabled }: { formOpened: boolean, disabled: boolean }) => {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
   const fireUserData = firebaseContext?.fireUserData;
@@ -162,7 +162,6 @@ const FeedbackFormModal = ({ formOpened, disabled, setFormClose }: { formOpened:
     // Log the form data to console
     console.log('Form Submission Data:', finalFormData);
     setFeedback(fireUserData?.uid, finalFormData)
-    setFormClose()
     addToast({
       title: "Feedback Submitted",
       icon: <span>🤩</span>,
@@ -177,15 +176,15 @@ const FeedbackFormModal = ({ formOpened, disabled, setFormClose }: { formOpened:
       }
     });
   };
-
+  
   return (!(fireUserDoc == null && fireUserData != null)) &&
     <Modal
       size={"xl"}
       radius="lg"
       placement="bottom"
-      scrollBehavior="outside"
       isOpen={formOpened}
-      onClose={setFormClose}
+      hideCloseButton={true}
+      scrollBehavior="inside"
     >
       <ModalContent>
         <form 

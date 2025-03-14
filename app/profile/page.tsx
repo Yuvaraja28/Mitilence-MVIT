@@ -2,7 +2,9 @@
 import React from "react";
 import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
+import { addToast } from "@heroui/toast";
 import { useFirebase } from "@/contexts/firebase";
+import { getFeedback } from "@/Firestore/feedback";
 import { UserProfile } from "@/components/internal/userProfile";
 import UserRegistration from "@/components/internal/userRegistration";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
@@ -13,13 +15,13 @@ import FeedbackFormModal from "@/components/internal/feedbackModal";
 export default function Profile() {
   const firebaseContext = useFirebase();
   const fireUserDoc = firebaseContext?.fireUserDoc;
+  const fireUserData = firebaseContext?.fireUserData;
   const userFeedback = firebaseContext?.userFeedback;
   const eventsObject = firebaseContext?.eventsObject || {};
   const fireCustomClaims = firebaseContext?.fireCustomClaims;
   const eventPayments: EventUserPayments = firebaseContext?.eventPayments || {} as EventUserPayments;
 
   const [userUpdate, setUserUpdate] = React.useState(false)
-  const [easterFeedback, setEasterFeedback] = React.useState(0)
   const [currentEvent, setCurrentEvent] = React.useState<string | null>(null)
 
   const checkedInEvents = React.useMemo(() => Object.entries(eventPayments?.events || {}).filter(events => events[1].checkedInStatus), [eventPayments?.events])
@@ -35,6 +37,27 @@ export default function Profile() {
       clearTimeout(timeoutId);
     };
   }, [fireUserDoc]);
+
+  React.useEffect(() => {
+    if (fireUserData?.uid == null) return;
+    getFeedback(fireUserData?.uid).then(feedback => {
+      if (feedback != null) {
+        addToast({
+          title: "Feedback Already Submitted",
+          icon: <span>🤩</span>,
+          description: "Yayy! You have submitted the feedback already. Thank you for your valuable feedback.",
+          color: "danger",
+          variant: 'bordered',
+          classNames: {
+            base: "bg-white",
+            icon: "h-8 text-2xl",
+            title: 'text-md font-semibold',
+            description: 'font-medium whitespace-pre-wrap'
+          }
+        });
+      }
+    })
+  }, [fireUserData])
   
   return (
     <div
@@ -48,7 +71,6 @@ export default function Profile() {
           setUserUpdate={setUserUpdate}
           paidDepartments={paidDepartments}
           fireCustomClaims={fireCustomClaims}
-          callback={() => setEasterFeedback((i) => i+1)}
         />
         <span
           className="flex flex-row justify-between items-center gap-4 bg-white rounded-2xl px-8 py-4 text-xl font-medium"
@@ -192,10 +214,9 @@ export default function Profile() {
           </ModalContent>
         </Modal>
       }
-      {(userFeedback == null) &&
+      {((userFeedback == null) && (fireUserData != null)) &&
         <FeedbackFormModal
           formOpened={true}
-          setFormClose={() => setEasterFeedback(0)}
           disabled={!(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0)}
         />
       }
