@@ -194,7 +194,7 @@ export default function Profile() {
       }
       {(userFeedback == null) &&
         <FeedbackFormModal
-          formOpened={easterFeedback >= 3}
+          formOpened={true}
           setFormClose={() => setEasterFeedback(0)}
           disabled={!(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0)}
         />
