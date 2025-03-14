@@ -518,14 +518,16 @@ export default function Events() {
                       }
                     </BlurFade>
                   </div>
-                  {((currentEvent?.registrationsClosed) || (new Date(currentEvent?.endTime || '') < new Date())) ?
+                  {/* || (new Date(currentEvent?.endTime || '') < new Date()) */}
+                  {((currentEvent?.registrationsClosed)) ?
                     <Button
                       isDisabled={true}
                       className={`bg-red-500 text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
                     >
                       Registrations Closed
                     </Button>
-                  : ((currentEvent?.linkRegistration == null) && (eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus)) ?
+                  : 
+                  ((currentEvent?.linkRegistration == null) && (eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus)) ?
                     <span
                       className="flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-2xl uppercase h-[3.2rem]"
                     >
