@@ -518,8 +518,7 @@ export default function Events() {
                       }
                     </BlurFade>
                   </div>
-                  {/* || (new Date(currentEvent?.endTime || '') < new Date()) */}
-                  {((currentEvent?.registrationsClosed)) ?
+                  {((currentEvent?.registrationsClosed) || (new Date(currentEvent?.endTime || '') < new Date())) ?
                     <Button
                       isDisabled={true}
                       className={`bg-red-500 text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}

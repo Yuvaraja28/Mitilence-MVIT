@@ -35,7 +35,8 @@ export default function OrganizerDashboard() {
     if (selectedEvent == null) return;
     try {
       var paymentData = await getPayment(userId);
-    } catch {
+    } catch (e) {
+      console.log(e)
       return addToast({
         title: "Error Ocured",
         description: `An unknown Error Occured, contact 8778171244`,
