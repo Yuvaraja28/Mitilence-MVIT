@@ -88,15 +88,15 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
 
   const hasSearchFilter = Boolean(filterValue);
 
-  const headerColumns = columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+  const headerColumns = React.useMemo(() => columns.filter((column) => Array.from(visibleColumns).includes(column.uid)), [visibleColumns]);
 
   React.useEffect(() => {
     if (filteredEvents == null) return;
     setDepartmentPaymentParticipants({})
     setSelectedEvent(filteredEvents[0].id)
-  }, [filteredEvents, currentDepartment])
+  }, [filteredEvents, currentDepartment, setSelectedEvent])
   
-  const filteredItems = () => {
+  const filteredItems = React.useCallback(() => {
     let filteredUsers = [...Object.values(departmentPaymentParticipants)];
 
     if (hasSearchFilter) {
@@ -113,20 +113,23 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
       filteredUsers = filteredUsers.filter((user) => (user?.events?.[selectedEvent || '']?.checkedInStatus || false) == (statusFilter == 'Checked In'));
     }
     return filteredUsers;
-  }
+  }, [departmentPaymentParticipants, filterValue, currentDepartment, statusFilter, selectedEvent]);
 
   const pages = Math.ceil(filteredItems().length / rowsPerPage);
 
-  const items = filteredItems().slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage);
+  const items = React.useMemo(() => filteredItems().slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage), [filteredItems, page, rowsPerPage]);
 
-  const sortedItems = [...items];
-  sortedItems.sort((a: EventUserPayments, b: EventUserPayments) => {
-    const first = new Date(departmentPaymentParticipants[a.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
-    const second = new Date(departmentPaymentParticipants[b.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
-    return first > second ? -1 : 0;
-  });
+  const sortedItems = React.useMemo(() => {
+    const sorted = [...items];
+    sorted.sort((a: EventUserPayments, b: EventUserPayments) => {
+      const first = new Date(departmentPaymentParticipants[a.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
+      const second = new Date(departmentPaymentParticipants[b.id]?.mitilence?.[currentDepartment || '']?.registeredTime);
+      return first > second ? -1 : 0;
+    });
+    return sorted;
+  }, [items, departmentPaymentParticipants, currentDepartment]);
 
-  function renderCheckedIn(user: EventUserPayments) {
+  const renderCheckedIn = React.useCallback((user: EventUserPayments) => {
     return (
       <Popover placement="top" showArrow>
         <PopoverTrigger>
@@ -157,14 +160,14 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
         }
       </Popover>
     );
-  }
+  }, [selectedEvent, currentDepartment]);
 
   type RenderCellProps = {
     paymentUser: EventUserPayments;
     columnKey: React.Key;
   };
   
-  const RenderCell: React.FC<RenderCellProps> = ({ paymentUser, columnKey }) => {
+  const RenderCell: React.FC<RenderCellProps> = React.useCallback(({ paymentUser, columnKey }) => {
     const cellValue = paymentUser?.user?.[columnKey as keyof EventUser];
   
     switch (columnKey) {
@@ -257,27 +260,27 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
       default:
         return <span className="text-black">{cellValue}</span>;
     }
-  };
+  }, [currentDepartment, renderCheckedIn]);
   
 
-  const onRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value));
     setPage(1);
-  }
+  }, []);
 
-  const onSearchChange = (value?: string) => {
+  const onSearchChange = React.useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
       setPage(1);
     } else {
       setFilterValue("");
     }
-  }
+  }, []);
 
-  const onClear = () => {
+  const onClear = React.useCallback(() => {
     setFilterValue("");
     setPage(1);
-  }
+  }, []);
 
   const topContent = React.useCallback(() => {
     return (
@@ -405,9 +408,9 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
         </div>
       </div>
     );
-  }, [selectedEvent, filteredEvents])
+  }, [selectedEvent, filteredEvents, filterValue, onClear, onSearchChange, setCheckInModal, children, statusFilter, visibleColumns, departmentPaymentParticipants, onRowsPerPageChange])
 
-  const bottomContent = () => {
+  const bottomContent = React.useCallback(() => {
     return (
       <div className="py-3 px-4 flex justify-center items-center">
         <Pagination
@@ -429,9 +432,9 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
         </span> */}
       </div>
     );
-  }
+  }, [page, pages])
   
-  const generateExcelDatas = async () => {  
+  const generateExcelDatas = React.useCallback(async () => {  
     if (Object.keys(departmentPaymentParticipants).length === 0) {
       console.warn("No user data available to export.");
       return;
@@ -510,9 +513,9 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
     // Write & Download File
     const buffer = await workbook.xlsx.writeBuffer();
     downloadBlob(new Blob([buffer]), fileName);
-  };
+  }, [departmentPaymentParticipants, selectedEvent, eventsObject, currentDepartment]);
       
-  function listenToPayments(callback: (data: Record<string, EventUserPayments>) => void) {
+  const listenToPayments = React.useCallback((callback: (data: Record<string, EventUserPayments>) => void) => {
     if (firestoreDB == null) return () => {};
     const paymentsRef = collection(firestoreDB, "payments");
     const q = query(paymentsRef, where(`mitilence.${currentDepartment}.departmentId`, "==", currentDepartment));
@@ -521,14 +524,14 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
       callback(payments);
     });
     return unsubscribe;
-  }
+  }, [currentDepartment, firestoreDB]);
 
   React.useEffect(() => {
     if (currentDepartment == null) return;
     setPage(1)
     const unsubscribePayments = listenToPayments(setDepartmentPaymentParticipants)
     return () => unsubscribePayments();
-  }, [currentDepartment]);
+  }, [currentDepartment, listenToPayments]);
 
   return (
     <Table

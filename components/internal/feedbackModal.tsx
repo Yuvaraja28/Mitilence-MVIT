@@ -224,7 +224,7 @@ const FeedbackFormModal = ({ formOpened, disabled, setFormClose }: { formOpened:
           <ModalFooter className="flex justify-end gap-4">
             <Button
               type="submit"
-              isDisabled={disabled}
+              // isDisabled={disabled}
               className="px-6 bg-purple-600 text-white text-lg font-medium rounded-xl hover:bg-purple-700"
             >
               Submit feedback
