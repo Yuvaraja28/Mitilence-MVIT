@@ -214,7 +214,7 @@ export default function Profile() {
           </ModalContent>
         </Modal>
       }
-      {((userFeedback == null) && (fireUserData != null)) &&
+      {((userFeedback == null) && (fireUserDoc != null)) &&
         <FeedbackFormModal
           formOpened={true}
           disabled={!(paidDepartments.filter(mitilence => (mitilence[1]?.paymentStatus == true)).length > 0)}
