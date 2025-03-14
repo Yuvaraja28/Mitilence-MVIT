@@ -3,8 +3,6 @@ import React from "react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
-import { getUser } from "@/Firestore/users";
-import { getPayment } from "@/Firestore/payments";
 import { useFirebase } from "@/contexts/firebase";
 import { Select, SelectItem } from "@heroui/select";
 import "@/components/styles/overideHerouiSelect.css";

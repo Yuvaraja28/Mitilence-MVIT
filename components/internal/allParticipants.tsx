@@ -357,9 +357,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
     );
   }
   
-  const generateExcelDatas = async () => {
-    console.log(departmentPaymentParticipants, departmentPaymentParticipants?.user);
-  
+  const generateExcelDatas = async () => {  
     if (Object.keys(departmentPaymentParticipants).length === 0) {
       console.warn("No user data available to export.");
       return;

@@ -33,20 +33,11 @@ export default function OrganizerDashboard() {
 
   const checkInRequest = async (userId: string, selectedEvent: string | null) => {
     if (selectedEvent == null) return;
-    try {
-      var paymentData = await getPayment(userId);
-    } catch (e) {
-      console.log(e)
-      return addToast({
-        title: "Error Ocured",
-        description: `An unknown Error Occured, contact 8778171244`,
-        color: "warning"
-      }) 
-    }
-    if (!(paymentData.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false)) {
+    const paymentData = await getPayment(userId);
+    if ((paymentData == null) || (!(paymentData.mitilence?.[fireCustomClaims?.departmentId || '']?.paymentStatus || false))) {
       addToast({
         title: "Not Paid Amount",
-        description: `${paymentData.user.name} - Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
+        description: `${paymentData?.user?.name || ''} - Participant has not paid the ${fireCustomClaims?.departmentId?.toUpperCase()} Department Amount`,
         color: "warning"
       })
     } else if (paymentData.events?.[selectedEvent]?.checkedInStatus) {

@@ -165,7 +165,6 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
   };
   
   const RenderCell: React.FC<RenderCellProps> = ({ paymentUser, columnKey }) => {
-    console.log(paymentUser, columnKey)
     const cellValue = paymentUser?.user?.[columnKey as keyof EventUser];
   
     switch (columnKey) {
