@@ -15,7 +15,7 @@ import { GoogleMap } from "@/components/internal/googleMap";
 import { CircularLoader } from "@/components/internal/Loaders";
 import HeaderSection from "@/components/internal/headerSection";
 import CrossVelocity from "@/components/internal/crossVelocity";
-import { EventsFallbackImg, MitilenceGFormsLink, TechnicalEventsImg } from "@/variables";
+import { EventsFallbackImg, MitilenceDate, MitilenceEndTime, MitilenceGFormsLink, TechnicalEventsImg } from "@/variables";
 import { ArrowUpRight, BadgeCheck, BadgeIndianRupee, Building2, CalendarDays, ContactRound, Link2, Search, Share2, ShieldUser, UsersRound } from "lucide-react";
 import { Tabs, Tab, Image, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Popover, PopoverTrigger, PopoverContent, addToast, Alert } from "@heroui/react";
 import { parseDateOnly, parseTimeOnly } from "@/utils/parseDate";
@@ -286,11 +286,11 @@ export default function Events() {
               <div
                 className="flex flex-row gap-3 flex-wrap justify-center"
               >
-                {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus) ? 
-                  <span className={`flex items-center justify-center gap-2 ${(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? "bg-[#17C964]" : "bg-yellow-500"} select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 w-fit`}>
-                    {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? <BadgeCheck /> : <BadgeIndianRupee />} Registered {(eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 'and Paid' : 'but not Paid'}
+                {(eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus && eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus) ? 
+                  <span className={`flex items-center justify-center gap-2 bg-[#17C964] select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 w-fit`}>
+                    <BadgeCheck /> Registered and Paid
                   </span>
-                : ((currentDepartment?.registrationsClosed) || (new Date("2025-03-14T16:00:00") < new Date())) ?
+                : ((currentDepartment?.registrationsClosed) || (MitilenceEndTime < new Date())) ?
                   <Button
                     size="lg"
                     onPress={() => {
@@ -316,8 +316,11 @@ export default function Events() {
                     (currentEvent?.registrationsClosed || currentEvent?.eventClosed)
                     */}
                     Registrations Closed
-                  </Button>
-              
+                  </Button>              
+                : (eventPayments.mitilence?.[currentDepartment?.id || '']?.registrationStatus && (!eventPayments.mitilence?.[currentDepartment?.id || '']?.paymentStatus)) ?
+                  <span className={`flex items-center justify-center gap-2 bg-yellow-500 select-none text-black text-xl font-medium rounded-xl px-6 py-2.5 w-fit`}>
+                    <BadgeIndianRupee /> Registered but not Paid
+                  </span>
                 :
                   <Button
                     size="lg"
@@ -518,7 +521,7 @@ export default function Events() {
                       }
                     </BlurFade>
                   </div>
-                  {((currentEvent?.registrationsClosed) || (new Date(currentEvent?.endTime || '') < new Date())) ?
+                  {((currentEvent?.registrationsClosed) || (new Date(currentEvent?.endTime || '') < new Date()) || (MitilenceEndTime < new Date())) ?
                     <Button
                       isDisabled={true}
                       className={`bg-red-500 text-white text-xl font-medium rounded-2xl uppercase h-[3.2rem]`}
@@ -825,7 +828,11 @@ export default function Events() {
         </div>
       }
       <CrossVelocity>
-        REGISTER NOW
+        {(MitilenceDate > new Date()) ?
+          "REGISTER NOW"
+          :
+          "WRAPPING UP"
+        }
       </CrossVelocity>
       <GoogleMap />
       <Footer />

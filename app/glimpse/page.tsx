@@ -1,6 +1,6 @@
 'use client';
 import { Image } from "@heroui/image";
-import { MVITShowcaseImg } from "@/variables";
+import { MitilenceDate, MVITShowcaseImg } from "@/variables";
 import Footer from "@/components/internal/footer";
 import { BlurFade } from "@/components/magicui/blur-fade";
 import { GoogleMap } from "@/components/internal/googleMap";
@@ -113,7 +113,11 @@ export default function Glimpse() {
         </ResponsiveMasonry>
       </div>
       <CrossVelocity>
-        REGISTER NOW
+        {(MitilenceDate > new Date()) ?
+          "REGISTER NOW"
+          :
+          "WRAPPING UP"
+        }
       </CrossVelocity>
       <GoogleMap />
       <Footer />

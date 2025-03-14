@@ -12,7 +12,7 @@ import { Departments } from "@/components/internal/departments";
 import CrossVelocity from "@/components/internal/crossVelocity";
 import { AboutSection } from "@/components/internal/aboutSection";
 import { MembersDisplay } from "@/components/internal/membersDisplay";
-import { DevelopmentTeam, FacultyCoordinatorsImg } from "@/variables";
+import { DevelopmentTeam, FacultyCoordinatorsImg, MitilenceDate } from "@/variables";
 import { OrganizersDisplay } from "@/components/internal/organizersDisplay";
 
 export default function Home() {
@@ -24,11 +24,17 @@ export default function Home() {
   return (
     <React.Fragment>
       <Landing />
-      <CountDown
-        timeleft={1741924800}
-      />
+      {(MitilenceDate > new Date()) &&
+        <CountDown
+          timeleft={Math.ceil((+MitilenceDate)/1000)}
+        />
+      }
       <LineVelocity>
-        REGISTER NOW
+        {(MitilenceDate > new Date()) ?
+          "REGISTER NOW"
+          :
+          "WRAPPING UP"
+        }
       </LineVelocity>
       <AboutSection />
       <Departments
@@ -53,7 +59,11 @@ export default function Home() {
         faqs={faqs}
       />
       <CrossVelocity>
-        REGISTER NOW
+        {(MitilenceDate > new Date()) ?
+          "REGISTER NOW"
+          :
+          "WRAPPING UP"
+        }
       </CrossVelocity>
       <GoogleMap />
       <Footer />

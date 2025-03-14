@@ -10,6 +10,8 @@ export const EventsFallbackImg = "/images/EventsFallbackImg.avif"
 export const MitilenceGFormsLink = "https://forms.gle/AUFFLcaAxNyK54eE8"
 export const MitilenceWebsiteQR = "/images/MitilenceWebsiteQR.avif"
 export const MitilenceVideo = "/videos/mitilence.mp4"
+export const MitilenceDate = new Date("2025-03-14T09:30:00");
+export const MitilenceEndTime = new Date("2025-03-14T16:40:00");
 export const DevelopmentTeam = [
   {
     id: 1,

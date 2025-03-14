@@ -25,7 +25,6 @@ import {
   SelectItem
 } from "@heroui/react";
 import ExcelJS from "exceljs";
-import parseEventUser from "@/parsers/user";
 import parsePayments from "@/parsers/payments";
 import { DefaultMemberImg } from "@/variables";
 import downloadBlob from "@/utils/downloadBlob";
@@ -33,7 +32,7 @@ import { useFirebase } from "@/contexts/firebase";
 import "@/components/styles/overideHerouiSelect.css";
 import { parseDateTimeShort } from "@/utils/parseDate";
 import { ChevronDownIcon, Download, SearchIcon } from "lucide-react";
-import { collection, documentId, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 export const columns = [
   { name: "NAME", uid: "name" },
@@ -257,10 +256,42 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
             )}
           </Popover>
         );
+        case "actions":
+          return (
+            <div className="relative flex justify-end items-center gap-2">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button isIconOnly size="sm" variant="light">
+                    <ChevronDownIcon />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu>
+                  <DropdownItem
+                    key="profile"
+                    onPress={() => {
+                      setPopupUser(paymentUser)
+                    }}
+                  >
+                    View Profile
+                  </DropdownItem>
+                  {((checkInCallback != null) && (!(paymentUser.events[selectedEvent || '']?.checkedInStatus || false))) ?
+                    <DropdownItem
+                      key="checkIn"
+                      onPress={() => checkInCallback(paymentUser.user.id)}
+                    >
+                      Check In
+                    </DropdownItem>
+                    :
+                    <></>
+                  }
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          );
       default:
         return <span className="text-black">{cellValue}</span>;
     }
-  }, [currentDepartment, renderCheckedIn]);
+  }, [currentDepartment, renderCheckedIn, checkInCallback]);
   
 
   const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -352,7 +383,7 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
                 aria-label="Table Columns"
                 selectionMode="single"
                 selectedKeys={[statusFilter]}
-                onSelectionChange={(e) => setStatusFilter(String(e.currentKey))}
+                onSelectionChange={(e) => {setStatusFilter(String(e.currentKey)); setPage(1)}}
               >
                 {['All', 'Checked In', 'Not Checked In'].map((status) => (
                   <DropdownItem key={status} className="capitalize">

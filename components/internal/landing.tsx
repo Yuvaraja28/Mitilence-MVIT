@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { AnimatedGradientText } from '../magicui/animated-gradient-text';
-import { DeveloperImg, MitilenceVideo, MitilenceWebsiteQR, StarImg } from '@/variables';
+import { DeveloperImg, MitilenceDate, MitilenceVideo, MitilenceWebsiteQR, StarImg } from '@/variables';
 
 export default function Landing() {
   return (
@@ -48,7 +48,7 @@ export default function Landing() {
           shadowColor="white"
           className="absolute lg:text-[6em] text-[12vw] lg:mt-[1.8em] mt-[1.5em] 2xl:right-[3.5em] right-[10vw] text-white font-semibold uppercase font-clashDisplay after:bg-purpleAccent"
         >
-          2025
+          {String(MitilenceDate.getFullYear())}
         </LineShadowText>
         <ShimmerButton
           disabled={true}
@@ -57,7 +57,7 @@ export default function Landing() {
           shimmerSize="0.10em"
           className="absolute top-[45vh] sm:top-[50vh] md:top-[60vh] px-6 py-1.5 font-medium text-[1.2em] lg:text-[1.35em]"
         >
-          14 March 2025
+          {MitilenceDate.getDate() + " " + MitilenceDate.toLocaleDateString('en-IN', { month: 'long' }) + " " + MitilenceDate.getFullYear()}
         </ShimmerButton>
       </div>      
       <img

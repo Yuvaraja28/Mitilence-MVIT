@@ -36,7 +36,7 @@ export default function Sponsors({ data }: SponsorsProps) {
         <span
           className="text-2xl font-semibold text-center"
         >
-          Grow your brand at Mitilence Events
+          Grow your brand at the upcoming year's Mitilence Event
         </span>
         <Link
           href={`https://wa.me/918778171244?text=${encodeURIComponent(`*Sponsorship for Mitilence event*\nHello, I'm `)}`}
