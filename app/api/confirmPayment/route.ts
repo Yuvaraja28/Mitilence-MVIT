@@ -72,36 +72,36 @@ export async function POST(req: NextRequest) {
     const paymentDoc = await db.collection('payments').doc(userJson?.userId).get()
     const paymentData = parsePayments(paymentDoc.id, paymentDoc.data() || {});
 
-    const currentDepartment = decodedToken?.departmentId?.toUpperCase() || '';
-    const msgContents = `🎉 Payment Successful – Welcome to ${currentDepartment} Events at Mitilence! 🎉
+//     const currentDepartment = decodedToken?.departmentId?.toUpperCase() || '';
+//     const msgContents = `🎉 Payment Successful – Welcome to ${currentDepartment} Events at Mitilence! 🎉
 
-Hey ${userData.name},
+// Hey ${userData.name},
 
-Your payment for ${currentDepartment} Department events has been successfully received! ✅ Get ready for an exciting day of tech, innovation, and fun! 🚀
+// Your payment for ${currentDepartment} Department events has been successfully received! ✅ Get ready for an exciting day of tech, innovation, and fun! 🚀
 
-📍 What’s next?
-✔️ Your registration is confirmed—just show up and enjoy!
-✔️ Visit mitilence.1he.dev to check event timings and venues.
-✔️ Go to mitilence.1he.dev/profile to get your Profile QR.
-✔️ Show your QR at event entry for a smooth check-in.
+// 📍 What’s next?
+// ✔️ Your registration is confirmed—just show up and enjoy!
+// ✔️ Visit mitilence.1he.dev to check event timings and venues.
+// ✔️ Go to mitilence.1he.dev/profile to get your Profile QR.
+// ✔️ Show your QR at event entry for a smooth check-in.
 
-See you at Mitilence! 🔥💻 Let’s make it an unforgettable event! 🚀`
-    const whatsappUrl = '';
-    fetch(`${whatsappUrl}/data`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ phone: `+91${userData.phoneNo}`, message: msgContents })
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Optionally handle the response data
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('Whatsapp Error:', error);
-      });
+// See you at Mitilence! 🔥💻 Let’s make it an unforgettable event! 🚀`
+//     const whatsappUrl = '';
+//     fetch(`${whatsappUrl}/data`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ phone: `+91${userData.phoneNo}`, message: msgContents })
+//     })
+//       .then(response => response.json())
+//       .then(data => {
+//         // Optionally handle the response data
+//         console.log(data);
+//       })
+//       .catch(error => {
+//         console.error('Whatsapp Error:', error);
+//       });
 
     return NextResponse.json({
       user: userData,
