@@ -438,22 +438,24 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
     // 🔹 Group events by name
     const eventGroups: Record<string, any[]> = {};
   
-    Object.entries(departmentPaymentParticipants).forEach(([userId, paymentData]) => {
-      const user = departmentPaymentParticipants[userId]?.user;
+    Object.values(departmentPaymentParticipants).forEach((paymentData) => {
+      const user = paymentData?.user;
       if (!user) return;
-  
+      
       Object.values(paymentData.events).forEach((event) => {
-        const eventName = eventsObject?.[event.eventId]?.name || event.eventId;
-  
-        if (!eventGroups[eventName]) {
-          eventGroups[eventName] = [];
-        }
-  
-        if (event?.checkedInStatus) {
+        const eventData = eventsObject?.[event.eventId];
+        const eventName = eventData?.name || event.eventId;
+
+        if ((event?.checkedInStatus) && (event?.departmentId == currentDepartment)) {
+
+          if (!eventGroups[eventName]) {
+            eventGroups[eventName] = [];
+          }
+
           eventGroups[eventName].push({
             "Name": user?.name,
             "Event Name": eventName,
-            "Participant Type": departmentPaymentParticipants[userId]?.mitilence?.[currentDepartment || '']?.participantType,
+            "Participant Type": paymentData?.mitilence?.[currentDepartment || '']?.participantType,
             "Checked In Status": event?.checkedInStatus ? "Yes" : "No",
             "Checked In By": event?.checkedInByName || "N/A",
             "Checked In Time": event?.checkedInTime

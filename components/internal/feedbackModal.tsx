@@ -18,7 +18,7 @@ interface EmojiQuestionProps {
   error?: boolean;
 }
 
-const happyEmojis: Record<string, number> = {'😫': 1, '😊': 2, '😐': 3, '😀': 4, '🤩': 5};
+const happyEmojis: Record<string, number> = {'😫': 1, '😔': 2, '😐': 3, '😀': 4, '🤩': 5};
 
 const EmojiQuestion: React.FC<EmojiQuestionProps> = ({ question, optional = false, onChange, error = false }) => {
   const [selected, setSelected] = useState<number | null>(null);

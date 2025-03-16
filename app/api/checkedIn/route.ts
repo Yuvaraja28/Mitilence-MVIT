@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import parsePayments from '@/parsers/payments';
 import { NextRequest, NextResponse } from 'next/server';
+import { MitilenceEndTime } from '@/variables';
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -29,6 +30,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid Token Passed' }, { status: 401 });
   }
   
+  if (new Date() > MitilenceEndTime) {
+    return NextResponse.json({ error: 'MITILENCE 2025 has already ended' }, { status: 400 });
+  }
+
   try {
     const userJson = await req.json();
     if ((userJson?.userId == null) || (userJson?.eventId == null)) throw "User Id / Event Id Type not passed";

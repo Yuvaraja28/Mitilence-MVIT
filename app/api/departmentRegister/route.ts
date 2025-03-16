@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as admin from 'firebase-admin';
+import { MitilenceEndTime } from '@/variables';
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -24,7 +25,11 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Invalid Token Passed' }, { status: 401 });
   }
-  
+    
+  if (new Date() > MitilenceEndTime) {
+    return NextResponse.json({ error: 'MITILENCE 2025 has already ended' }, { status: 400 });
+  }
+
   try {  
     const departmentData = await req.json();
     if (departmentData?.departmentId == null) throw "Department Id not passed";
