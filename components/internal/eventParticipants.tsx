@@ -230,8 +230,8 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
         return (
           <Popover placement="top" showArrow>
             <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(paymentUser?.mitilence?.[currentDepartment || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
-                {(paymentUser?.mitilence?.[currentDepartment || ''].paymentStatus) ? '' : 'Not'} Paid
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(paymentUser?.mitilence?.[currentDepartment || '']?.paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(paymentUser?.mitilence?.[currentDepartment || '']?.paymentStatus) ? '' : 'Not'} Paid
               </Chip>
             </PopoverTrigger>
             {(paymentUser?.mitilence?.[currentDepartment || '']?.paymentStatus) && (
@@ -424,7 +424,7 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-black text-base font-medium">Total {Object.keys(departmentPaymentParticipants)?.length} users</span>
+          <span className="text-black text-base font-medium">Total {filteredItems().length} users</span>
           <label className="flex items-center text-black text-base">
             Rows per page:
             <select
@@ -439,7 +439,7 @@ export default function EventParticipants({ currentDepartment, setPopupUser, chi
         </div>
       </div>
     );
-  }, [selectedEvent, filteredEvents, filterValue, onClear, onSearchChange, setCheckInModal, children, statusFilter, visibleColumns, departmentPaymentParticipants, onRowsPerPageChange])
+  }, [selectedEvent, filteredEvents, filteredItems, filterValue, onClear, onSearchChange, setCheckInModal, children, statusFilter, visibleColumns, departmentPaymentParticipants, onRowsPerPageChange])
 
   const bottomContent = React.useCallback(() => {
     return (

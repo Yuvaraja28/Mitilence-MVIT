@@ -143,8 +143,8 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
         return (
           <Popover placement="top" showArrow>
             <PopoverTrigger>
-              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(user?.mitilence?.[currentDepartment || ''].paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
-                {(user?.mitilence?.[currentDepartment || ''].paymentStatus) ? '' : 'Not'} Paid
+              <Chip className="capitalize font-medium cursor-pointer" color={statusColorMap[(user?.mitilence?.[currentDepartment || '']?.paymentStatus) ? "paid" : "not_paid"]} size="lg" variant="flat">
+                {(user?.mitilence?.[currentDepartment || '']?.paymentStatus) ? '' : 'Not'} Paid
               </Chip>
             </PopoverTrigger>
             {(user?.mitilence?.[currentDepartment || '']?.paymentStatus) &&
@@ -316,7 +316,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-black text-base font-medium">Total {Object.keys(departmentPaymentParticipants)?.length} users</span>
+          <span className="text-black text-base font-medium">Total {filteredItems().length} users</span>
           <label className="flex items-center text-black text-base">
             Rows per page:
             <select
@@ -402,7 +402,7 @@ export default function AllParticipants({ currentDepartment, setPopupUser }: { c
         currentDepartment || ""
       ] || {};
 
-      if (paymentInfo.paymentStatus) {
+      if (paymentInfo?.paymentStatus) {
         userSheetData.push({
           "Name": user?.user?.name,
           "Enrollment No": user?.user?.enrollNo,
