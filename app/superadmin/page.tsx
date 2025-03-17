@@ -29,7 +29,7 @@ export default function AdminDashboard() {
     )
   }
 
-  if (!fireCustomClaims?.roles?.includes("admin")) {
+  if (!fireCustomClaims?.roles?.includes("superadmin")) {
     return window.location.replace('/profile')
   }
 
