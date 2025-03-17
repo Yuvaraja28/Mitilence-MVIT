@@ -10,9 +10,6 @@ export async function generateMetadata({ params }: { params: Params }) {
     const startTime = parseTimeOnly(eventData.startTime)
     const endTime = parseTimeOnly(eventData.endTime)
     let eventData_logoUrl = eventData?.logoUrl
-    if (eventData_logoUrl) {
-      eventData_logoUrl = eventData_logoUrl.split('/-/')[0] + '/-/preview/250x250/'
-    }
 
     return {
       title: `${eventData.name} • ${eventData.departmentId.toUpperCase()}`,
