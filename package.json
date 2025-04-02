@@ -52,7 +52,7 @@
     "framer-motion": "^12.4.2",
     "lucide-react": "^0.477.0",
     "motion": "^12.4.2",
-    "next": "15.2.3",
+    "next": "15.2.4",
     "react": "^19.0.0",
     "react-cookie": "^7.2.2",
     "react-countdown": "^2.3.6",
