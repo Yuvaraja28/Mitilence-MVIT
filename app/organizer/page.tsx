@@ -210,7 +210,6 @@ export default function OrganizerDashboard() {
               }
               <Scanner
                 components={{
-                  audio: true,
                   onOff: true,
                   torch: true,
                   zoom: true,

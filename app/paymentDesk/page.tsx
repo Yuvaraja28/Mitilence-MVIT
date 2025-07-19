@@ -230,7 +230,6 @@ export default function Organizers() {
             >
               <Scanner
                 components={{
-                  audio: true,
                   onOff: true,
                   torch: true,
                   zoom: true,
