@@ -649,23 +649,26 @@ export default function Events() {
                   </div>
                 </div>
               </div>
-              <Markdown
-                components={{
-                  ul(props) {
-                    return <ul {...props} className="!text-white !list-disc !ml-[0.75rem]"></ul>
-                  },
-                  ol(props) {
-                    return <ol {...props} className="!text-white !list-disc !ml-[0.75rem]"></ol>
-                  },
-                  li(props) {
-                    return <li {...props} className="!text-white !list-disc !ml-[0.75rem]"></li>
-                  }
-                }}
-                remarkPlugins={[remarkGfm]}
+              <div
                 className={"bg-[#9648ff1c] !text-white rounded-3xl border border-purpleAccent/50 w-full py-6 px-5 flex flex-col gap-5 text-xl select-none"}
               >
-                {currentEvent?.eventDescription || ""}
-              </Markdown>
+                <Markdown
+                  components={{
+                    ul(props) {
+                      return <ul {...props} className="!text-white !list-disc !ml-[0.75rem]"></ul>
+                    },
+                    ol(props) {
+                      return <ol {...props} className="!text-white !list-disc !ml-[0.75rem]"></ol>
+                    },
+                    li(props) {
+                      return <li {...props} className="!text-white !list-disc !ml-[0.75rem]"></li>
+                    }
+                  }}
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {currentEvent?.eventDescription || ""}
+                </Markdown>
+              </div>
             </ModalBody>
           </ModalContent>
         </Modal>
