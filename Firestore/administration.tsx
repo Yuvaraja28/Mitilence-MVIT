@@ -12,7 +12,7 @@ export async function getAdministrationMembers(): Promise<AdministrationMember[]
       id,
       name: data.name,
       role: data.role,
-      imageUrl: data.imageUrl,
+      imageUrl: `${process.env.NEXT_PUBLIC_CDN_URL}${data.imageUrl}`,
       order: data.order
     }));
     return members.sort((a, b) => a.order - b.order);

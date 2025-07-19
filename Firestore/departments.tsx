@@ -13,7 +13,7 @@ export async function getDepartments(): Promise<Department[]> {
       name: data.name,
       staffName: data.staffName,
       staffPhone: data.staffPhone,
-      logoUrl: data.logoUrl,
+      logoUrl: `${process.env.NEXT_PUBLIC_CDN_URL}${data.logoUrl}`,
       registrationsClosed: data?.registrationsClosed || false,
       order: data.order
     }));

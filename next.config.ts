@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'ucarecdn.com',
+        hostname: 'yuv.1he.dev',
       },
     ],
   }

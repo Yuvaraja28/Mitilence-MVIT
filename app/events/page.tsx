@@ -179,7 +179,7 @@ export default function Events() {
           </div>
         :
         <>
-          {(fireUserDoc == null && fireUserData == null) &&
+          {/* {(fireUserDoc == null && fireUserData == null) &&
             <div
               className="fixed bottom-5 px-4 z-50 w-full md:w-[50%]"
             >
@@ -196,7 +196,7 @@ export default function Events() {
                 </div>
               </Alert>
             </div>
-          }
+          } */}
           <div
             className="bg-white rounded-full w-[90%] lg:mt-[-2em] lg:w-[60%] overflow-auto flex flex-row items-center gap-2 px-1 lg:px-2 mb-6"
           >

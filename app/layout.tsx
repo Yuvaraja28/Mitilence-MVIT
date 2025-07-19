@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { FirebaseProvider } from "@/contexts/firebase";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import StickyHeader from "@/components/internal/stickyHeader";
+import { Alert } from "@heroui/react";
 
 export const metadata: Metadata = {
   title: "Mitilence'25 • MVIT",
@@ -54,6 +55,22 @@ export default function RootLayout({
             {children}
           </FirebaseProvider>
         </HeroUIProvider>
+        <div
+          className="fixed bottom-5 px-4 left-1/2 -translate-x-1/2 z-50 w-full md:w-fit"
+        >
+          <Alert
+            icon={<span>✨</span>}
+            radius="lg"
+            color="warning"
+            className="font-medium text-base shadow-md shadow-yellow-400 !py-2 px-6"
+          >
+            <span
+              className="text-lg"
+            >
+              See you at Mitilence 2026!
+            </span>
+          </Alert>
+        </div>
       </body>
     </html>
   );

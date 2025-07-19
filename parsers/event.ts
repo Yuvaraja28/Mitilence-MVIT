@@ -10,7 +10,7 @@ export default function parseEvents(id: string, data: any): Events {
     // totalSeats: data?.totalSeats,
     // seatsLeft: data?.seatsLeft,
     // entryFee: data?.entryFee,
-    logoUrl: data?.logoUrl,
+    logoUrl: data?.logoUrl ? `${process.env.NEXT_PUBLIC_CDN_URL}${data?.logoUrl}` : undefined,
     eventCategory: data?.eventCategory,
     // registrationEndTime: data?.registrationEndTime,
     // studentCoordinatorId: data?.studentCoordinatorId,
