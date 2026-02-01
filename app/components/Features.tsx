@@ -33,33 +33,33 @@ export default function Features() {
             <div
               key={index}
               className={`cyber-card p-8 bg-black/40 ${feature.color === "accent"
-                  ? "border-accent/30"
-                  : feature.color === "secondary"
-                    ? "border-secondary/30"
-                    : ""
+                ? "border-accent/30"
+                : feature.color === "secondary"
+                  ? "border-secondary/30"
+                  : ""
                 }`}
             >
               <span
                 className={`material-symbols-outlined text-4xl mb-4 ${feature.color === "accent"
-                    ? "text-accent"
-                    : feature.color === "secondary"
-                      ? "text-secondary"
-                      : "text-primary"
+                  ? "text-accent"
+                  : feature.color === "secondary"
+                    ? "text-secondary"
+                    : "text-primary"
                   }`}
               >
                 {feature.icon}
               </span>
               <h3
-                className={`font-[var(--font-orbitron)] text-xl font-bold mb-3 ${feature.color === "accent"
-                    ? "text-accent"
-                    : feature.color === "secondary"
-                      ? "text-secondary"
-                      : "text-primary"
+                className={`font-orbitron text-xl font-bold mb-3 ${feature.color === "accent"
+                  ? "text-accent"
+                  : feature.color === "secondary"
+                    ? "text-secondary"
+                    : "text-primary"
                   }`}
               >
                 {feature.title}
               </h3>
-              <p className="font-[var(--font-rajdhani)] text-white/70">
+              <p className="font-rajdhani text-white/70">
                 {feature.description}
               </p>
             </div>

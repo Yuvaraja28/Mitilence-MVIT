@@ -41,7 +41,7 @@ export default function Timeline() {
   return (
     <section className="py-24 bg-black/40" id="timeline">
       <div className="max-w-7xl mx-auto px-6">
-        <h2 className="font-[var(--font-orbitron)] text-3xl font-black italic uppercase mb-12 text-primary">
+        <h2 className="font-orbitron text-3xl font-black italic uppercase mb-12 text-primary">
           SYSTEM_TIMELINE
         </h2>
 
@@ -50,8 +50,8 @@ export default function Timeline() {
             <div
               key={index}
               className={`min-w-[300px] snap-center bg-tech-gray p-6 rounded-cyber border ${item.color === "accent"
-                  ? "border-accent/20"
-                  : "border-primary/20"
+                ? "border-accent/20"
+                : "border-primary/20"
                 } relative`}
             >
               <span
@@ -60,7 +60,7 @@ export default function Timeline() {
               >
                 {item.time}
               </span>
-              <h4 className="font-[var(--font-orbitron)] text-xl text-white mb-4">
+              <h4 className="font-orbitron text-xl text-white mb-4">
                 {item.title}
               </h4>
               <p className="text-white/50 text-sm">{item.description}</p>

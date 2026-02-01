@@ -11,7 +11,7 @@ export default function Navbar() {
               bolt
             </span>
           </div>
-          <span className="font-[var(--font-orbitron)] font-black text-2xl tracking-tighter text-primary">
+          <span className="font-orbitron font-black text-2xl tracking-tighter text-primary">
             MITILENCE &apos;26
           </span>
         </div>
@@ -36,7 +36,7 @@ export default function Navbar() {
         </div>
 
         {/* CTA */}
-        <button className="cyber-button bg-primary text-black px-6 py-2 font-[var(--font-orbitron)] font-bold text-sm">
+        <button className="cyber-button bg-primary text-black px-6 py-2 font-orbitron font-bold text-sm">
           INITIALIZE_OS
         </button>
       </div>

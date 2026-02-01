@@ -13,7 +13,7 @@ export default function Footer() {
                   bolt
                 </span>
               </div>
-              <span className="font-[var(--font-orbitron)] font-black text-xl tracking-tighter text-primary">
+              <span className="font-orbitron font-black text-xl tracking-tighter text-primary">
                 MITILENCE &apos;26
               </span>
             </div>
@@ -29,7 +29,7 @@ export default function Footer() {
           {/* Links */}
           <div className="grid grid-cols-2 gap-16 md:gap-32">
             <div>
-              <h4 className="font-[var(--font-orbitron)] text-xs font-bold text-primary mb-6 uppercase tracking-widest border-b border-primary/20 pb-2">
+              <h4 className="font-orbitron text-xs font-bold text-primary mb-6 uppercase tracking-widest border-b border-primary/20 pb-2">
                 Protocols
               </h4>
               <ul className="font-mono text-[10px] space-y-3 text-white/50">
@@ -51,7 +51,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h4 className="font-[var(--font-orbitron)] text-xs font-bold text-primary mb-6 uppercase tracking-widest border-b border-primary/20 pb-2">
+              <h4 className="font-orbitron text-xs font-bold text-primary mb-6 uppercase tracking-widest border-b border-primary/20 pb-2">
                 Network
               </h4>
               <ul className="font-mono text-[10px] space-y-3 text-white/50">

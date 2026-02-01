@@ -6,7 +6,7 @@ export default function Showdown() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center space-x-4 mb-12">
           <span className="w-3 h-3 bg-accent animate-pulse rounded-full"></span>
-          <h2 className="font-[var(--font-orbitron)] text-4xl font-black italic uppercase">
+          <h2 className="font-orbitron text-4xl font-black italic uppercase">
             SHOWDOWN_FEED_V2.0
           </h2>
         </div>

@@ -55,7 +55,7 @@ export default function Dossier() {
   return (
     <section className="py-24" id="dossiers">
       <div className="max-w-7xl mx-auto px-6">
-        <h2 className="font-[var(--font-orbitron)] text-3xl font-black italic uppercase mb-12 text-center text-primary tracking-widest">
+        <h2 className="font-orbitron text-3xl font-black italic uppercase mb-12 text-center text-primary tracking-widest">
           FIELD_OPERATIVES_DOSSIER
         </h2>
 
@@ -96,7 +96,7 @@ export default function Dossier() {
                     {op.id}
                   </p>
                   <h3
-                    className={`font-[var(--font-orbitron)] text-2xl font-black uppercase ${getColorClass(
+                    className={`font-orbitron text-2xl font-black uppercase ${getColorClass(
                       op.color,
                       "text"
                     )}`}

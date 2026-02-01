@@ -19,19 +19,19 @@ export default function About() {
           <div className="inline-block bg-black text-primary px-3 py-1 font-mono text-xs rounded-sm">
             // MISSION_DIRECTIVE_26
           </div>
-          <h2 className="font-[var(--font-orbitron)] text-5xl font-black italic uppercase leading-none">
+          <h2 className="font-orbitron text-5xl italic uppercase leading-none">
             GEAR UP,
             <br />
             OPERATIVE.
           </h2>
-          <p className="text-xl font-medium leading-relaxed font-[var(--font-rajdhani)]">
+          <p className="text-xl font-medium leading-relaxed font-rajdhani">
             The city never sleeps, and neither does the network. Mitilence
             &apos;26 is the ultimate proving ground. Overload the circuits and
             redefine the technical frontier.
           </p>
           <div className="grid grid-cols-2 gap-8 pt-6">
             <div className="border-l-4 border-black pl-4">
-              <div className="font-[var(--font-orbitron)] font-black text-4xl">
+              <div className="font-orbitron text-4xl">
                 40+
               </div>
               <div className="font-mono text-xs font-bold uppercase tracking-widest">
@@ -39,7 +39,7 @@ export default function About() {
               </div>
             </div>
             <div className="border-l-4 border-black pl-4">
-              <div className="font-[var(--font-orbitron)] font-black text-4xl">
+              <div className="font-orbitron text-4xl">
                 1.5L
               </div>
               <div className="font-mono text-xs font-bold uppercase tracking-widest">
@@ -55,10 +55,10 @@ export default function About() {
             <div
               key={index}
               className={`relative overflow-hidden rounded-cyber border-2 border-black group h-64 ${index === 1
-                  ? "mt-8"
-                  : index === 2
-                    ? "-mt-8"
-                    : ""
+                ? "mt-8"
+                : index === 2
+                  ? "-mt-8"
+                  : ""
                 }`}
             >
               <img

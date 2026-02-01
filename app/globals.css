@@ -1,14 +1,15 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 /* === Tailwind v4 Theme Configuration === */
-@theme inline {
+@theme {
   /* Colors */
   --color-primary: #fcee0a;
   --color-background-dark: #050505;
   --color-tech-gray: #121212;
   --color-secondary: #00ff9f;
   --color-accent: #ff003c;
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-rajdhani: "Rajdhani", sans-serif;
 
   /* Fonts */
   /* Border Radius */
@@ -24,7 +25,6 @@
 body {
   background-color: var(--color-background-dark);
   color: white;
-  font-family: var(--font-body);
   overflow-x: hidden;
 }
 

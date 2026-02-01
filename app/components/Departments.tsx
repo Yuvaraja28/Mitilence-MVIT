@@ -46,7 +46,7 @@ export default function Departments() {
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-4">
           <div>
-            <h2 className="font-[var(--font-orbitron)] text-4xl font-black italic uppercase">
+            <h2 className="font-orbitron text-4xl font-black italic uppercase">
               <span className="text-primary">CORE</span> DEPARTMENTS
             </h2>
             <div className="h-1 w-32 bg-primary mt-2"></div>
@@ -74,12 +74,12 @@ export default function Departments() {
                 {dept.icon}
               </span>
               <h3
-                className={`font-[var(--font-orbitron)] text-2xl font-black mb-2 uppercase ${dept.hoverText}`}
+                className={`font-orbitron text-2xl font-black mb-2 uppercase ${dept.hoverText}`}
               >
                 {dept.name}
               </h3>
               <p
-                className={`font-[var(--font-rajdhani)] text-sm text-white/60 ${dept.hoverText}/80 mb-6`}
+                className={`font-rajdhani text-sm text-white/60 ${dept.hoverText}/80 mb-6`}
               >
                 {dept.description}
               </p>

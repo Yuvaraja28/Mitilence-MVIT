@@ -6,7 +6,7 @@ export default function Hero() {
       <div className="relative z-10 w-full max-w-7xl px-6 py-20 text-center">
         {/* Prize Tag */}
         <div className="inline-flex items-center gap-4 mb-8">
-          <div className="bg-accent text-white px-4 py-2 font-[var(--font-orbitron)] font-black text-sm uppercase skew-x-[-10deg] prize-glow">
+          <div className="bg-accent text-white px-4 py-2 font-orbitron font-black text-sm uppercase skew-x-[-10deg] prize-glow">
             PRIZE POOL: ₹1.5 LAKHS
           </div>
         </div>
@@ -19,7 +19,7 @@ export default function Hero() {
         </div>
 
         {/* Main Title */}
-        <h1 className="font-[var(--font-orbitron)] text-7xl md:text-9xl font-black italic tracking-tighter mb-4 glitch-text leading-none">
+        <h1 className="font-orbitron text-7xl md:text-9xl font-black italic tracking-tighter mb-4 glitch-text leading-none">
           MITILENCE<span className="text-primary">&apos;26</span>
         </h1>
 
@@ -30,7 +30,7 @@ export default function Hero() {
         {/* Countdown Timer */}
         <div className="flex flex-wrap justify-center gap-6 mb-12">
           <div className="w-24 h-24 border border-primary/40 rounded-cyber flex flex-col items-center justify-center bg-black/60 backdrop-blur">
-            <span className="text-3xl font-[var(--font-orbitron)] font-black text-primary">
+            <span className="text-3xl font-orbitron font-black text-primary">
               08
             </span>
             <span className="text-[10px] font-mono text-white/50 uppercase">
@@ -38,7 +38,7 @@ export default function Hero() {
             </span>
           </div>
           <div className="w-24 h-24 border border-primary/40 rounded-cyber flex flex-col items-center justify-center bg-black/60 backdrop-blur">
-            <span className="text-3xl font-[var(--font-orbitron)] font-black text-primary">
+            <span className="text-3xl font-orbitron font-black text-primary">
               12
             </span>
             <span className="text-[10px] font-mono text-white/50 uppercase">
@@ -46,7 +46,7 @@ export default function Hero() {
             </span>
           </div>
           <div className="w-24 h-24 border border-primary/40 rounded-cyber flex flex-col items-center justify-center bg-black/60 backdrop-blur">
-            <span className="text-3xl font-[var(--font-orbitron)] font-black text-primary">
+            <span className="text-3xl font-orbitron font-black text-primary">
               45
             </span>
             <span className="text-[10px] font-mono text-white/50 uppercase">
@@ -56,7 +56,7 @@ export default function Hero() {
         </div>
 
         {/* CTA Button */}
-        <button className="cyber-button bg-accent text-white px-12 py-5 font-[var(--font-orbitron)] font-black text-2xl uppercase italic tracking-widest shadow-[8px_8px_0px_#fcee0a] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+        <button className="cyber-button bg-accent text-white px-12 py-5 font-orbitron font-black text-2xl uppercase italic tracking-widest shadow-[8px_8px_0px_#fcee0a] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
           ENTER SUB-GRID
         </button>
       </div>
