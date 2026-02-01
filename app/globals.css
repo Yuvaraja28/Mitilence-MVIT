@@ -1,127 +1,156 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
-@font-face {
-  font-family: 'ClashDisplay';
-  src: url('/fonts/clashdisplay/ClashDisplay-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
+/* === Tailwind v4 Theme Configuration === */
+@theme inline {
+  /* Colors */
+  --color-primary: #fcee0a;
+  --color-background-dark: #050505;
+  --color-tech-gray: #121212;
+  --color-secondary: #00ff9f;
+  --color-accent: #ff003c;
+
+  /* Fonts */
+  /* Border Radius */
+  --radius-cyber: 10px;
 }
 
-@font-face {
-  font-family: 'ClashDisplay';
-  src: url('/fonts/clashdisplay/ClashDisplay-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
+/* === CSS Variables === */
+:root {
+  --grid-color: rgba(252, 238, 10, 0.07);
 }
 
-@font-face {
-  font-family: 'ClashDisplay';
-  src: url('/fonts/clashdisplay/ClashDisplay-Light.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'ClashDisplay';
-  src: url('/fonts/clashdisplay/ClashDisplay-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'ClashDisplay';
-  src: url('/fonts/clashdisplay/ClashDisplay-Semibold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'ClashDisplay';
-  src: url('/fonts/clashdisplay/ClashDisplay-Extralight.woff2') format('woff2');
-  font-weight: 200;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'ClashDisplay';
-  src: url('/fonts/clashdisplay/ClashDisplay-Variable.woff2') format('woff2');
-  font-weight: 100 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'DePixel';
-  src: url('/fonts/depixel/depixelbreit.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'DePixel';
-  src: url('/fonts/depixelfett.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'DePixel';
-  src: url('/fonts/depixelhalbfett.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'DePixel';
-  src: url('/fonts/depixelillegible.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'DePixel';
-  src: url('/fonts/depixelklein.woff2') format('woff2');
-  font-weight: 200;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'DePixel';
-  src: url('/fonts/depixelschmal.woff2') format('woff2');
-  font-weight: 100;
-  font-style: normal;
-}
-
+/* === Base Styles === */
 body {
-  min-height: 100vh;
-  background: #0F1110;
-  font-family: 'ClashDisplay', sans-serif;
-  scrollbar-width: thin;
-  scrollbar-color: #888 transparent;
-  scroll-behavior: smooth;
+  background-color: var(--color-background-dark);
+  color: white;
+  font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
-*::-webkit-scrollbar {
-  width: 6px;
-  height: 4px;
-  background-color: #0F1110;
+::selection {
+  background-color: var(--color-primary);
+  color: black;
 }
 
-*::-webkit-scrollbar-track {
-  background: transparent;
+/* === Tech Floor Grid Background === */
+.tech-floor {
+  background-color: #050505;
+  background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-attachment: fixed;
 }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 4px;
+/* === Cyber Card === */
+.cyber-card {
+  border-radius: 10px;
+  border: 1px solid rgba(252, 238, 10, 0.2);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-*::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
+.cyber-card:hover {
+  border-color: #fcee0a;
+  box-shadow: 0 0 20px rgba(252, 238, 10, 0.15);
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: gray !important;
+/* === Cyber Button (Clipped Shape) === */
+.cyber-button {
+  clip-path: polygon(10% 0, 100% 0, 100% 75%, 90% 100%, 0 100%, 0 25%);
+  transition: all 0.2s ease;
+}
+
+/* === Glitch Text Effect === */
+.glitch-text {
+  text-shadow: 2px 0 #ff003c, -2px 0 #00ff9f;
+}
+
+/* === Hazard Stripes Background === */
+.hazard-bg {
+  background: repeating-linear-gradient(45deg,
+      #fcee0a,
+      #fcee0a 10px,
+      #000 10px,
+      #000 20px);
+}
+
+/* === Scanning Line Animation === */
+.scanning-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #fcee0a;
+  box-shadow: 0 0 15px #fcee0a;
+  animation: scan 3s linear infinite;
+}
+
+@keyframes scan {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+/* === Prize Glow Animation === */
+.prize-glow {
+  animation: pulse-yellow 2s infinite;
+}
+
+@keyframes pulse-yellow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(252, 238, 10, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 15px rgba(252, 238, 10, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(252, 238, 10, 0);
+  }
+}
+
+/* === HUD Log Scroll Mask === */
+.hud-log-scroll {
+  mask-image: linear-gradient(to bottom,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent);
+}
+
+/* === Dossier Scrollbar === */
+.dossier-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dossier-scroll::-webkit-scrollbar-track {
+  background: #000;
+}
+
+.dossier-scroll::-webkit-scrollbar-thumb {
+  background: #fcee0a;
+  border-radius: 10px;
+}
+
+/* === Details/Summary Arrow Hide (for FAQ) === */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary {
+  list-style: none;
 }
