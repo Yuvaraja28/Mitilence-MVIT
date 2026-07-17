@@ -1,0 +1,18 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "administration": {
+      ".read": true,
+      ".write": false
+    },
+    "departments": {
+      ".read": true,
+      ".write": false
+    },
+    "faqs": {
+      ".read": true,
+      ".write": false
+    }
+  }
+}

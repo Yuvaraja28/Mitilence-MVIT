@@ -2,7 +2,7 @@ require('dotenv').config(); // Load env vars from .env
 const admin = require('firebase-admin');
 
 // Parse service account JSON from env variable
-const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_KEY);
+const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_JSON);
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({

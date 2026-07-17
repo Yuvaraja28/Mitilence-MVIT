@@ -6,7 +6,7 @@ import { getAnalytics, isSupported } from "firebase/analytics";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 // Initialize Firebase
-export const fireApp = initializeApp(JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CLIENT_API || "{}"));
+export const fireApp = initializeApp(JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CLIENT_JSON || "{}"));
 
 // Initialize Firebase App Check ONLY in the client (browser)
 if (typeof window !== "undefined") {

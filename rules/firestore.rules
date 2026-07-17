@@ -1,0 +1,37 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users {
+      allow read: if false;
+      allow write: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write, update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false;
+    }
+    match /payments/{userId} {
+      allow read: if request.auth != null && 
+                      (request.auth.uid == userId || 
+                      request.auth.token.roles.hasAny(["superadmin"]) ||
+                      (request.auth.token.roles.hasAny(["admin", "organizer"]) && request.auth.token.departmentId in resource.data.mitilence));
+      allow write, update, delete: if false;
+    }
+    match /organizers/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write, update, delete: if false;
+    }
+    match /feedbacks/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if !exists(/databases/$(database)/documents/feedbacks/$(userId));
+      allow update, delete: if false;
+    }
+    match /events/{eventId} {
+      allow read: if true;
+      allow write, update, delete: if false;
+    }
+  }
+}
